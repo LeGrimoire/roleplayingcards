@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Chrome",
+            "port": 9222,
+            "url": "file:///${workspaceFolder}/generator/generate.html",
+            "webRoot": "${workspaceFolder}/generator"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "file": "${workspaceFolder}/generator/generate.html"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Update icons no dl no transform",
+            "program": "${workspaceFolder}/tools/update-icons-no-dl-no-transform.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Update icons no dl",
+            "program": "${workspaceFolder}/tools/update-icons-no-dl.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Update icons",
+            "program": "${workspaceFolder}/tools/update-icons.js"
+        }
+    ]
+}

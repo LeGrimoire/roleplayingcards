@@ -1,0 +1,160 @@
+.btn-fold-section {
+	z-index: 1;
+	position: absolute;
+    top: 50px;
+	height: 600px;
+    width: 6px;
+    margin: 0px;
+    padding: 0px;
+    border: none;
+	outline: 0px;
+}
+@media (max-width: 1199px) {
+	.btn-fold-section {
+		display: none;
+	}
+}
+.btn-fold-section-right {
+	right: -1px;
+	/* background: -moz-linear-gradient(#000000 #ffffff); */
+	/* background: -webkit-linear-gradient(); */
+	background: radial-gradient(at 100% 50%, #666666ff 0%, #ffffff00 75%);
+	border-right: 1px solid #aaa;
+}
+.btn-fold-section-right:hover {
+	background: radial-gradient(at 100% 50%, #440000ff 0%, #ffffff00 75%);
+	border-right: 1px solid #866;
+}
+.btn-fold-section-left {
+	left: -2px;
+	background: radial-gradient(at 0% 50%, #666666ff 0%, #ffffff00 75%);
+	border-left: 1px solid #aaa;
+}
+.btn-fold-section-left:hover {
+	background: radial-gradient(at 0% 50%, #440000ff 0%, #ffffff00 75%);
+	border-left: 1px solid #866;
+}
+
+#preview-container {
+	margin: 0px 10px;
+	background-color: white;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+#preview-container .card-size-25x35,
+#preview-container .card-size-225x35 {
+	zoom: 1.64;
+}
+
+/* Small screen (preview fills all columns) */
+@media (max-width : 1199px) {
+	#preview-container {
+		flex-flow: row wrap;
+	}
+	.card {
+		margin-right: 10px;
+	}
+}
+/* Large screen (preview fills one column, columns are narrow) */
+@media (min-width: 1200px) {
+	#preview-container {
+		flex-flow: column wrap;
+	}
+	.card {
+		margin-top: 2.5px;
+	}
+}
+
+@media (min-width: 992px){
+	.hide-when-large{
+		display:none;
+	}
+}
+
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.color-input-addon {
+	border-right: 0;
+	border-radius: 4px !important;
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+
+.form-group {
+	margin-bottom: 5px;
+}
+
+.form-group .col-sm-1, .form-group .col-sm-2, .form-group .col-sm-3, .form-group .col-sm-4,
+.form-group .col-sm-5, .form-group .col-sm-6, .form-group .col-sm-7, .form-group .col-sm-8, 
+.form-group .col-sm-9, .form-group .col-sm-10, .form-group .col-sm-11, .form-group .col-sm-12 {
+	padding-right: 4px;
+	padding-left: 0px;
+}
+
+#total_card_count {
+	padding-top: 5px;
+	padding-bottom: 0px;
+}
+
+.form-group .btn {
+	padding: 6px 2px;
+}
+
+.form-group .icon-select-button {
+	padding: 6px 6px;
+}
+
+.form-horizontal {
+	margin-top: 10px;
+}
+
+.form-control {
+	padding: 3px 6px;
+}
+.col-sm-1 .form-control, select.form-control {
+	padding: 3px 3px;
+}
+
+select.form-control {
+	padding: 0px;
+}
+select.form-control option {
+	padding: 0px;
+}
+
+.dropdown-text {
+	width: 100%;
+}
+.dropdown-text>li>a {
+	margin: 0px;
+	padding-left: 3px;
+	position: relative;
+}
+.dropdown-icons {
+	width: 300px;
+}
+.dropdown-icons>li>a {
+	padding-left: 35px;
+	position: relative;
+}
+.dropdown-menu {
+	width: 540px;
+}
+.dropdown-menu a > span {
+	position: absolute;
+	left: 5px;
+	background-color: #000;
+	background-repeat: no-repeat;
+	background-position: center center;
+	width: 24px;
+	height: 24px;
+	background-size: auto 90%;
+	top: 50%;
+	margin-top: -12px;
+}
