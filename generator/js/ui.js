@@ -4,6 +4,9 @@
 var card_data = [];
 var card_options = card_default_options();
 
+var ui = { "foldedSection": {} };
+
+
 function mergeSort(arr, compare) {
 	if (arr.length < 2)
 		return arr;
@@ -137,7 +140,7 @@ function ui_save_file() {
 
 		tagsToSave.push("description", "contents", "tags");
 
-		if (card.type == "creature") 
+		if (card.type == "creature")
 			str = JSON.stringify(card, tagsToSave, "\t");
 		else if (card.type == "item")
 			str = JSON.stringify(card, tagsToSave, "\t");
@@ -263,8 +266,8 @@ function ui_update_card_list(doNotUpdateSelectedCard) {
 		var card = card_data[i];
 		$('#selected-card')
 			.append($("<option></option>")
-			.attr("value", i)
-			.text(card.title));
+				.attr("value", i)
+				.text(card.title));
 	}
 
 	if (!doNotUpdateSelectedCard)
@@ -365,8 +368,7 @@ function ui_update_selected_card() {
 			$(".spell-only").hide();
 			$(".power-only").show();
 		}
-		else
-		{
+		else {
 			$(".creature-hide").show();
 			$(".item-hide").show();
 			$(".spell-hide").show();
@@ -397,7 +399,7 @@ function ui_render_selected_card() {
 		var back = card_generate_back(card, card_options);
 		$('#preview-container').html(front + "\n" + back);
 	}
-	local_store_save();
+	local_store_cards_save();
 }
 
 function ui_setup_color_selector() {
@@ -405,11 +407,11 @@ function ui_setup_color_selector() {
 	$.each(card_colors, function (name, val) {//TODO: Change to a wheel or a line (save as #RRGGBB)
 		$(".colorselector-data")
 			.append($("<option></option>")
-			.attr("value", name)
-			.attr("data-color", val)
-			.text(name));
+				.attr("value", name)
+				.attr("data-color", val)
+				.text(name));
 	});
-	
+
 	// Callbacks for when the user picks a color
 	$('#default_color_selector').colorselector({
 		callback: function (value, color, title) {
@@ -580,7 +582,7 @@ function ui_change_card_description() {
 	}
 }
 
-function ui_change_card_description_keyup () {
+function ui_change_card_description_keyup() {
 	clearTimeout(ui_change_card_description_keyup.timeout);
 	ui_change_card_description_keyup.timeout = setTimeout(function () {
 		$('#card-description').trigger('change');
@@ -598,7 +600,7 @@ function ui_change_card_contents() {
 	}
 }
 
-function ui_change_card_contents_keyup () {
+function ui_change_card_contents_keyup() {
 	clearTimeout(ui_change_card_contents_keyup.timeout);
 	ui_change_card_contents_keyup.timeout = setTimeout(function () {
 		$('#card-contents').trigger('change');
@@ -655,21 +657,41 @@ function ui_apply_default_icon_back() {
 
 
 //Adding support for local store
-function local_store_save() {
-	if(window.localStorage){
+function local_store_cards_save() {
+	if (window.localStorage) {
 		try {
 			localStorage.setItem("card_data", JSON.stringify(card_data));
-		} catch (e){
+		} catch (e) {
 			//if the local store save failed should we notify the user that the data is not being saved?
 			console.log(e);
 		}
 	}
 }
-function local_store_load() {
-	if(window.localStorage){
+function local_store_cards_load() {
+	if (window.localStorage) {
 		try {
 			card_data = JSON.parse(localStorage.getItem("card_data")) || card_data;
-		} catch (e){
+		} catch (e) {
+			//if the local store load failed should we notify the user that the data load failed?
+			console.log(e);
+		}
+	}
+}
+function local_store_ui_save() {
+	if (window.localStorage) {
+		try {
+			localStorage.setItem("ui", JSON.stringify(ui));
+		} catch (e) {
+			//if the local store save failed should we notify the user that the data is not being saved?
+			console.log(e);
+		}
+	}
+}
+function local_store_ui_load() {
+	if (window.localStorage) {
+		try {
+			ui = JSON.parse(localStorage.getItem("ui")) || ui;
+		} catch (e) {
 			//if the local store load failed should we notify the user that the data load failed?
 			console.log(e);
 		}
@@ -718,7 +740,8 @@ function typeahead_list(items) {
 }
 
 $(document).ready(function () {
-	local_store_load();
+	local_store_cards_load();
+	local_store_ui_load();
 	ui_setup_color_selector();
 	$(".icon-list").typeahead({
 		source: icon_names,
@@ -743,7 +766,10 @@ $(document).ready(function () {
 		var buttonSpaceWidth = parseInt($(this).css('width')) / 2;
 
 		var display = foldedContainer.css('display');
+		var shouldSave = '';
 		if (display !== 'none') {
+			shouldSave = !ui.foldedSection[foldedContainer.selector];
+			ui.foldedSection[foldedContainer.selector] = '#' + this.id;
 			foldedContainer.hide();
 			this.style.margin = '0px 2px';
 			cardFormContainer.css('margin-left', (cardFormMargin - buttonSpaceWidth - 2) + 'px');
@@ -752,6 +778,8 @@ $(document).ready(function () {
 			cardFormContainer.css('padding-right', (cardFormPadding + buttonSpaceWidth) + 'px');
 			cardFormContainer.toggleClass('col-lg-' + cardFormContainerLG + ' col-lg-' + (cardFormContainerLG + foldedContainerLG));
 		} else {
+			shouldSave = ui.foldedSection[foldedContainer.selector];
+			ui.foldedSection[foldedContainer.selector] = null;
 			foldedContainer.show();
 			this.style.margin = '';
 			cardFormContainer.css('margin-left', (cardFormMargin + buttonSpaceWidth + 2) + 'px');
@@ -760,9 +788,16 @@ $(document).ready(function () {
 			cardFormContainer.css('padding-right', (cardFormPadding - buttonSpaceWidth) + 'px');
 			cardFormContainer.toggleClass('col-lg-' + cardFormContainerLG + ' col-lg-' + (cardFormContainerLG - foldedContainerLG));
 		}
-	
+
 		$(this).toggleClass('btn-fold-section-right btn-fold-section-left');
+		if (shouldSave)
+			local_store_ui_save();
 	});
+	var foldedSectionKeys = Object.keys(ui.foldedSection);
+	for (var i = 0; i < foldedSectionKeys.length; i++) {
+		if (ui.foldedSection[foldedSectionKeys[i]])
+			$(ui.foldedSection[foldedSectionKeys[i]]).click();
+	}
 
 	$("#button-generate").click(ui_generate);
 	$("#button-load").click(function () { $("#file-load").click(); });
