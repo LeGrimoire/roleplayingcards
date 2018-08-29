@@ -1,13 +1,14 @@
 .btn-fold-section {
 	z-index: 1;
-	position: absolute;
-    top: 50px;
-	height: 600px;
-    width: 6px;
+	position: relative;
+	height: 713px;
+    width: 8px;
     margin: 0px;
     padding: 0px;
-    border: none;
+	border: none;
+	border-radius: 1px / 100px;
 	outline: 0px;
+	float: left;
 }
 @media (max-width: 1199px) {
 	.btn-fold-section {
@@ -16,27 +17,32 @@
 }
 .btn-fold-section-right {
 	right: -1px;
-	/* background: -moz-linear-gradient(#000000 #ffffff); */
-	/* background: -webkit-linear-gradient(); */
+    margin-left: -8px;
 	background: radial-gradient(at 100% 50%, #666666ff 0%, #ffffff00 75%);
-	border-right: 1px solid #aaa;
+	border-right: 1px solid #aaaaaaaa;
 }
 .btn-fold-section-right:hover {
-	background: radial-gradient(at 100% 50%, #440000ff 0%, #ffffff00 75%);
-	border-right: 1px solid #866;
+	background: radial-gradient(at 100% 50%, #331111ff 0%, #ffffff00 75%);
+	border-right: 1px solid #88666666;
 }
 .btn-fold-section-left {
-	left: -2px;
+	left: -1px;
+    margin-right: -8px;
 	background: radial-gradient(at 0% 50%, #666666ff 0%, #ffffff00 75%);
-	border-left: 1px solid #aaa;
+	border-left: 1px solid #aaaaaaaa;
 }
 .btn-fold-section-left:hover {
-	background: radial-gradient(at 0% 50%, #440000ff 0%, #ffffff00 75%);
-	border-left: 1px solid #866;
+	background: radial-gradient(at 0% 50%, #331111ff 0%, #ffffff00 75%);
+	border-left: 1px solid #88666666;
+}
+
+#card-form-container {
+	padding: 0px 17px;
 }
 
 #preview-container {
-	margin: 0px 10px;
+	margin: 0px 0px;
+	padding: 0px 14px 0px 16px;
 	background-color: white;
 	display: flex;
 	justify-content: space-around;
@@ -44,7 +50,7 @@
 }
 #preview-container .card-size-25x35,
 #preview-container .card-size-225x35 {
-	zoom: 1.64;
+	zoom: 1.60;
 }
 
 /* Small screen (preview fills all columns) */

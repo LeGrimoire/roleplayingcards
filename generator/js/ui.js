@@ -727,8 +727,42 @@ $(document).ready(function () {
 	});
 	$(".icon-select-button").click(ui_select_icon);
 
-	$("#button-fold-menu").click(function() {  });
-	$("#button-fold-preview").click(function() {  });
+	$(".btn-fold-section").click(function () {
+		var cardFormContainer = $('#card-form-container');
+		var cardFormContainerLG = cardFormContainer[0].classList.value;
+		var cardFormContainerLGIdx = cardFormContainerLG.indexOf('col-lg-') + 7;
+		cardFormContainerLG = parseInt(cardFormContainerLG.substring(cardFormContainerLGIdx, cardFormContainerLGIdx + 2));
+		var cardFormMargin = parseInt(cardFormContainer.css('margin-left'));
+		var cardFormPadding = parseInt(cardFormContainer.css('padding-left'));
+
+		var foldedContainer = $('#' + $(this).attr('for'));
+		var foldedContainerLG = foldedContainer[0].classList.value;
+		var foldedContainerLGIdx = foldedContainerLG.indexOf('col-lg-') + 7;
+		foldedContainerLG = parseInt(foldedContainerLG.substring(foldedContainerLGIdx, foldedContainerLGIdx + 2));
+
+		var buttonSpaceWidth = parseInt($(this).css('width')) / 2;
+
+		var display = foldedContainer.css('display');
+		if (display !== 'none') {
+			foldedContainer.hide();
+			this.style.margin = '0px 2px';
+			cardFormContainer.css('margin-left', (cardFormMargin - buttonSpaceWidth - 2) + 'px');
+			cardFormContainer.css('margin-right', (cardFormMargin - buttonSpaceWidth - 2) + 'px');
+			cardFormContainer.css('padding-left', (cardFormPadding + buttonSpaceWidth) + 'px');
+			cardFormContainer.css('padding-right', (cardFormPadding + buttonSpaceWidth) + 'px');
+			cardFormContainer.toggleClass('col-lg-' + cardFormContainerLG + ' col-lg-' + (cardFormContainerLG + foldedContainerLG));
+		} else {
+			foldedContainer.show();
+			this.style.margin = '';
+			cardFormContainer.css('margin-left', (cardFormMargin + buttonSpaceWidth + 2) + 'px');
+			cardFormContainer.css('margin-right', (cardFormMargin + buttonSpaceWidth + 2) + 'px');
+			cardFormContainer.css('padding-left', (cardFormPadding - buttonSpaceWidth) + 'px');
+			cardFormContainer.css('padding-right', (cardFormPadding - buttonSpaceWidth) + 'px');
+			cardFormContainer.toggleClass('col-lg-' + cardFormContainerLG + ' col-lg-' + (cardFormContainerLG - foldedContainerLG));
+		}
+	
+		$(this).toggleClass('btn-fold-section-right btn-fold-section-left');
+	});
 
 	$("#button-generate").click(ui_generate);
 	$("#button-load").click(function () { $("#file-load").click(); });
