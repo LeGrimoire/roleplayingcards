@@ -44,7 +44,7 @@ var card_data_example = [
             "rule",
             "fill | 1",
             "comment | boxes | (count) | (size) | (dashed) | (center)",
-            "boxes | 5 | 1 | true | true",
+            "boxes | 5 | 1.5 | true | true",
             "fill | 2",
             "property | property | Texte sans indentation",
             "description | Texte d'appoint",
@@ -62,7 +62,22 @@ var card_data_example = [
         "type": "creature",
         "title": "Creature",
         "creature": {
-            "type": "Type"
+            "type": "Type",
+            "cr": "1/2",
+            "size": "M",
+            "alignment": "Sans alignement",
+            "ac": "10",
+            "hp": "3 (1d6)",
+            "perception": "10",
+            "speed": "9 m",
+            "stats": [
+                "10",
+                "10",
+                "10",
+                "10",
+                "10",
+                "10"
+            ]
         },
         "contents": [
             "comment | spells | (level) | ability | spells-0 | spell-1-nb | spells-1 | ... | text",
@@ -75,30 +90,45 @@ var card_data_example = [
     {
         "type": "item",
         "title": "Item",
-        "color": "dimgray"
+        "color": "dimgray",
+        "icon": "swap-bag",
+        "item": {},
+        "contents": []
     },
     {
         "type": "spell",
         "title": "Spell",
         "color": "maroon",
+        "icon": "magic-swirl",
         "spell": {
+            "type": "Abjuration",
+            "level": 1,
+            "ritual": false,
+            "casting_time": "1 action",
+            "range": "18 m",
             "verbal": true,
-            "materials": "Some materials materials Some Some materials Some materials"
-        }
+            "somatic": false,
+            "material": "",
+            "duration": "1 round",
+            "classes": "Barde, Mage, Moine"
+        },
+        "contents": [
+        ]
     },
     {
         "type": "power",
         "title": "Power",
-        "color": "indigo"
+        "color": "indigo",
+        "icon": "lob-arrow",
+        "power": {},
+        "contents": []
     },
-    {
-
-    },
+    
 
     {
         "type": "creature",
-        "color": "black",
         "title": "Goblin",
+        "color": "black",
         "icon": "imp-laugh",
         "creature": {
             "type": "Small humanoid (goblinoid)",
@@ -121,7 +151,7 @@ var card_data_example = [
         "contents": [
             "text | Stealth +6",
             "rule",
-            "description | Nimble escape | Disengage or Hide as bonus action",
+            "property | Nimble escape | Disengage or Hide as bonus action",
             "fill | 1",
             "section | Actions",
             "attack | Scimitar | +4 (5 ft.) | one target. 5 (1d6 + 2) slashing damage"
@@ -129,69 +159,70 @@ var card_data_example = [
     },
     {
         "type": "item",
-        "color": "dimgray",
         "title": "Full Plate",
+        "subtitle": "Heavy armor",
+        "color": "dimgray",
         "icon": "breastplate",
+        "item": {},
         "contents": [
-            "subtitle | Heavy armor (1500gp)",
             "property | AC | 18",
             "property | Strength required | 15",
             "property | Stealth | Disadvantage",
             "rule",
             "fill | 2",
-            "description | Heavy | Unless you have the required strength, your speed is reduced by 10 feet.",
-            "description | Stealth | You have disadvantage on Dexterity (Stealth) checks.",
+            "property | Heavy | Unless you have the required strength, your speed is reduced by 10 feet.",
+            "property | Stealth | You have disadvantage on Dexterity (Stealth) checks.",
             "fill | 3"
-        ],
-        "tags": ["item", "armor"]
+        ]
     },
     {
         "type": "item",
-        "color": "dimgray",
         "title": "Dagger",
+        "subtitle": "Simple melee weapon",
+        "color": "dimgray",
         "icon": "daggers",
+        "item": {},
         "contents": [
-            "subtitle | Simple melee weapon (2gp)",
             "property | Damage | 1d4 piercing",
             "property | Modifier | Strength or Dexterity",
             "property | Properties | Light, Finesse, Thrown (20/60)",
             "rule",
             "fill | 2",
-            "description | Finesse | Use your choice of Strength or Dexterity modifier for attack and damage.",
-            "description | Light | When you attack while dual wielding light weapons, you may use a bonus action to attack with your off hand.",
-            "description | Thrown | You can throw the weapon to make a ranged attack with the given range.",
+            "property | Finesse | Use your choice of Strength or Dexterity modifier for attack and damage.",
+            "property | Light | When you attack while dual wielding light weapons, you may use a bonus action to attack with your off hand.",
+            "property | Thrown | You can throw the weapon to make a ranged attack with the given range.",
             "fill | 3"
-        ],
-        "tags": ["item", "weapon"]
+        ]
     },
     {
         "type": "item",
-        "color": "dimgray",
         "title": "Wand of Magic Missiles",
+        "subtitle": "Wondrous item",
+        "color": "dimgray",
         "icon": "crystal-wand",
+        "item": {},
         "contents": [
-            "subtitle | Wondrous item",
             "property | Maximum charges | 7",
             "property | Recharge | 1d6+1 each day",
             "property | Depletion | If you expend the last charge, roll a d20. On a 1, the item is destroyed.",
             "rule",
             "fill | 2",
-            "description | Spells | You can use your action to cast the following spells:",
+            "property | Spells | You can use your action to cast the following spells:",
             "bullet | magic missile, 1st level (1 charge)",
             "bullet | magic missile, 2nd level (2 charges)",
             "bullet | magic missile, 3rd level (3 charges)",
             "fill | 3",
-            "boxes | 7 | 2.5"
-        ],
-        "tags": ["item", "wondrous-item", "magic"]
+            "boxes | 7 | 2 | true | true"
+        ]
     },
     {
         "type": "item",
-        "color": "dimgray",
         "title": "Potion of Healing",
+        "subtitle": "Potion",
+        "color": "dimgray",
         "icon": "drink-me",
+        "item": {},
         "contents": [
-            "subtitle | Potion (50gp)",
             "property | Use time | 1 action",
             "property | Hit points restored | 2d4+2",
             "rule",
@@ -199,43 +230,51 @@ var card_data_example = [
             "text | When you drink this potion, you regain 2d4+2 hitpoints.",
             "text | Drinking or administering a potion takes 1 action.",
             "fill | 3"
-        ],
-        "tags": ["item", "consumable"]
+        ]
     },
     {
         "type": "spell",
-        "color": "maroon",
         "title": "Burning Hands",
+        "subtitle": "1st level evocation",
+        "color": "maroon",
+        "icon": "magic-swirl",
         "icon_back": "robe",
+        "spell": {
+            "type": "",
+            "level": 1,
+            "ritual": false,
+            "casting_time": "1 action",
+            "range": "Self (15ft cone)",
+            "verbal": true,
+            "somatic": true,
+            "material": "",
+            "duration": "1 round",
+            "classes": ""
+        },
         "contents": [
-            "subtitle | 1st level evocation",
-            "property | Casting time | 1 action",
-            "property | Range | Self (15ft cone)",
-            "property | Components | V,S",
-            "rule",
-            "fill | 2",
-            "text | Each creature in a 15-foot cone must make a Dexterity saving throw. A creature takes <b>3d6 fire damage</b> on a failed save, or half as much damage on a successful one.",
+            "fill | 4",
+            "text | Each creature in a 15-foot cone must make a Dexterity saving throw. A creature takes <b>3d6 fire</b> on a failed save, or half as much damage on a successful one. | true",
             "text | The fire ignites any flammable objects in the area that aren't being worn or carried.",
-            "fill | 3",
+            "fill | 5",
             "section | At higher levels",
-            "text | +1d6 damage for each slot above 1st"
-        ],
-        "tags": ["spell", "mage"]
+            "text | +1d6 damage for each slot above 1st",
+            "fill | 1"
+        ]
     },
     {
         "type": "power",
-        "count": 2,
-        "color": "indigo",
         "title": "Cunning Action",
+        "subtitle": "Rogue feature",
+        "color": "indigo",
+        "icon": "lob-arrow",
         "icon_back": "cloak-dagger",
+        "power": {},
         "contents": [
-            "subtitle | Rogue feature",
             "fill | 2",
             "text | You can take a <b>bonus action on each of your turns</b> in combat. This action can be used only to take the <b>Dash, Disengage, or Hide</b> action.",
             "fill | 2",
             "section | Fast hands (Thief 3rd)",
             "text | You can also use the bonus action to make a Dexterity (<b>Sleight of Hand</b>) check, use your thieves' tools to <b>disarm a trap</b> or <b>open a lock</b>, or take the <b>Use an Object</b> action."
-        ],
-        "tags": ["feature", "rogue"]
+        ]
     }
 ];

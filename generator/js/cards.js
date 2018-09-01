@@ -42,6 +42,9 @@ function card_creature_default_data(creature_data) {
 	data.perception = data.perception || "10";
 	data.speed = data.speed || "9 m";
 	data.stats = data.stats || ["10", "10", "10", "10", "10", "10"];
+	data.vulnerabilities = data.vulnerabilities || "";
+	data.resistances = data.resistances || "";
+	data.immunities = data.immunities || "";
 	return data;
 }
 
@@ -304,7 +307,7 @@ function card_data_parse_icons_params(value) {
 	value = card_data_parse_condition_params(value);
 	return value
 	.replace(/\\/gi, '')
-	.replace(new RegExp("([ \(\[]|^){1}" + I18N.AC + "[ ]", 'gi'),						'$1<span class="card-inlineicon icon-custom-ac"></span>')
+	.replace(new RegExp("([ \(\[]|^){1}" + I18N.AC + "([ ]|$)", 'gi'),						'$1<span class="card-inlineicon icon-custom-ac"></span>')
 	.replace(new RegExp("(([\(\[])| |^){1}" + I18N.HP + "[s]?", 'gi'),					'$2<span class="card-inlineicon icon-custom-hp"></span>')
 	.replace(new RegExp("(([\(\[^a-zA-Z])| |^){1}" + I18N.GP + "([^a-zA-Z]+|$)", 'gi'),	'$2<span class="card-inlineicon icon-custom-gp"></span>')
 	.replace(/[ ]?cr[ée]ature[s]?[ ]?/gi,					'<span class="card-inlineicon icon-custom-creature"></span>')
@@ -476,11 +479,13 @@ function card_element_base_spell(card_data, options) {
 	result += 			'<p>' + card_data.spell.duration + '</p>';
 	result +=		'</div>';
 	result +=	'</div>';
+	if (card_data.spell.ritual)
+		result += 	'<p class="card-spell-ritual">' + I18N.RITUAL + '</p>';
 	result += 	'<div class="card-spell-components">';
-	var colorStyle = 'style="invert(89%) sepia(57%) saturate(5177%) hue-rotate(353deg) brightness(87%) contrast(114%);"';
-	result += 	'<span class="card-inlineicon icon-spell-verbal"' + (card_data.spell.verbal ? '' : ' style="opacity:0.4"') + '></span>';
-	result += 	'<span class="card-inlineicon icon-spell-somatic"' + (card_data.spell.somatic ? '' : ' style="opacity:0.4"') + '></span>';
-	result += 	'<span class="card-inlineicon icon-spell-material"' + (card_data.spell.materials ? '' : ' style="opacity:0.4"') + '></span>';
+	var colorStyle = 'filter:sepia(1) hue-rotate(86deg) saturate(10) brightness(0.7);';
+	result += 	'<span class="card-inlineicon icon-spell-verbal" style="' + (card_data.spell.verbal ? '' : ' opacity:0.4;') + '"></span>';
+	result += 	'<span class="card-inlineicon icon-spell-somatic" style="' + (card_data.spell.somatic ? '' : ' opacity:0.4;') + '"></span>';
+	result += 	'<span class="card-inlineicon icon-spell-material" style="' + (card_data.spell.materials ? '' : ' opacity:0.4;') + '"></span>';
 	if (card_data.spell.materials) {
 		result += 	'<span class="card-inlineicon icon-custom-arrow-down"></span>';
 		result += 	'<p class="card-spell-materials">' + card_data.spell.materials + '</p>';

@@ -88,6 +88,7 @@ var I18N = {
 	CASTING_TIME: "Incantation",
 	RANGE: "Portée",
 	DURATION: "Durée",
+	RITUAL: "Rituel",
 
 	SPELL_TYPES: {
 		CONJURATION: "Abjuration",
