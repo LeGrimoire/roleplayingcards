@@ -513,6 +513,20 @@
 	display: inline;
 }
 
+/***** FOOTER *****/
+
+.card-reference {
+	margin: 0;
+	position: absolute;
+	bottom: 2px;
+	right: 4px;
+	color: white;
+	font-size: 4pt;
+	text-shadow: #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px;
+}
+
+/***** SPELL FOOTER *****/
+
 .card-spell-classes {
 	margin: 0 0 0 2px;
 	position: absolute;
@@ -532,19 +546,9 @@
 	-webkit-filter: drop-shadow(#000 0px 0px 0px) drop-shadow(#000 0px 0px 1px);
 }
 .card-spell-classes .card-class-inlineicon.card-class-hidden {
-	opacity: 0.7;
+	opacity: 0.6;
 	filter: drop-shadow(#000 0px 0px 0px) drop-shadow(#000 0px 0px 1px) invert(0.1);
 	-webkit-filter: drop-shadow(#000 0px 0px 0px) drop-shadow(#000 0px 0px 1px) invert(0.1);
-}
-
-.card-reference {
-	margin: 0;
-	position: absolute;
-	bottom: 2px;
-	right: 4px;
-	color: white;
-	font-size: 4pt;
-	text-shadow: #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px;
 }
 
 

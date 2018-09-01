@@ -459,7 +459,7 @@
 			"file": "generator/generate.html",
 			"settings":
 			{
-				"buffer_size": 36941,
+				"buffer_size": 36584,
 				"encoding": "UTF-8 with BOM",
 				"line_ending": "Unix"
 			}
@@ -477,7 +477,7 @@
 			"file": "generator/js/ui.js",
 			"settings":
 			{
-				"buffer_size": 24064,
+				"buffer_size": 28063,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -486,7 +486,7 @@
 			"file": "generator/js/i18n_french.js",
 			"settings":
 			{
-				"buffer_size": 2083,
+				"buffer_size": 2104,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -504,7 +504,7 @@
 			"file": "generator/css/ui.css",
 			"settings":
 			{
-				"buffer_size": 2342,
+				"buffer_size": 3249,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -1212,15 +1212,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 36941,
+						"buffer_size": 36584,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								27210,
-								27210
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1281,7 +1281,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 24064,
+						"buffer_size": 28063,
 						"regions":
 						{
 						},
@@ -1311,15 +1311,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2083,
+						"buffer_size": 2104,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								296,
-								298
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1370,15 +1370,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2342,
+						"buffer_size": 3249,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1940,
-								1940
+								0,
+								0
 							]
 						],
 						"settings":

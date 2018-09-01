@@ -1,7 +1,22 @@
+h3 {
+	margin-top: 10px;
+}
+
+label, p {
+	margin-bottom: 0px;
+}
+
+#file-name {
+	padding: 0px;
+}
+#file-name {
+	padding-bottom: 0px;
+}
+
 .btn-fold-section {
 	z-index: 1;
 	position: relative;
-	height: 713px;
+	height: 800px;
     width: 8px;
     margin: 0px;
     padding: 0px;

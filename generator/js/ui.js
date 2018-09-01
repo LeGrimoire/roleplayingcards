@@ -4,7 +4,10 @@
 var card_data = [];
 var card_options = card_default_options();
 
-var ui = { "foldedSection": {} };
+var ui = {
+	foldedSection: {},
+	filename: []
+};
 
 
 function mergeSort(arr, compare) {
@@ -96,19 +99,23 @@ function ui_load_files(evt) {
 
 	var files = evt.target.files;
 
-	for (var i = 0, f; f = files[i]; i++) {
-		var reader = new FileReader();
+	ui.filename = [];
 
+	for (var i = 0, f; f = files[i]; i++) {
+		ui.filename.push(f.name);
+
+		var reader = new FileReader();
 		reader.onload = function (reader) {
 			var data = JSON.parse(this.result);
 			ui_add_cards(data);
 		};
-
 		reader.readAsText(f);
 	}
 
 	// Reset file input
 	$("#file-load-form")[0].reset();
+	$("#file-name").html('<b>File:</b> ' + ui.filename.join(","));
+	local_store_ui_save();
 }
 
 function ui_save_file() {
@@ -740,15 +747,35 @@ function typeahead_list(items) {
 }
 
 $(document).ready(function () {
+
+	var preventPageDownOrUp = function (e) {
+		if (e.which == 33 || e.which == 34) { // Pg up or down
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
+		}
+	};
+	$(document).keydown(function (e) {
+		if (e.which == 33) { // Pg up
+			var idx = ui_selected_card_index();
+			if (idx > 0)
+				ui_select_card_by_index(idx - 1);
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
+		} else if (e.which == 34) { // Pg down
+			var idx = ui_selected_card_index();
+			if (idx < card_data.length - 1)
+				ui_select_card_by_index(idx + 1);
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
+		}
+	});
+
+
 	local_store_cards_load();
 	local_store_ui_load();
-	ui_setup_color_selector();
-	$(".icon-list").typeahead({
-		source: icon_names,
-		items: 'all',
-		render: typeahead_icon_list
-	});
-	$(".icon-select-button").click(ui_select_icon);
 
 	$(".btn-fold-section").click(function () {
 		var cardFormContainer = $('#card-form-container');
@@ -799,6 +826,15 @@ $(document).ready(function () {
 			$(ui.foldedSection[foldedSectionKeys[i]]).click();
 	}
 
+	ui_setup_color_selector();
+	$(".icon-list").typeahead({
+		source: icon_names,
+		items: 'all',
+		render: typeahead_icon_list
+	});
+	$(".icon-list").keydown(preventPageDownOrUp);
+	$(".icon-select-button").click(ui_select_icon);
+
 	$("#button-generate").click(ui_generate);
 	$("#button-load").click(function () { $("#file-load").click(); });
 	$("#file-load").change(ui_load_files);
@@ -811,6 +847,8 @@ $(document).ready(function () {
 	$("#filter-execute").click(ui_filter_execute);
 	$("#button-help").click(ui_open_help);
 
+	if (ui.filename)
+		$("#file-name").html('<b>File:</b> ' + ui.filename.join(","));
 
 	// ----- Page settings
 
@@ -870,6 +908,7 @@ $(document).ready(function () {
 		minLength: 0,
 		render: typeahead_list
 	});
+	$("#card-creature-alignment").keydown(preventPageDownOrUp);
 	$("#card-creature-alignment").change(ui_change_creature_property);
 	$("#card-creature-type").change(ui_change_creature_property);
 
@@ -915,6 +954,7 @@ $(document).ready(function () {
 		},
 		render: typeahead_list
 	});
+	$("#card-spell-type").keydown(preventPageDownOrUp);
 	$("#card-spell-type").change(ui_change_spell_property);
 	$("#card-spell-classes").typeahead({
 		source: Object.values(I18N.CLASSES),
@@ -932,6 +972,7 @@ $(document).ready(function () {
 		},
 		render: typeahead_list
 	});
+	$("#card-spell-classes").keydown(preventPageDownOrUp);
 	$("#card-spell-classes").change(ui_change_spell_property);
 
 	ui_update_card_list();
