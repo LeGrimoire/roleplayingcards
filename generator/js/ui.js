@@ -119,28 +119,24 @@ function ui_load_files(evt) {
 }
 
 function ui_save_file() {
-	/*var str = JSON.stringify(card_data, null, "  ");
-	var parts = [str];*/
 	var parts = ["[\n"];
 	for (var i = 0; i < card_data.length; ++i) {
 		var card = card_data[i];
 		var str = "";
 
-		/*card_add_tag(card, card.type);
-		card_add_tag(card, card.creature.cr);
-		card_add_tag(card, card.creature.type);
-		card_add_tag(card, card.creature.size);
-		card_add_tag(card, card.creature.alignment);*/
-
 		if (card.tags && card.tags.length == 0)
 			delete card.tags;
 
-		var tagsToSave = ["type", "title", "subtitle"];
+		var tagsToSave = ["type", "title", "subtitle", "color", "color_front", "color_back", "icon", "icon_back"];
 
-		if (card.type == "creature") {
+		if (card.type == CardType.CREATURE) {
 			tagsToSave.push("creature", "cr", "size", "alignment", "ac", "hp", "perception", "speed", "stats", "vulnerabilities", "resistances", "immunities");
-		} else if (card.type == "item") {
-			tagsToSave.push();
+		} else if (card.type == CardType.ITEM) {
+			tagsToSave.push("item");
+		} else if (card.type == CardType.SPELL) {
+			tagsToSave.push("spell", "level", "ritual", "casting_time", "range", "verbal", "somatic", "material", "duration", "type", "classes");
+		} else if (card.type == CardType.POWER) {
+			tagsToSave.push("power");
 		} else {
 			tagsToSave.push();
 		}
