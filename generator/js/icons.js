@@ -919,6 +919,7 @@ var icon_names = [
     "custom-arrow-down",
     "custom-creature",
     "custom-gp",
+    "custom-gp~",
     "custom-hp",
     "custom-round",
     "custom-timer",

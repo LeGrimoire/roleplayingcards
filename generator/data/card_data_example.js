@@ -1,39 +1,5 @@
 var card_data_example = [
     {
-        "title": "Picto",
-        "color": "DarkGray",
-        "contents": [
-            "property | créature | créature | prochain tour | prochain tour",
-            "property | ca | ca | pv | pv",
-            "ruler",
-            "property | physique non magique | physique non magique | contondant | contondant",
-            "property | perforant | perforant | tranchant | tranchant",
-            "property | feu | feu | froid | froid",
-            "property | foudre | foudre | acide | acide",
-            "property | poison | poison | nécrotique | nécrotique",
-            "property | tonnerre | tonnerre | force | force",
-            "property | psychique | psychique | radiant | radiant",
-            "ruler",
-            "property | aveuglé | aveuglé | charmé | charmé",
-            "property | assourdi | assourdi | épuisé | épuisé",
-            "property | effrayé | effrayé | agrippé | agrippé",
-            "property | neutralisé | neutralisé | invisible | invisible",
-            "property | paralysé | paralysé | pétrifié | pétrifié",
-            "property | empoisonné | empoisonné | à terre | à terre",
-            "property | entravé | entravé | étourdi | étourdi",
-            "property | inconscient | inconscient"
-        ]
-    },
-    {
-        "title": "Lexique",
-        "color": "DarkGray",
-        "contents": [
-            "property | JS | Jet de sauvegarde",
-            "property | CA | Classe d'armure",
-            "property | VD | Vitesse de déplacement"
-        ]
-    },
-    {
         "title": "All",
         "color": "DarkGray",
         "contents": [
@@ -73,13 +39,14 @@ var card_data_example = [
             "stats": [
                 "10",
                 "10",
-                "10",
-                "10",
+                "10S",
+                "10M",
                 "10",
                 "10"
             ]
         },
         "contents": [
+            "description | Is proficient in Con saving throw and the magic caracteristic is Int as shown by the icons above",
             "comment | spells | (level) | ability | spells-0 | spell-1-nb | spells-1 | ... | text",
             "spells | 5 | DD 12, +2 | spells | 5 | spells | | | 2 | spells | text",
             "",

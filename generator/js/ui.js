@@ -118,6 +118,27 @@ function ui_load_files(evt) {
 	local_store_ui_save();
 }
 
+function ui_import_files(evt) {
+	var files = evt.target.files;
+
+	var newFilenames = [];
+	for (var i = 0, f; f = files[i]; i++) {
+		newFilenames.push(f.name);
+
+		var reader = new FileReader();
+		reader.onload = function (reader) {
+			var data = JSON.parse(this.result);
+			ui_add_cards(data);
+		};
+		reader.readAsText(f);
+	}
+
+	// Reset file input
+	$("#file-load-form")[0].reset();
+	$("#file-name").html($("#file-name").html() + ',' + newFilenames.join(","));
+	local_store_ui_save();
+}
+
 function ui_save_file() {
 	var parts = ["[\n"];
 	for (var i = 0; i < card_data.length; ++i) {
@@ -141,7 +162,7 @@ function ui_save_file() {
 			tagsToSave.push();
 		}
 
-		tagsToSave.push("description", "contents", "tags");
+		tagsToSave.push("description", "contents", "tags", "compact");
 
 		if (card.type == "creature")
 			str = JSON.stringify(card, tagsToSave, "\t");
@@ -160,8 +181,12 @@ function ui_save_file() {
 
 	var a = $("#file-save-link")[0];
 	a.href = url;
+	ui_save_file.filename = ui.filename || ui_save_file.filename;
 	a.download = prompt("Filename:", ui_save_file.filename);
-	if (a.download) {
+	if (a.download && a.download != "null") {
+		ui.filename = [a.download];
+		$("#file-name").html('<b>File:</b> ' + ui.filename.join(","));
+		local_store_ui_save();
 		ui_save_file.filename = a.download;
 		a.click();
 	}
@@ -297,6 +322,7 @@ function ui_update_selected_card() {
 		$("#card-description").val(card.description);
 		$("#card-contents").val(card.contents.join("\n"));
 		$("#card-reference").val(card.reference);
+		$("#card-compact").prop("checked", card.compact);
 
 		if (card.type == CardType.CREATURE) {
 			$(".creature-hide").hide();
@@ -483,26 +509,12 @@ function ui_set_card_color(value) {
 	}
 }
 
-function ui_change_default_color() {
-	var input = $(this);
-	var color = input.val();
-
-	ui_update_card_color_selector(color, input, "#default_color_selector");
-	ui_set_default_color(color);
-}
-
 function ui_change_card_color() {
 	var input = $(this);
 	var color = input.val();
 
 	ui_update_card_color_selector(color, input, "#card_color_selector");
 	ui_set_card_color(color);
-}
-
-function ui_change_default_icon() {
-	var value = $(this).val();
-	card_options.default.icon = value;
-	ui_render_selected_card();
 }
 
 function ui_change_option() {
@@ -625,6 +637,29 @@ function ui_change_card_tags() {
 		}
 		ui_render_selected_card();
 	}
+}
+
+function ui_change_card_compact() {
+	var card = ui_selected_card();
+	if (card) {
+		card.compact = $(this).is(':checked');
+		ui_render_selected_card();
+	}
+}
+
+
+function ui_change_default_color() {
+	var input = $(this);
+	var color = input.val();
+
+	ui_update_card_color_selector(color, input, "#default_color_selector");
+	ui_set_default_color(color);
+}
+
+function ui_change_default_icon() {
+	var value = $(this).val();
+	card_options.default.icon = value;
+	ui_render_selected_card();
 }
 
 function ui_change_default_title_size() {
@@ -786,7 +821,7 @@ $(document).ready(function () {
 		var foldedContainerLGIdx = foldedContainerLG.indexOf('col-lg-') + 7;
 		foldedContainerLG = parseInt(foldedContainerLG.substring(foldedContainerLGIdx, foldedContainerLGIdx + 2));
 
-		var buttonSpaceWidth = parseInt($(this).css('width')) / 2;
+		var buttonSpaceWidth = parseInt($(this).css('width'));
 
 		var display = foldedContainer.css('display');
 		var shouldSave = '';
@@ -794,21 +829,25 @@ $(document).ready(function () {
 			shouldSave = !ui.foldedSection[foldedContainer.selector];
 			ui.foldedSection[foldedContainer.selector] = '#' + this.id;
 			foldedContainer.hide();
-			this.style.margin = '0px 2px';
-			cardFormContainer.css('margin-left', (cardFormMargin - buttonSpaceWidth - 2) + 'px');
-			cardFormContainer.css('margin-right', (cardFormMargin - buttonSpaceWidth - 2) + 'px');
-			cardFormContainer.css('padding-left', (cardFormPadding + buttonSpaceWidth) + 'px');
-			cardFormContainer.css('padding-right', (cardFormPadding + buttonSpaceWidth) + 'px');
+			$(this).css('margin', '0px 2px');
+			buttonSpaceWidth += 4;
+			$(this).css('width', buttonSpaceWidth + 'px');
+			cardFormContainer.css('margin-left', (cardFormMargin - buttonSpaceWidth / 2 - 2) + 'px');
+			cardFormContainer.css('margin-right', (cardFormMargin - buttonSpaceWidth / 2 - 2) + 'px');
+			cardFormContainer.css('padding-left', (cardFormPadding + buttonSpaceWidth / 2) + 'px');
+			cardFormContainer.css('padding-right', (cardFormPadding + buttonSpaceWidth / 2) + 'px');
 			cardFormContainer.toggleClass('col-lg-' + cardFormContainerLG + ' col-lg-' + (cardFormContainerLG + foldedContainerLG));
 		} else {
 			shouldSave = ui.foldedSection[foldedContainer.selector];
 			ui.foldedSection[foldedContainer.selector] = null;
 			foldedContainer.show();
-			this.style.margin = '';
-			cardFormContainer.css('margin-left', (cardFormMargin + buttonSpaceWidth + 2) + 'px');
-			cardFormContainer.css('margin-right', (cardFormMargin + buttonSpaceWidth + 2) + 'px');
-			cardFormContainer.css('padding-left', (cardFormPadding - buttonSpaceWidth) + 'px');
-			cardFormContainer.css('padding-right', (cardFormPadding - buttonSpaceWidth) + 'px');
+			$(this).css('margin', '');
+			buttonSpaceWidth -= 4;
+			$(this).css('width', buttonSpaceWidth + 'px');
+			cardFormContainer.css('margin-left', (cardFormMargin + buttonSpaceWidth / 2 + 4) + 'px');
+			cardFormContainer.css('margin-right', (cardFormMargin + buttonSpaceWidth / 2 + 4) + 'px');
+			cardFormContainer.css('padding-left', (cardFormPadding - buttonSpaceWidth / 2 - 2) + 'px');
+			cardFormContainer.css('padding-right', (cardFormPadding - buttonSpaceWidth / 2 - 2) + 'px');
 			cardFormContainer.toggleClass('col-lg-' + cardFormContainerLG + ' col-lg-' + (cardFormContainerLG - foldedContainerLG));
 		}
 
@@ -834,6 +873,8 @@ $(document).ready(function () {
 	$("#button-generate").click(ui_generate);
 	$("#button-load").click(function () { $("#file-load").click(); });
 	$("#file-load").change(ui_load_files);
+	$("#button-import").click(function () { $("#file-import").click(); });
+	$("#file-import").change(ui_import_files);
 	$("#button-clear").click(ui_clear_all);
 	$("#button-load-sample").click(ui_load_sample);
 	$("#sort-execute").click(ui_sort_execute);
@@ -889,6 +930,8 @@ $(document).ready(function () {
 	$("#card-description").change(ui_change_card_description);
 	$("#card-contents").keyup(ui_change_card_contents_keyup);
 	$("#card-contents").change(ui_change_card_contents);
+
+	$("#card-compact").change(ui_change_card_compact);
 
 	// ----- Creature
 

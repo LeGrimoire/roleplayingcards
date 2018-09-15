@@ -22,6 +22,7 @@
     flex-wrap: wrap;
     page-break-after: always;
     padding: 0;
+    padding-bottom: 20px;
 }
 
 /* A4 paper area */
@@ -40,6 +41,10 @@ page[size="Letter"] {
 page[size="25x35"] {
     width: 2.5in;
     height: 3.5in;
+}
+
+.page .card {
+    margin: 0.5px;
 }
 
 /* Default card size */

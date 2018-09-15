@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
     <title>RPG cards</title>
     <meta charset="UTF-8">
@@ -13,8 +12,8 @@
     <!-- Library: Bootstrap typeahead -->
     <script type="text/javascript" src="lib/typeahead/bootstrap3-typeahead.js" charset="utf-8"></script>
     <!-- Library: Color picker -->
-    <link rel="stylesheet" type="text/css" href="lib/colorpicker/css/bootstrap-colorselector.css" />
     <script type="text/javascript" src="lib/colorpicker/js/bootstrap-colorselector.js" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="lib/colorpicker/css/bootstrap-colorselector.css" />
     <!-- Data -->
     <script type="text/javascript" src="data/card_data_example.js"></script>
     <!-- Javascript -->
@@ -41,14 +40,16 @@
             <div class="col-md-12 col-lg-3" id="menu-container">
                 <form style="display:none" id="file-load-form">
                     <input type="file" id="file-load" name="files[]" multiple class="form-control" style="display:none" />
+                    <input type="file" id="file-import" name="files[]" multiple class="form-control" style="display:none" />
                 </form>
+                <!-- Main buttons -->
                 <form role="form" class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-4">
                             <button type="button" class="btn btn-info btn-block" id="button-help">Open Help</button>
                         </div>
                         <div class="col-sm-4">
-                            <button type="button" class="btn btn-default btn-block" id="button-sort">Sort</button>
+                            <button type="button" class="btn btn-default btn-block" id="button-load-sample">Load sample</button>
                         </div>
                         <div class="col-sm-4">
                             <button type="button" class="btn btn-primary btn-block" id="button-load">Load from file</button>
@@ -56,10 +57,10 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-4">
-                            <button type="button" class="btn btn-default btn-block" id="button-load-sample">Load sample</button>
+                            <button type="button" class="btn btn-default btn-block" id="button-sort">Sort</button>
                         </div>
                         <div class="col-sm-4">
-                            <button type="button" class="btn btn-default btn-block" id="button-filter">Map/Filter</button>
+                            <button type="button" class="btn btn-primary btn-block" id="button-import">Import all</button>
                         </div>
                         <div class="col-sm-4">
                             <button type="button" class="btn btn-primary btn-block" id="button-save">Save to file</button>
@@ -68,6 +69,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-4">
+                            <button type="button" class="btn btn-default btn-block" id="button-filter">Map/Filter</button>
                         </div>
                         <div class="col-sm-4">
                             <button type="button" class="btn btn-danger btn-block" id="button-clear">Delete all</button>
@@ -77,8 +79,6 @@
                         </div>
                     </div>
                     <!--<span class="help-block">Generated cards open in a new tab or window.</span>-->
-                </form>
-                <form role="form" class="form-horizontal">
                     <p class="col-sm-8" id="file-name"><b>File:</b> ...</p>
                 </form>
                 <!-- Page settings -->
@@ -195,7 +195,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="default-color" class="col-sm-2 control-label"></label>
+                        <label for="small-icons" class="col-sm-2 control-label"></label>
                         <div class="col-sm-10">
                             <div class="checkbox">
                                 <label>
@@ -217,6 +217,7 @@
                 </form>
             </div>
             <button type="button" class="btn-fold-section btn-fold-section-right" id="button-fold-menu" for="menu-container"></button>
+
             <!-- Card forms -->
             <div class="col-md-12 col-lg-5" id="card-form-container">
                 <h3 class="hide-when-large" style="clear:both;padding-top:10px;">Card</h3>
@@ -252,7 +253,7 @@
                             <button type="button" class="btn btn-danger btn-block" id="button-delete-card">Delete</button>
                         </div>
                         <div class="col-sm-2">
-                            <button type="button" class="btn btn-default btn-block" id="button-duplicate-card">Duplicate</button>
+                            <button type="button" class="btn btn-success btn-block" id="button-duplicate-card">Duplicate</button>
                         </div>
                     </div>
                     <div class="form-group">
@@ -460,6 +461,7 @@
 
                     <!-- Power forms -->
 
+                    <!-- Common bottom forms -->
                     <div class="form-group">
                         <label for="card-contents" class="col-sm-2 control-label">Contents</label>
                         <div class="col-sm-10">
@@ -478,14 +480,26 @@
                             <input type="text" id="card-reference" class="form-control" data-property="reference">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="card-compact" class="col-sm-2 control-label"></label>
+                        <div class="col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="card-compact">Compact
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
+
             <!-- Preview -->
             <button type="button" class="btn-fold-section btn-fold-section-left" id="button-fold-preview" for="preview-container"></button>
             <div class="col-md-12 col-lg-4" id="preview-container">
             </div>
         </div>
     </div>
+
     <!-- Modal -->
     <div class="modal" id="print-modal" tabindex="-1" role="dialog">
         <div class="modal-dialog">

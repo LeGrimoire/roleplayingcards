@@ -7,7 +7,7 @@
         {
             "type": "chrome",
             "request": "attach",
-            "name": "Attach to Chrome",
+            "name": "Attach to Generate",
             "port": 9222,
             "url": "file:///${workspaceFolder}/generator/generate.html",
             "webRoot": "${workspaceFolder}/generator"
@@ -15,8 +15,16 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch Chrome",
+            "name": "Launch Generate",
             "file": "${workspaceFolder}/generator/generate.html"
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Output",
+            "port": 9222,
+            "url": "file:///${workspaceFolder}/generator/output.html",
+            "webRoot": "${workspaceFolder}/generator"
         },
         {
             "type": "node",

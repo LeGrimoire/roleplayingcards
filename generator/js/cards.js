@@ -93,8 +93,11 @@ function card_init(card) {
 		card.power = card_power_default_data(card.power);
 		card.color = card.color || "DarkSlateGray";
 		card.icon = card.icon || "lob-arrow";
+	} else {
+		card.color = card.color || "DarkGray";
 	}
 	card.contents = card.contents || [];
+	card.compact = card.compact || false;
 	card_update(card);
 }
 
@@ -263,41 +266,41 @@ function card_data_split_params(value) {
 
 function card_data_parse_damage_type_params(value) {
 	return value
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.ACID + "[s]?", 'g'),					'$1<span class="card-inlineicon icon-type-acid"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.BLUDGEONING + "[s]?", 'g'),			'$1<span class="card-inlineicon icon-type-bludgeoning"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.FIRE + "[s]?", 'g'),					'$1<span class="card-inlineicon icon-type-fire"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.FORCE + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-force"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.ICE + "[s]?", 'g'),					'$1<span class="card-inlineicon icon-type-ice"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.LIGHTNING + "[s]?", 'g'),			'$1<span class="card-inlineicon icon-type-lightning"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.NECROTIC + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-necrotic"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.PIERCING + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-piercing"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.POISON + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-poison"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.PSYCHIC + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-psychic"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.RADIANT + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-radiant"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.SLASHING + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-slashing"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.THUNDER + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-thunder"></span>')
-	.replace(new RegExp("([ ([]|^){1}[ ]?" + I18N.DAMAGE_TYPES.PHYSICAL + "[s]? " + I18N.DAMAGE_TYPES.NOT_MAGICAL + "[s]?[ ]?" ,'g'), '<span class="card-inlineicon icon-type-non-magical"></span>')
-	;
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.ACID + "[s]?", 'g'),					'$1<span class="card-inlineicon icon-type-acid"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.BLUDGEONING + "[s]?", 'g'),			'$1<span class="card-inlineicon icon-type-bludgeoning"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.FIRE + "[s]?", 'g'),					'$1<span class="card-inlineicon icon-type-fire"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.FORCE + "[s]?", 'g'),					'$1<span class="card-inlineicon icon-type-force"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.ICE + "[s]?", 'g'),					'$1<span class="card-inlineicon icon-type-ice"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.LIGHTNING + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-lightning"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.NECROTIC + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-necrotic"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.PIERCING + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-piercing"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.POISON + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-poison"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.PSYCHIC + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-psychic"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.RADIANT + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-radiant"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.SLASHING + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-slashing"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.THUNDER + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-thunder"></span>')
+		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.PHYSICAL + "[s]? " + I18N.DAMAGE_TYPES.NOT_MAGICAL + "[s]?", 'g'), '$1<span class="card-inlineicon icon-type-non-magical"></span>')
+		;
 }
 
 function card_data_parse_condition_params(value) {
 	return value
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.BLINDED + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-blinded"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.CHARMED + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-charmed"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.DEAFENED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-deafened"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.EXHAUSTION + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-exhaustion"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.FRIGHTENED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-frightened"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.GRAPPLED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-grappled"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.INCAPACITATED + "[es]?", 'gi'),			'$1<span class="card-inlineicon icon-condition-incapacitated"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.INVISIBLE + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-invisible"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.PARALYZED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-paralyzed"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.PETRIFIED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-petrified"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.POISONED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-poisoned"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.PRONE + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-prone"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.RESTRAINED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-restrained"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.STUNNED + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-stunned"></span>')
-	.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.UNCONSCIOUS + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-unconscious"></span>')
-	;
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.BLINDED + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-blinded"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.CHARMED + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-charmed"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.DEAFENED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-deafened"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.EXHAUSTION + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-exhaustion"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.FRIGHTENED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-frightened"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.GRAPPLED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-grappled"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.INCAPACITATED + "[es]?", 'gi'),			'$1<span class="card-inlineicon icon-condition-incapacitated"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.INVISIBLE + "[es]?", 'gi'),				'<span class="card-inlineicon icon-condition-invisible"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.PARALYZED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-paralyzed"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.PETRIFIED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-petrified"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.POISONED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-poisoned"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.PRONE + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-prone"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.RESTRAINED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-restrained"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.STUNNED + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-stunned"></span>')
+		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.UNCONSCIOUS + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-unconscious"></span>')
+		;
 }
 
 function card_data_parse_icons_params(value) {
@@ -306,15 +309,15 @@ function card_data_parse_icons_params(value) {
 	value = card_data_parse_damage_type_params(value);
 	value = card_data_parse_condition_params(value);
 	return value
-	.replace(/\\/gi, '')
-	.replace(new RegExp("([ \(\[]|^){1}" + I18N.AC + "([ ]|$)", 'gi'),						'$1<span class="card-inlineicon icon-custom-ac"></span>')
-	.replace(new RegExp("(([\(\[])| |^){1}" + I18N.HP + "[s]?", 'gi'),					'$2<span class="card-inlineicon icon-custom-hp"></span>')
-	.replace(new RegExp("(([\(\[^a-zA-Z])| |^){1}" + I18N.GP + "([^a-zA-Z]+|$)", 'gi'),	'$2<span class="card-inlineicon icon-custom-gp"></span>')
-	.replace(/[ ]?cr[ée]ature[s]?[ ]?/gi,					'<span class="card-inlineicon icon-custom-creature"></span>')
-	.replace(/prochain[s]? tour[s]?/gi,					'<span class="card-inlineicon icon-custom-timer"></span>')
-	// .replace(/([ ]|^){1}tour[s]?[ ]?/g,       			'$1<span class="card-inlineicon icon-custom-round"></span>')
-	// .replace(/ comme /g,       							' ĉ ')
-	;
+		.replace(/\\/gi, '')
+		.replace(new RegExp("([ \(\[]|^){1}" + I18N.AC + "([^a-zA-Z]|$)", 'gi'),				'<span class="card-inlineicon icon-custom-ac"></span>$2')
+		.replace(new RegExp("([ \(\[]|^){1}" + I18N.HP + "[s]?([^a-zA-Z]|$)", 'gi'),			'$1<span class="card-inlineicon icon-custom-hp"></span>$2')
+		.replace(new RegExp("(([\(\[^a-zA-Z])| |^){1}" + I18N.GP + "([^a-zA-Z]|$)", 'gi'),		'$2<span class="card-inlineicon icon-custom-gp"></span>$3')
+		.replace(/[ ]?cr[ée]ature[s]?[ ]?/gi,					'<span class="card-inlineicon icon-custom-creature"></span>')
+		.replace(/prochain[s]? tour[s]?/gi,						'<span class="card-inlineicon icon-custom-timer"></span>')
+		// .replace(/([ ]|^){1}tour[s]?[ ]?/g,       			'$1<span class="card-inlineicon icon-custom-round"></span>')
+		// .replace(/ comme /g,       							' ĉ ')
+		;
 }
 
 // ============================================================================
@@ -367,7 +370,7 @@ function card_element_header_creature(card_data, options) {
 	} else
 		result += '    <p class="card-title-xp">' + card_data.creature.xp + 'px</p>';
 	result += '</div>';
-	result += '<div class="card-element card-subtitle card-creature-subtitle">' + card_data.creature.type + ", taille " + card_data.creature.size;
+	result += '<div class="card-subtitle card-creature-subtitle">' + card_data.creature.type + ", taille " + card_data.creature.size;
 	if (card_data.creature.alignment)
 		result += '<div style="float:right">' + card_data.creature.alignment + '</div>';
 	result += '</div>';
@@ -377,19 +380,19 @@ function card_element_header_creature(card_data, options) {
 function card_element_base_creature(card_data, options) {
 	var result = "";
 	result += '<div class="card-creature-base">';
-	result += '<div class="card-element">';
+	result += '<div class="card-creature-base-element">';
 	result += 	'<h4 class="card-inlineicon icon-custom-ac"></h4>';
 	result += 	'<p class="card-property-text">' + card_data.creature.ac + '</p>';
-	result += 	'<div style="float:right">';
-	result += 		'<h4 class="card-property-name">' + I18N.PERCEPTION + '</h4>';
+	result += 	'<div class="card-creature-base-element">';
+	result += 		'<h4 class="card-property-name">' + I18N.PERCEPTION + '.</h4>';
 	result += 		'<p class="card-property-text">' + card_data.creature.perception + '</p>';
 	result += 	'</div>';
 	result += '</div>';
-	result += '<div class="card-element">';
+	result += '<div class="card-creature-base-element">';
 	result += 	'<h4 class="card-inlineicon icon-custom-hp"></h4>';
 	result += 	'<p class="card-property-text">' + card_data.creature.hp + '</p>';
-	result += 	'<div style="float:right">';
-	result += 		'<h4 class="card-property-name">' + I18N.SPEED + '</h4>';
+	result += 	'<div class="card-creature-base-element">';
+	result += 		'<h4 class="card-property-name">' + I18N.SPEED + '.</h4>';
 	result += 		'<p class="card-property-text">' + card_data.creature.speed + '</p>';
 	result += 	'</div>';
 	result += '</div>';
@@ -403,12 +406,14 @@ function card_element_base_creature(card_data, options) {
 		if (stats[i].includes("M")) {
 			stats[i] = stats[i].replace("M", "");
 			spellcasting[i] = '<span class="card-stats-header-spellcasting">★</span>';
-		}
+		} else
+			spellcasting[i] = '<span class="card-stats-header-spellcasting" style="opacity:0.2;">☆</span>'; 
 
 		if (stats[i].includes("S")) {
 			stats[i] = stats[i].replace("S", "");
-			saving[i] = '<span class="card-stats-header-saving">•</span>';
-		}
+			saving[i] = '<span class="card-stats-header-saving">●</span>';
+		} else
+			saving[i] = '<span class="card-stats-header-saving" style="font-size:17px;opacity:0.25;">◦</span>';//○
 
 		stats[i] = parseInt(stats[i], 10) || 0;
 		var mod = Math.floor((stats[i] - 10) / 2);
@@ -439,7 +444,7 @@ function card_element_base_creature(card_data, options) {
 	result += 		'</tr>';
 	result += 	'</tbody>';
 	result += '</table>';
-	result += '</div>';
+	result += '</div>'; // card-creature-base
 	result += card_element_ruler(null, card_data, options);
 	return result;
 }
@@ -457,7 +462,7 @@ function card_element_header_spell(card_data, options) {
 		result += '</svg>';		
 	}
 	result += '</div>';
-	result += '<div class="card-element card-subtitle card-spell-subtitle">' + card_data.spell.type + '</div>';
+	result += '<div class="card-subtitle card-spell-subtitle">' + card_data.spell.type + '</div>';
 	return result;
 }
 
@@ -483,9 +488,9 @@ function card_element_base_spell(card_data, options) {
 		result += 	'<p class="card-spell-ritual">' + I18N.RITUAL + '</p>';
 	result += 	'<div class="card-spell-components">';
 	var colorStyle = 'filter:sepia(1) hue-rotate(86deg) saturate(10) brightness(0.7);';
-	result += 	'<span class="card-inlineicon icon-spell-verbal" style="' + (card_data.spell.verbal ? '' : ' opacity:0.4;') + '"></span>';
-	result += 	'<span class="card-inlineicon icon-spell-somatic" style="' + (card_data.spell.somatic ? '' : ' opacity:0.4;') + '"></span>';
-	result += 	'<span class="card-inlineicon icon-spell-material" style="' + (card_data.spell.materials ? '' : ' opacity:0.4;') + '"></span>';
+	result += 		'<span class="card-inlineicon icon-spell-verbal" style="' + (card_data.spell.verbal ? '' : ' opacity:0.4;') + '"></span>';
+	result += 		'<span class="card-inlineicon icon-spell-somatic" style="' + (card_data.spell.somatic ? '' : ' opacity:0.4;') + '"></span>';
+	result += 		'<span class="card-inlineicon icon-spell-material" style="' + (card_data.spell.materials ? '' : ' opacity:0.4;') + '"></span>';
 	if (card_data.spell.materials) {
 		result += 	'<span class="card-inlineicon icon-custom-arrow-down"></span>';
 		result += 	'<p class="card-spell-materials">' + card_data.spell.materials + '</p>';
@@ -545,16 +550,27 @@ function card_element_fill(params, card_data, options) {
 function card_element_boxes(params, card_data, options) {
 	var color = card_data_color_front(card_data, options);
 	var count = params[0] || 1;
-	var size = params[1] || 3;
-	var dash = params[2] === 'true' ? ' stroke-dasharray="10,10"' : "";
-	var center = params[3] === 'true' ? 'text-align:center;' : "";
+	var size = params[1] || 1;
+	var style = '';
+	var align = '';
+	if (params[2]) {
+		if (params[2].indexOf("dash") > -1)
+			style = 'style="stroke-dasharray:11,14;stroke-dashoffset:5.5;opacity:0.5;"';
+		if (params[2].indexOf("center") > -1)
+			align = 'text-align:center;';
+		else if (params[2].indexOf("right") > -1)
+			align = 'text-align:right;';
+	}
 
-	var result = "";
-	result += '<div class="card-element" style="' + center + '">';
+	var result = '';
+	result += '<div class="card-element" style="' + align + '">';
 	for (var i = 0; i < count; ++i) {
-		result += '<svg class="card-box" height="100" width="100" viewbox="0 0 100 100" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg" style="width:' + size + 'em;height:' + size + 'em;">';
-		result += 	'<rect x="0" y="0" width="100" height="100" fill="none" stroke="' + color + '"' + dash + '>';
+		result += '<svg class="card-box" viewbox="0 0 100 100" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg" style="width:' + size + 'em;height:' + size + 'em;">';
+		result += 	'<rect x="0" y="0" width="100" height="100" fill="none" stroke="' + color + '"' + style + '></rect>';
 		result += '</svg>';
+	}
+	if (params[3]) {
+		result += card_generate_element(params.splice(3), card_data, options);
 	}
 	result += '</div>';
 	return result;
@@ -562,15 +578,14 @@ function card_element_boxes(params, card_data, options) {
 
 function card_element_property(params, card_data, options) {
 	var result = "";
-	result += '<div class="card-element card-property-line">';
-	result += 	'<h4 class="card-property-name">' + params[0] + '.</h4>';
-	result += 	'<p class="card-property-text">' + card_data_parse_icons_params(params[1]) + '</p>';
 	if (params[2])
-	{
-		result += 	'<div style="float:right">';
-		result += 		'<h4 class="card-property-name">' + params[2] + '.</h4>';
-		result += 		'<p class="card-property-text">' + card_data_parse_icons_params(params[3]) + '</p>';
-		result += 	'</div>';
+		result += '<div class="card-element card-property-line" style = "display: flex;flex-direction: row;">';
+	else
+		result += '<div class="card-element card-property-line">';
+	result += 	'<h4 class="card-property-name">' + params[0] + '.</h4>';
+	result += 	'<p class="card-property-text">' + (params[1] ? card_data_parse_icons_params(params[1]) : '') + '</p>';
+	if (params[2]) {
+		result += card_generate_element(params.splice(2), card_data, options);
 	}
 	result += '</div>';
 	return result;
@@ -578,7 +593,7 @@ function card_element_property(params, card_data, options) {
 
 function card_element_description(params, card_data, options) {
 	var result = "";
-	result += 	'<p class="card-element card-description-text">' + params[0] + '</p>';
+	result += '<p class="card-element card-description-text">' + params[0] + '</p>';
 	return result;
 }
 
@@ -586,9 +601,9 @@ function card_element_text(params, card_data, options) {
 	if (params[1] === 'true')
 		params[0] = card_data_parse_icons_params(params[0]);
 	var result = "";
-	result += '<div class="card-element">';
-	result += 	'<p>' + params[0] + '</p>';
-	result += '</div>';
+	result += '<p class="card-element">';
+	result += 	params[0];
+	result += '</p>';
 	return result;
 }
 
@@ -596,9 +611,9 @@ function card_element_right(params, card_data, options) {
 	if (params[1] === 'true')
 		params[0] = card_data_parse_icons_params(params[0]);
 	var result = "";
-	result += '<div class="card-element" style="text-align: right">';
-	result += 	'<p>' + params[0] + '</p>';
-	result += '</div>';
+	result += '<p class="card-element" style="text-align:right">';
+	result += 	params[0];
+	result += '</p>';
 	return result;
 }
 
@@ -606,9 +621,9 @@ function card_element_center(params, card_data, options) {
 	if (params[1] === 'true')
 		params[0] = card_data_parse_icons_params(params[0]);
 	var result = "";
-	result += '<div class="card-element" style="text-align: center">';
-	result += 	'<p>' + params[0] + '</p>';
-	result += '</div>';
+	result += '<p class="card-element" style="text-align:center">';
+	result += 	params[0];
+	result += '</p>';
 	return result;
 }
 
@@ -616,16 +631,22 @@ function card_element_justify(params, card_data, options) {
 	if (params[1] === 'true')
 		params[0] = card_data_parse_icons_params(params[0]);
 	var result = "";
-	result += '<div class="card-element" style="text-align: justify; hyphens: auto">';
-	result += 	'<p>' + params[0] + '</p>';
-	result += '</div>';
+	result += '<p class="card-element" style="text-align:justify;hyphens:auto">';
+	result += 	params[0];
+	result += '</p>';
 	return result;
 }
 
 function card_element_section(params, card_data, options) {
 	var color = card_data_color_front(card_data, options);
-	var section = params[0] || "";
-	return '<h3 class="card-section" style="color:' + color + '">' + section + '</h3>';
+	var result = '';
+	result += '<div class="card-section">';
+	result += 	'<h3 style="color:' + color + '">' + params[0] + '</h3>';
+	if (params[1]) {
+		result += card_generate_element(params.splice(1), card_data, options);
+	}
+	result += '</div>';
+	return result;
 }
 
 function card_element_bullet(params, card_data, options) {
@@ -643,7 +664,7 @@ function card_element_table_header(params, card_data, options) {
 	result += '<table class="card-element card-table card-table-header" style="background-color:' + card_data_color_front(card_data, options) + '88;">';
 	result += 	'<tr>';
 	for (var i = 0; i < params.length; i++) {
-		result += 		'<th>' + params[i] + '</th>';
+		result += 		'<th style="text-align:center;">' + params[i] + '</th>';
 	}
 	result += 	'</tr>';
 	result += '</table>';
@@ -654,12 +675,12 @@ function card_element_table_line(params, card_data, options) {
 	var result = "";
 	if (card_table_previous_line_colored)
 		result += '<table class="card-element card-table card-table-line">';
-	else 
+	else
 		result += '<table class="card-element card-table card-table-line" style="background-color:' + card_data_color_front(card_data, options) + '33;">';
 	card_table_previous_line_colored = !card_table_previous_line_colored;
 	result += 	'<tr>';
 	for (var i = 0; i < params.length; i++) {
-		result += 		'<td>' + params[i] + '</td>';
+		result += 		'<td style="text-align:center;">' + params[i] + '</td>';
 	}
 	result += 	'</tr>';
 	result += '</table>';
@@ -683,8 +704,8 @@ function card_element_spells(params, card_data, options) {
 		result += 	'<h4 class="card-inlineicon icon-spell-caster"></h4>';
 	result += 	'<p class="card-spells-ability">' + params[1] + '</p>';
 	if (params.length == 3) {
-			result += 	'<p class="card-spells-level"><span class="card-inlineicon icon-spell-level"></span></p>';
-			result += 	'<p class="card-spells-list">' + params[2] + '</p>';
+		result += 	'<p class="card-spells-level"><span class="card-inlineicon icon-spell-level"></span></p>';
+		result += 	'<p class="card-spells-list">' + params[2] + '</p>';
 	} else {
 		if (params[2]) {
 			result += 	'<p class="card-spells-level"><span class="card-inlineicon icon-spell-level-0"></span></p>';
@@ -696,7 +717,7 @@ function card_element_spells(params, card_data, options) {
 			if (params[level] && params[level + 1]) {
 				last = level + 2;
 
-				result += 	'<p class="card-spells-level"><span class="card-inlineicon icon-spell-level-' + i + '"></span>(' + params[level] + ')</p>';
+				result += '<p class="card-spells-level"><span class="card-inlineicon icon-spell-level-' + i + '"></span>(' + params[level] + ')</p>';
 				result += 	'<p class="card-spells-list">' + params[level + 1] + '</p>';
 			}
 		}
@@ -744,18 +765,22 @@ var card_element_generators = {
 // Card generating functions
 // ============================================================================
 
+function card_generate_element(parts, card_data, options) {
+	var element_name = parts[0];
+	var element_params = parts.splice(1);
+	var element_generator = card_element_generators[element_name];
+	if (element_generator) {
+		return element_generator(element_params, card_data, options);
+	} else if (element_name.length > 0) {
+		return card_element_unknown(element_params, card_data, options);
+	}
+}
+
 function card_generate_contents(contents, card_data, options) {
 	var result = "";
 	result += contents.map(function (value) {
 		var parts = card_data_split_params(value);
-		var element_name = parts[0];
-		var element_params = parts.splice(1);
-		var element_generator = card_element_generators[element_name];
-		if (element_generator) {
-			return element_generator(element_params, card_data, options);
-		} else if (element_name.length > 0) {
-			return card_element_unknown(element_params, card_data, options);
-		}
+		return card_generate_element(parts, card_data, options);
 	}).join("\n");
 	return result;
 }
@@ -773,7 +798,7 @@ function card_generate_front(card_data, options) {
 	var style_color = card_generate_color_style(color, options);
 
 	var result = "";
-	result += '<div class="card card-size-' + options.card_size + ' ' + (options.rounded_corners ? 'rounded-corners' : '') + '">';
+	result += '<div class="card card-size-' + options.card_size + ' ' + (options.rounded_corners ? 'rounded-corners' : '') + ' ' + (card_data.compact ? 'card-compact' : '') + '">';
 	result += 	'<div class="card-border" ' + style_color + '>';
 	result += 		card_element_title(card_data, options);
 
