@@ -455,10 +455,8 @@ function card_element_header_spell(card_data, options) {
 	if (card_data.spell.level)
 		result += '<div class="card-title-spellicon icon-spell-level-' + card_data.spell.level + '"></div>';
 	else {
-		var title_size = card_data.title_size || options.default.title_size || 'normal';
-		var color = card_data_color_front(card_data, options);
 		result += '<svg class="card-title-spell" height="1" width="100" viewbox="0 0 100 1" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">';
-		result += 	'<line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-dasharray="5,5" />';
+		result += 	'<line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-dasharray="10,10" />';
 		result += '</svg>';		
 	}
 	result += '</div>';
@@ -487,10 +485,10 @@ function card_element_base_spell(card_data, options) {
 	if (card_data.spell.ritual)
 		result += 	'<p class="card-spell-ritual">' + I18N.RITUAL + '</p>';
 	result += 	'<div class="card-spell-components">';
-	var colorStyle = 'filter:sepia(1) hue-rotate(86deg) saturate(10) brightness(0.7);';
-	result += 		'<span class="card-inlineicon icon-spell-verbal" style="' + (card_data.spell.verbal ? '' : ' opacity:0.4;') + '"></span>';
-	result += 		'<span class="card-inlineicon icon-spell-somatic" style="' + (card_data.spell.somatic ? '' : ' opacity:0.4;') + '"></span>';
-	result += 		'<span class="card-inlineicon icon-spell-material" style="' + (card_data.spell.materials ? '' : ' opacity:0.4;') + '"></span>';
+	// var colorStyle = 'filter:sepia(1) hue-rotate(86deg) saturate(10) brightness(0.7);';
+	result += 		'<span class="card-inlineicon icon-spell-verbal" style="' + (card_data.spell.verbal ? '' : 'opacity:0.4;') + '"></span>';
+	result += 		'<span class="card-inlineicon icon-spell-somatic" style="' + (card_data.spell.somatic ? '' : 'opacity:0.4;') + '"></span>';
+	result += 		'<span class="card-inlineicon icon-spell-material" style="' + (card_data.spell.materials ? '' : 'opacity:0.4;margin-right:10px;') + '"></span>';
 	if (card_data.spell.materials) {
 		result += 	'<span class="card-inlineicon icon-custom-arrow-down"></span>';
 		result += 	'<p class="card-spell-materials">' + card_data.spell.materials + '</p>';
@@ -519,7 +517,11 @@ function card_element_inline_icon(params, card_data, options) {
 	var size = params[1] || "40";
 	var align = params[2] || "center";
 	var color = card_data_color_front(card_data, options);
-	return '<div class="card-element card-inline-icon align-' + align + ' icon-' + icon + '" style="height:' + size + 'px;min-height:' + size + 'px;width:' + size + 'px;background-color:' + color + '"></div>';
+	var result = '';
+	result += '<div class="card-element card-inline-icon align-' + align + '">';
+	result += '<span class="icon-' + icon + '" style="height:' + size + 'px;min-height:' + size + 'px;width:' + size + 'px;background-color:' + color + ';display:inline-block;"></span>';
+	result += '</div>';
+	return result;
 }
 
 function card_element_picture(params, card_data, options) {
@@ -547,27 +549,50 @@ function card_element_fill(params, card_data, options) {
 	return '<span class="card-fill" style="flex:' + flex + '"></span>';
 }
 
+function card_element_margin(params, card_data, options) {
+	var height = params[0] || "1";
+	return '<span style="height:' + height + 'px"></span>';
+}
+
 function card_element_boxes(params, card_data, options) {
 	var color = card_data_color_front(card_data, options);
 	var count = params[0] || 1;
 	var size = params[1] || 1;
-	var style = '';
+	var styleSvg = 'width:' + size + 'em;min-width:' + size + 'em;height:' + size + 'em;';
+	var styleRect = '';
+	var styleInnerRect = '';
 	var align = '';
+	var double = false;
 	if (params[2]) {
-		if (params[2].indexOf("dash") > -1)
-			style = 'style="stroke-dasharray:11,14;stroke-dashoffset:5.5;opacity:0.5;"';
+		if (params[2].indexOf("dash") > -1) {
+			styleRect = 'stroke-dasharray:11,14;stroke-dashoffset:5.5;opacity:0.5;';
+			styleInnerRect = 'stroke-dasharray:11,13;stroke-dashoffset:5.5;opacity:0.5;';
+		}
 		if (params[2].indexOf("center") > -1)
 			align = 'text-align:center;';
 		else if (params[2].indexOf("right") > -1)
 			align = 'text-align:right;';
+		double = params[2].indexOf("double") > -1;
 	}
 
+	if (params[3])
+		styleSvg += 'top:1px;';
+
 	var result = '';
-	result += '<div class="card-element" style="' + align + '">';
-	for (var i = 0; i < count; ++i) {
-		result += '<svg class="card-box" viewbox="0 0 100 100" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg" style="width:' + size + 'em;height:' + size + 'em;">';
-		result += 	'<rect x="0" y="0" width="100" height="100" fill="none" stroke="' + color + '"' + style + '></rect>';
-		result += '</svg>';
+	result += '<div class="card-element" style="' + align + (params[3] ? 'display:flex;flex-direction:row;' : '') + '">';
+	if (double) {
+		for (var i = 0; i < count; ++i) {
+			result += '<svg class="card-box" viewbox="-2 -2 104 104" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
+			result += '<rect x="0" y="0" width="100" height="100" fill="none" style="' + styleRect + ';stroke-width:4;stroke:' + color + '"></rect>';
+			result += '<rect x="14" y="14" width="72" height="72" fill="none" style="' + styleInnerRect + ';stroke-width:4;stroke:' + color + '"></rect>';
+			result += '</svg>';
+		}
+	} else {
+		for (var i = 0; i < count; ++i) {
+			result += '<svg class="card-box" viewbox="-2 -2 104 104" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
+			result += '<rect x="0" y="0" width="100" height="100" fill="none" style="' + styleRect + ';stroke-width:4;stroke:' + color + '"></rect>';
+			result += '</svg>';
+		}
 	}
 	if (params[3]) {
 		result += card_generate_element(params.splice(3), card_data, options);
@@ -579,7 +604,7 @@ function card_element_boxes(params, card_data, options) {
 function card_element_property(params, card_data, options) {
 	var result = "";
 	if (params[2])
-		result += '<div class="card-element card-property-line" style = "display: flex;flex-direction: row;">';
+		result += '<div class="card-element card-property-line" style="display:flex;flex-direction:row;">';
 	else
 		result += '<div class="card-element card-property-line">';
 	result += 	'<h4 class="card-property-name">' + params[0] + '.</h4>';
@@ -664,7 +689,7 @@ function card_element_table_header(params, card_data, options) {
 	result += '<table class="card-element card-table card-table-header" style="background-color:' + card_data_color_front(card_data, options) + '88;">';
 	result += 	'<tr>';
 	for (var i = 0; i < params.length; i++) {
-		result += 		'<th style="text-align:center;">' + params[i] + '</th>';
+		result += 		'<th>' + params[i] + '</th>';
 	}
 	result += 	'</tr>';
 	result += '</table>';
@@ -680,7 +705,7 @@ function card_element_table_line(params, card_data, options) {
 	card_table_previous_line_colored = !card_table_previous_line_colored;
 	result += 	'<tr>';
 	for (var i = 0; i < params.length; i++) {
-		result += 		'<td style="text-align:center;">' + params[i] + '</td>';
+		result += 		'<td>' + params[i] + '</td>';
 	}
 	result += 	'</tr>';
 	result += '</table>';
@@ -744,6 +769,7 @@ var card_element_generators = {
 	rule: card_element_ruler,
 	ruler: card_element_ruler,
 	fill: card_element_fill,
+	margin: card_element_margin,
 	boxes: card_element_boxes,
 	property: card_element_property,
 	description: card_element_description,

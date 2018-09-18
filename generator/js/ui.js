@@ -801,6 +801,16 @@ $(document).ready(function () {
 			if (e.preventDefault)
 				e.preventDefault();
 			e.returnValue = false;
+		} else if (e.ctrlKey && e.key == "s") {
+			ui_save_file();
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
+		} else if (e.ctrlKey && e.key == "g") {
+			ui_generate();
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
 		}
 	});
 
@@ -930,6 +940,38 @@ $(document).ready(function () {
 	$("#card-description").change(ui_change_card_description);
 	$("#card-contents").keyup(ui_change_card_contents_keyup);
 	$("#card-contents").change(ui_change_card_contents);
+	$("#card-contents").keydown(function (e) {
+		if (!e.altKey)
+			return;
+		if (e.key == "i") {
+			var value = $(this)[0].value;
+			var selectionStart = $(this)[0].selectionStart;
+			var selectionEnd = $(this)[0].selectionEnd;
+			var textBefore = value.slice(0, selectionStart);
+			var textBetween = value.slice(selectionStart, selectionEnd);
+			var textAfter = value.slice(selectionEnd);
+			$(this)[0].value = textBefore + '<i>' + textBetween + '</i>' + textAfter;
+			$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
+			$(this)[0].selectionEnd = $(this)[0].selectionStart;
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
+		}
+		if (e.key == "b") {
+			var value = $(this)[0].value;
+			var selectionStart = $(this)[0].selectionStart;
+			var selectionEnd = $(this)[0].selectionEnd;
+			var textBefore = value.slice(0, selectionStart);
+			var textBetween = value.slice(selectionStart, selectionEnd);
+			var textAfter = value.slice(selectionEnd);
+			$(this)[0].value = textBefore + '<b>' + textBetween + '</b>' + textAfter;
+			$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
+			$(this)[0].selectionEnd = $(this)[0].selectionStart;
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
+		}
+	});
 
 	$("#card-compact").change(ui_change_card_compact);
 
@@ -937,10 +979,6 @@ $(document).ready(function () {
 
 	$("#card-creature-cr").change(ui_change_creature_property);
 	$("#card-creature-size").change(ui_change_creature_property);
-	// var alignments = Object.values(I18N.ALIGNMENTS);
-	// for (var i = 0; i < alignments.length; i++) {
-	// 	$("#card-creature-alignment").append('<option value="' + alignments[i] + '">' + alignments[i] + '</option>');
-	// }
 	$("#card-creature-alignment").typeahead({
 		source: Object.values(I18N.ALIGNMENTS),
 		items: 'all',

@@ -60,7 +60,7 @@
                             <button type="button" class="btn btn-default btn-block" id="button-sort">Sort</button>
                         </div>
                         <div class="col-sm-4">
-                            <button type="button" class="btn btn-primary btn-block" id="button-import">Import all</button>
+                            <button type="button" class="btn btn-primary btn-block" id="button-import">Import from file</button>
                         </div>
                         <div class="col-sm-4">
                             <button type="button" class="btn btn-primary btn-block" id="button-save">Save to file</button>
@@ -538,6 +538,14 @@
                         <li>If you find a bug or have a feature request, post them at the <a href="https://github.com/crobi/rpg-cards/issues">Github project site</a>.</li>
                         <li>The user interface consists of three columns:<img alt="help" src="help.png" style="max-width:95%; display:block; padding: 5px; margin: 10px 0 10px 0; border: 1px solid #ebebeb; box-shadow: 0 0 5px #ebebeb;"/> The left column contains the menu and global settings. In the middle menu, you can select and edit individual cards. The right column contains a preview of the selected card.</li>
                         <li>To use the generator, either load the sample card deck ("Load sample"), load a card deck from a file ("Load from file"), or manually add some cards. When you're done, click on "Generate" to generate a document with all your cards, which can then be printed.</li>
+                        <li>Shortcut
+                            <ul>
+                                <li>Ctrl+S: Save to file</li>
+                                <li>Ctrl+G: Generate</li>
+                                <li>Pg Down: Previous card</li>
+                                <li>Pg Up: Next card</li>
+                            </ul>
+                        </li>
                         <li>To learn about what features are available to define a card, inspect the sample deck or read some basic documentation at the <a href="http://crobi.github.io/rpg-cards/">project site</a>.</li>
                     </ul>
                 </div>
@@ -558,15 +566,19 @@
                 <div class="modal-body">
                     <p>Enter the comparison function below. The comparison function is a block of javascript code. Return -1 if card_a should appear before card_b.</p>
                     <textarea class="form-control" rows="10" id="sort-function" wrap="off">
+if (card_a.type < card_b.type) {
+    return -1;
+}
+if (card_a.type > card_b.type) {
+    return 1;
+}
 if (card_a.title < card_b.title) {
     return -1;
 }
-else if (card_a.title > card_b.title) {
+if (card_a.title > card_b.title) {
     return 1;
 }
-else {
-    return 0;
-}
+return 0;
                     </textarea>
                 </div>
                 <div class="modal-footer">
