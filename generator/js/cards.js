@@ -80,21 +80,21 @@ function card_init(card) {
 		if (card.subtitle)
 			delete card.subtitle;
 		card.creature = card_creature_default_data(card.creature);
-		card.color = card.color || "black";
+		card.color = card.color || "#000000";
 	} else if (card.type == CardType.ITEM) {
 		card.item = card_item_default_data(card.item);
-		card.color = card.color || "dimgray";
+		card.color = card.color || "#696969";
 		card.icon = card.icon || "swap-bag";
 	} else if (card.type == CardType.SPELL) {
 		card.spell = card_spell_default_data(card.spell);
-		card.color = card.color || "maroon";
+		card.color = card.color || "#800000";
 		card.icon = card.icon || "magic-swirl";
 	} else if (card.type == CardType.POWER) {
 		card.power = card_power_default_data(card.power);
-		card.color = card.color || "DarkSlateGray";
+		card.color = card.color || "#2F4F4F";
 		card.icon = card.icon || "lob-arrow";
 	} else {
-		card.color = card.color || "DarkGray";
+		card.color = card.color || "#A9A9A9";
 	}
 	card.contents = card.contents || [];
 	card.compact = card.compact || false;

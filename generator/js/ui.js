@@ -298,7 +298,10 @@ function ui_update_card_list(doNotUpdateSelectedCard) {
 	for (var i = 0; i < card_data.length; ++i) {
 		var card = card_data[i];
 		selectedCardCombo.append($('<option></option>').attr("value", i).text(card.title));
-		cardsList.append($('<h4 class="card-name"></h4>').attr("index", i).text(card.title).click(ui_card_list_select_card));
+		var newCardInList = $('<h4 class="card-name"></h4>').attr("index", i).text(card.title).click(ui_card_list_select_card);
+		if (card.color)
+			newCardInList.css("background-color", card.color + "33");
+		cardsList.append(newCardInList);
 	}
 
 	if (!doNotUpdateSelectedCard)
@@ -418,10 +421,14 @@ function ui_update_selected_card() {
 	}
 
 	var cardsList = $("#cards-list");
-	if (ui.selectedCardIdx || ui.selectedCardIdx == 0)
-		cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = "";
+	if (ui.selectedCardIdx || ui.selectedCardIdx == 0) {
+		var oldCard = card_data[ui.selectedCardIdx];
+		cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = oldCard.color ? oldCard.color + "33" : "";
+		cardsList[0].children[ui.selectedCardIdx].classList.remove("selected");
+	}
 	ui.selectedCardIdx = ui_selected_card_index();
-	cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = "#00666633";
+	// cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = "#00666633";
+	cardsList[0].children[ui.selectedCardIdx].classList.add("selected");
 
 	ui_render_selected_card();
 }

@@ -87,10 +87,14 @@ label, p {
 }
 #cards-list .card-name {
 	margin: 0px -17px 0px -20px;
-	padding-left: 10px;
+	padding: 1px 0px 0px 10px;
 	font-size: 16px;
-	min-height: 17px;
+	min-height: 19px;
 	cursor: pointer;
+}
+#cards-list .card-name.selected {
+	padding: 0px 0px 0px 9px;
+	border: solid 1px #33333377;
 }
 
 #card-form-container {
