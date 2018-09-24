@@ -13,6 +13,21 @@ label, p {
 	padding-bottom: 0px;
 }
 
+#menu-container {
+	padding-right: 10px;
+    padding-left: 10px;
+}
+
+.btn-fold-block {
+	width: fit-content;
+}
+.btn-fold-block svg {
+	display: inline;
+	vertical-align: middle;	
+	position: relative;
+	top: -1px;
+}
+
 .btn-fold-section {
 	z-index: 1;
 	position: relative;
@@ -49,6 +64,33 @@ label, p {
 .btn-fold-section-left:hover {
 	background: radial-gradient(at 0% 50%, #331111ff 0%, #ffffff00 75%);
 	border-left: 1px solid #88666666;
+}
+
+#title-cards-list * {
+	margin-bottom: 0px;
+}
+#title-cards-list h3 {
+	margin-left: 15px;
+	margin-top: 0px;
+}
+#title-cards-list h3 ~ button {
+    width: 50px;
+    margin: 0px 5px 0px 0px;
+    padding: 2px;
+    float: right;
+}
+#title-cards-list h3 ~ button:first-child {
+	margin-right: 0px;
+}
+#cards-list {
+	margin-top: 0px;
+}
+#cards-list .card-name {
+	margin: 0px -17px 0px -20px;
+	padding-left: 10px;
+	font-size: 16px;
+	min-height: 17px;
+	cursor: pointer;
 }
 
 #card-form-container {

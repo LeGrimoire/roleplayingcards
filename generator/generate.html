@@ -43,178 +43,205 @@
                     <input type="file" id="file-import" name="files[]" multiple class="form-control" style="display:none" />
                 </form>
                 <!-- Main buttons -->
-                <form role="form" class="form-horizontal">
-                    <div class="form-group">
-                        <div class="col-sm-4">
-                            <button type="button" class="btn btn-info btn-block" id="button-help">Open Help</button>
+                <div class="col-sm-12">
+                    <form role="form" class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-info btn-block" id="button-help">Open Help</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-default btn-block" id="button-sort">Sort</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-default btn-block" id="button-filter">Map/Filter</button>
+                            </div>
                         </div>
-                        <div class="col-sm-4">
-                            <button type="button" class="btn btn-default btn-block" id="button-load-sample">Load sample</button>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-default btn-block" id="button-load-sample">Load sample</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-danger btn-block" id="button-clear">Delete all</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-success btn-block" id="button-generate">Generate</button>
+                            </div>
                         </div>
-                        <div class="col-sm-4">
-                            <button type="button" class="btn btn-primary btn-block" id="button-load">Load from file</button>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary btn-block" id="button-load">Load file</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary btn-block" id="button-import">Import file</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary btn-block" id="button-save">Save to file</button>
+                                <a href="" download="Cards.json" id="file-save-link" style="display:none">Hidden download link</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-4">
-                            <button type="button" class="btn btn-default btn-block" id="button-sort">Sort</button>
-                        </div>
-                        <div class="col-sm-4">
-                            <button type="button" class="btn btn-primary btn-block" id="button-import">Import from file</button>
-                        </div>
-                        <div class="col-sm-4">
-                            <button type="button" class="btn btn-primary btn-block" id="button-save">Save to file</button>
-                            <a href="" download="Cards.json" id="file-save-link" style="display:none">Hidden download link</a>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-4">
-                            <button type="button" class="btn btn-default btn-block" id="button-filter">Map/Filter</button>
-                        </div>
-                        <div class="col-sm-4">
-                            <button type="button" class="btn btn-danger btn-block" id="button-clear">Delete all</button>
-                        </div>
-                        <div class="col-sm-4">
-                            <button type="button" class="btn btn-success btn-block" id="button-generate">Generate</button>
-                        </div>
-                    </div>
-                    <!--<span class="help-block">Generated cards open in a new tab or window.</span>-->
-                    <p class="col-sm-8" id="file-name"><b>File:</b> ...</p>
-                </form>
+                        <!--<span class="help-block">Generated cards open in a new tab or window.</span>-->
+                    </form>
+                </div>
+                <p class="col-sm-8" id="file-name"><b>File:</b> ...</p>
                 <!-- Page settings -->
-                <form role="form" class="form-horizontal col-sm-6 col-md-12">
-                    <h3>Page settings</h3>
-                    <div class="form-group">
-                        <label for="page-size" class="col-sm-4 control-label">Page Size</label>
-                        <div class="col-sm-8">
-                            <select class="form-control" id="page-size" data-option="page_size">
-                                <option value="A4" selected>A4</option>
-                                <option value="Letter">US letter</option>
-                                <option value="25x35">2.5&quot; x 3.5&quot;</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="card-size" class="col-sm-4 control-label">Card Size</label>
-                        <div class="col-sm-8">
-                            <select class="form-control" id="card-size" data-option="card_size">
-                                <option value="225x35">2.25&quot; x 3.5&quot; (Bridge)</option>
-                                <option value="25x35" selected>2.5&quot; x 3.5&quot; (Poker)</option>
-                                <option value="35x50">3.5&quot; x 5.0&quot;</option>
-                                <option value="75x50">7.5&quot; x 5.0&quot;</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="card-size" class="col-sm-4 control-label">Cards/page</label>
-                        <div class="col-sm-1">
-                            <input type="text" id="page-rows" class="form-control" data-option="page_rows" value="3">
-                        </div>
-                        <div class="col-sm-1">
-                            <p class="form-control-static" style="text-align:center">x</p>
-                        </div>
-                        <div class="col-sm-1">
-                            <input type="text" id="page-columns" class="form-control" data-option="page_columns" value="3">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="card-arrangement" class="col-sm-4 control-label">Arrangement</label>
-                        <div class="col-sm-8">
-                            <select class="form-control" id="card-arrangement" data-option="card_arrangement">
-                                <option value="doublesided">Double sided printing</option>
-                                <option value="front_only" selected>Front side only</option>
-                                <option value="side_by_side">Side by side</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="rounded-corners" class="col-sm-4 control-label">Corners</label>
-                        <div class="col-sm-8">
-                            <div class="checkbox">
-                                <label><input type="checkbox" checked id="rounded-corners" data-option="rounded_corners" value="1">Rounded card corners</label>
+                <div class="col-sm-6 col-lg-12">
+                    <h3 class="btn-fold-block" id="title-page-settings" for="page-settings-block">
+                        <svg class="" viewbox="-1 -1 102 102" preserveaspectratio="none" style="width:10px;height:10px;margin-left:-15px;margin-right:5px;" xmlns="http://www.w3.org/2000/svg">
+                            <polygon points="0,0 100,0 50,100" fill="black" style="stroke-width:1"></polygon>
+                        </svg>Page settings</h3>
+                    <form id="page-settings-block" role="form" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="page-size" class="col-sm-2 control-label">Page</label>
+                            <div class="col-sm-4">
+                                <select class="form-control" id="page-size" data-option="page_size">
+                                    <option value="A4" selected>A4</option>
+                                    <option value="Letter">US letter</option>
+                                    <option value="25x35">2.5&quot; x 3.5&quot;</option>
+                                </select>
+                            </div>
+                            <label for="card-size" class="col-sm-2 control-label">Card</label>
+                            <div class="col-sm-4">
+                                <select class="form-control" id="card-size" data-option="card_size">
+                                    <option value="225x35">2.25&quot; x 3.5&quot; (Bridge)</option>
+                                    <option value="25x35" selected>2.5&quot; x 3.5&quot; (Poker)</option>
+                                    <option value="35x50">3.5&quot; x 5.0&quot;</option>
+                                    <option value="75x50">7.5&quot; x 5.0&quot;</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="foreground-color" class="col-sm-4 control-label">Front color</label>
-                        <div class="col-sm-8">
-                            <div class="input-group">
-                                <select id="foreground_color_selector" class="colorselector-data"></select>
-                                <input type="text" id="foreground-color" class="form-control" placeholder="Front page color" data-property="color" value="white">
+                        <div class="form-group">
+                            <label for="card-size" class="col-sm-4 control-label">Cards/page</label>
+                            <div class="col-sm-1">
+                                <input type="text" id="page-rows" class="form-control" data-option="page_rows" value="3">
+                            </div>
+                            <div class="col-sm-1">
+                                <p class="form-control-static" style="text-align:center">x</p>
+                            </div>
+                            <div class="col-sm-1">
+                                <input type="text" id="page-columns" class="form-control" data-option="page_columns" value="3">
+                            </div>
+                            <div class="col-sm-5">
+                                <select class="form-control" id="card-arrangement" data-option="card_arrangement">
+                                    <option value="doublesided">Double sided</option>
+                                    <option value="front_only" selected>Front only</option>
+                                    <option value="side_by_side">Side by side</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="background-color" class="col-sm-4 control-label">Back color</label>
-                        <div class="col-sm-8">
-                            <div class="input-group">
-                                <select id="background_color_selector" class="colorselector-data"></select>
-                                <input type="text" id="background-color" class="form-control" placeholder="Back page color" data-property="color" value="black">
+                        <div class="form-group">
+                            <label for="rounded-corners" class="col-sm-4 control-label">Corners</label>
+                            <div class="col-sm-8">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" checked id="rounded-corners" data-option="rounded_corners" value="1">Rounded card corners</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                        <div class="form-group">
+                            <label for="foreground-color" class="col-sm-4 control-label">Front color</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <select id="foreground_color_selector" class="colorselector-data"></select>
+                                    <input type="text" id="foreground-color" class="form-control" placeholder="Front page color" data-property="color" value="white">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="background-color" class="col-sm-4 control-label">Back color</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <select id="background_color_selector" class="colorselector-data"></select>
+                                    <input type="text" id="background-color" class="form-control" placeholder="Back page color" data-property="color" value="black">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <!-- Default values -->
-                <form role="form" class="form-horizontal col-sm-6 col-md-12">
-                    <h3>Default values</h3>
-                    <div class="form-group">
-                        <label for="default-title-size" class="col-sm-2 control-label">Title</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" id="default-title-size">
-                                <option value="16">16pt</option>
-                                <option value="15">15pt</option>
-                                <option value="14">14pt</option>
-                                <option value="13" selected>13pt</option>
-                                <option value="12">12pt</option>
-                                <option value="11">11pt</option>
-                                <option value="10">10pt</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="default-color" class="col-sm-2 control-label">Color</label>
-                        <div class="col-sm-8">
-                            <div class="input-group">
-                                <select id="default_color_selector" class="colorselector-data"></select>
-                                <input type="text" id="default-color" class="form-control" placeholder="Card color" data-property="color" value="black">
+                <div class="col-sm-6 col-lg-12">
+                    <h3 class="btn-fold-block" id="title-default-values" for="default-values-block">
+                        <svg class="" viewbox="-1 -1 102 102" preserveaspectratio="none"  style="width:10px;height:10px;margin-left:-15px;margin-right:5px;" xmlns="http://www.w3.org/2000/svg">
+                            <polygon points="0,0 100,0 50,100" fill="black" style="stroke-width:1"></polygon>
+                        </svg>Default values</h3>
+                    <form id="default-values-block" role="form" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="default-title-size" class="col-sm-2 control-label">Title</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="default-title-size">
+                                    <option value="16">16pt</option>
+                                    <option value="15">15pt</option>
+                                    <option value="14">14pt</option>
+                                    <option value="13" selected>13pt</option>
+                                    <option value="12">12pt</option>
+                                    <option value="11">11pt</option>
+                                    <option value="10">10pt</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="col-sm-2">
-                            <button type="button" class="btn btn-primary btn-block" id="button-apply-color">Apply</button>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="default-icon" class="col-sm-2 control-label">Icon</label>
-                        <div class="col-sm-10">
-                            <div class="input-group">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default icon-select-button" type="button">Search</button>
-                                </span>
-                                <input type="text" id="default-icon" class="form-control icon-list" placeholder="Icon name">
+                        <div class="form-group">
+                            <label for="default-color" class="col-sm-2 control-label">Color</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <select id="default_color_selector" class="colorselector-data"></select>
+                                    <input type="text" id="default-color" class="form-control" placeholder="Card color" data-property="color" value="black">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-primary btn-block" id="button-apply-color">Apply</button>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="small-icons" class="col-sm-2 control-label"></label>
-                        <div class="col-sm-10">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" checked id="small-icons">Use small front icons
-                                </label>
+                        <div class="form-group">
+                            <label for="default-icon" class="col-sm-2 control-label">Icon</label>
+                            <div class="col-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default icon-select-button" type="button">Search</button>
+                                    </span>
+                                    <input type="text" id="default-icon" class="form-control icon-list" placeholder="Icon name">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="small-icons" class="col-sm-2 control-label"></label>
+                            <div class="col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" checked id="small-icons">Use small front icons
+                                    </label>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-sm-5">
-                            <button type="button" class="btn btn-primary btn-block" id="button-apply-icon">Apply icon</button>
+                        <div class="form-group">
+                            <div class="col-sm-2">
+                            </div>
+                            <div class="col-sm-5">
+                                <button type="button" class="btn btn-primary btn-block" id="button-apply-icon">Apply icon</button>
+                            </div>
+                            <div class="col-sm-5">
+                                <button type="button" class="btn btn-primary btn-block" id="button-apply-icon-back">Apply back icon</button>
+                            </div>
                         </div>
-                        <div class="col-sm-5">
-                            <button type="button" class="btn btn-primary btn-block" id="button-apply-icon-back">Apply back icon</button>
+                    </form>
+                </div>
+                <!-- Cards list -->
+                <div class="col-sm-6 col-lg-12">
+                    <form role="form" class="form-horizontal">
+                        <div class="form-group" id="title-cards-list">
+                            <h3 class="btn-fold-block col-sm-6" for="cards-list">
+                                <svg class="" viewbox="-1 -1 102 102" preserveaspectratio="none" style="width:10px;height:10px;margin-left:-15px;margin-right:5px;" xmlns="http://www.w3.org/2000/svg">
+                                    <polygon points="0,0 100,0 50,100" fill="black" style="stroke-width:1"></polygon>
+                                </svg>Cards list</h3>
+                            <!-- <div class="col-sm-2"></div> -->
+                            <!-- <div class="col-sm-2"> -->
+                                <button type="button" class="btn btn-primary btn-block" id="button-up">Up</button>
+                            <!-- </div> -->
+                            <!-- <div class="col-sm-2"> -->
+                                <button type="button" class="btn btn-primary btn-block" id="button-down">Down</button>
+                            <!-- </div> -->
                         </div>
-                    </div>
-                </form>
+                    </form>
+                    <form id="cards-list" role="form" class="form-horizontal">
+                    </form>
+                </div>
             </div>
             <button type="button" class="btn-fold-section btn-fold-section-right" id="button-fold-menu" for="menu-container"></button>
 
@@ -223,7 +250,7 @@
                 <h3 class="hide-when-large" style="clear:both;padding-top:10px;">Card</h3>
                 <form class="form-horizontal" role="form">
                     <div class="form-group">
-                        <label for="selected-card" class="col-sm-2 control-label">Deck</label>
+                        <label for="total_card_count" class="col-sm-2 control-label">Deck</label>
                         <div class="col-sm-6">
                             <p class="form-control-static" id="total_card_count">contains 0 cards</p>
                         </div>

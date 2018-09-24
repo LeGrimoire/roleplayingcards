@@ -470,7 +470,7 @@ p.card-element {
 .card-section .card-element {
 	flex: 1;
 }
-.card-section .card-box {
+.card-section .card-box:last-child {
     margin-right: 0;
 }
 .card-section + .card-element {
@@ -505,9 +505,9 @@ p.card-element {
 }
 .card-table-header, .card-table-line {
 	flex: 0;
-	margin: 0 -0.6mm;
+	margin: 0 -1%;
 	color: black;
-	width: 100%;
+	width: 102%;
 	line-height: 1.25em;
 }
 .card-content-container .card-table:nth-child(odd).card-table-line {

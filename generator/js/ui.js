@@ -5,7 +5,9 @@ var card_data = [];
 var card_options = card_default_options();
 
 var ui = {
-	foldedSection: {},
+	foldedSections: {},
+	foldedBlocks: {},
+	selectedCardIdx: 0,
 	filename: []
 };
 
@@ -289,13 +291,14 @@ function ui_select_icon() {
 function ui_update_card_list(doNotUpdateSelectedCard) {
 	$("#total_card_count").text("contains " + card_data.length + " unique cards.");
 
-	$('#selected-card').empty();
+	var cardsList = $("#cards-list");
+	cardsList.empty();
+	var selectedCardCombo = $("#selected-card");
+	selectedCardCombo.empty();
 	for (var i = 0; i < card_data.length; ++i) {
 		var card = card_data[i];
-		$('#selected-card')
-			.append($("<option></option>")
-				.attr("value", i)
-				.text(card.title));
+		selectedCardCombo.append($('<option></option>').attr("value", i).text(card.title));
+		cardsList.append($('<h4 class="card-name"></h4>').attr("index", i).text(card.title).click(ui_card_list_select_card));
 	}
 
 	if (!doNotUpdateSelectedCard)
@@ -315,12 +318,12 @@ function ui_update_selected_card() {
 		$("#card-icon").val(card.icon);
 		$("#card-icon-back").val(card.icon_back);
 		$("#card-background").val(card.background_image);
+		$("#card-description").val(card.description);
+		$("#card-contents").val(card.contents.join("\n"));
 		if (card.tags)
 			$("#card-tags").val(card.tags.join(", "));
 		else
 			$("#card-tags").val("");
-		$("#card-description").val(card.description);
-		$("#card-contents").val(card.contents.join("\n"));
 		$("#card-reference").val(card.reference);
 		$("#card-compact").prop("checked", card.compact);
 
@@ -396,8 +399,7 @@ function ui_update_selected_card() {
 			$(".item-only").hide();
 			$(".spell-only").hide();
 			$(".power-only").show();
-		}
-		else {
+		} else {
 			$(".creature-hide").show();
 			$(".item-hide").show();
 			$(".spell-hide").show();
@@ -414,6 +416,12 @@ function ui_update_selected_card() {
 		$(".spell-only").hide();
 		$(".power-only").hide();
 	}
+
+	var cardsList = $("#cards-list");
+	if (ui.selectedCardIdx || ui.selectedCardIdx == 0)
+		cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = "";
+	ui.selectedCardIdx = ui_selected_card_index();
+	cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = "#00666633";
 
 	ui_render_selected_card();
 }
@@ -535,6 +543,8 @@ function ui_change_card_title() {
 	var card = ui_selected_card();
 	if (card) {
 		card.title = title;
+		if (ui.selectedCardIdx || ui.selectedCardIdx == 0)
+			$("#cards-list")[0].children[ui.selectedCardIdx].innerText = title;
 		$("#selected-card option:selected").text(title);
 		ui_render_selected_card();
 	}
@@ -694,6 +704,34 @@ function ui_apply_default_icon_back() {
 }
 
 
+function ui_card_list_select_card() {
+	var idx = $(this).attr("index");
+	ui_select_card_by_index(idx);
+}
+
+function ui_card_list_up() {
+	var cardIdx = ui_selected_card_index();
+	if (cardIdx > 0) {
+		var old_card = ui_selected_card();
+		card_data[cardIdx] = card_data[cardIdx - 1];
+		card_data[cardIdx - 1] = old_card;
+		ui_update_card_list(true);
+		ui_select_card_by_index(cardIdx - 1);
+	}
+}
+
+function ui_card_list_down() {
+	var cardIdx = ui_selected_card_index();
+	if (cardIdx < card_data.length - 1) {
+		var old_card = ui_selected_card();
+		card_data[cardIdx] = card_data[cardIdx + 1];
+		card_data[cardIdx + 1] = old_card;
+		ui_update_card_list(true);
+		ui_select_card_by_index(cardIdx + 1);
+	}
+}
+
+
 //Adding support for local store
 function local_store_cards_save() {
 	if (window.localStorage) {
@@ -779,6 +817,7 @@ function typeahead_list(items) {
 
 $(document).ready(function () {
 
+	// Shortcuts
 	var preventPageDownOrUp = function (e) {
 		if (e.which == 33 || e.which == 34) { // Pg up or down
 			if (e.preventDefault)
@@ -836,8 +875,8 @@ $(document).ready(function () {
 		var display = foldedContainer.css('display');
 		var shouldSave = '';
 		if (display !== 'none') {
-			shouldSave = !ui.foldedSection[foldedContainer.selector];
-			ui.foldedSection[foldedContainer.selector] = '#' + this.id;
+			shouldSave = !ui.foldedSections[foldedContainer.selector];
+			ui.foldedSections[foldedContainer.selector] = '#' + this.id;
 			foldedContainer.hide();
 			$(this).css('margin', '0px 2px');
 			buttonSpaceWidth += 4;
@@ -848,8 +887,8 @@ $(document).ready(function () {
 			cardFormContainer.css('padding-right', (cardFormPadding + buttonSpaceWidth / 2) + 'px');
 			cardFormContainer.toggleClass('col-lg-' + cardFormContainerLG + ' col-lg-' + (cardFormContainerLG + foldedContainerLG));
 		} else {
-			shouldSave = ui.foldedSection[foldedContainer.selector];
-			ui.foldedSection[foldedContainer.selector] = null;
+			shouldSave = ui.foldedSections[foldedContainer.selector];
+			ui.foldedSections[foldedContainer.selector] = null;
 			foldedContainer.show();
 			$(this).css('margin', '');
 			buttonSpaceWidth -= 4;
@@ -865,10 +904,49 @@ $(document).ready(function () {
 		if (shouldSave)
 			local_store_ui_save();
 	});
-	var foldedSectionKeys = Object.keys(ui.foldedSection);
-	for (var i = 0; i < foldedSectionKeys.length; i++) {
-		if (ui.foldedSection[foldedSectionKeys[i]])
-			$(ui.foldedSection[foldedSectionKeys[i]]).click();
+	var foldedSectionsKeys = Object.keys(ui.foldedSections);
+	for (var i = 0; i < foldedSectionsKeys.length; i++) {
+		if (ui.foldedSections[foldedSectionsKeys[i]])
+			$(ui.foldedSections[foldedSectionsKeys[i]]).click();
+	}
+
+	$(".btn-fold-block").click(function () {
+		var button = $('#' + this.id);
+
+		var foldedBlock = $('#' + $(this).attr('for'));
+		var display = foldedBlock.css('display');
+		var shouldSave = '';
+		if (display !== 'none') {
+			shouldSave = !ui.foldedBlocks[foldedBlock.selector];
+			ui.foldedBlocks[foldedBlock.selector] = button.selector;
+			foldedBlock.hide();
+			var buttonsPoints = button[0].children[0].children[0].points;
+			buttonsPoints[0].x = 0;
+			buttonsPoints[0].y = 0;
+			buttonsPoints[1].x = 100;
+			buttonsPoints[1].y = 50;
+			buttonsPoints[2].x = 0;
+			buttonsPoints[2].y = 100;
+		} else {
+			shouldSave = ui.foldedBlocks[foldedBlock.selector];
+			ui.foldedBlocks[foldedBlock.selector] = null;
+			foldedBlock.show();
+			var buttonsPoints = button[0].children[0].children[0].points;
+			buttonsPoints[0].x = 0;
+			buttonsPoints[0].y = 0;
+			buttonsPoints[1].x = 100;
+			buttonsPoints[1].y = 0;
+			buttonsPoints[2].x = 50;
+			buttonsPoints[2].y = 100;
+		}
+
+		if (shouldSave)
+			local_store_ui_save();
+	});
+	var foldedBlockKeys = Object.keys(ui.foldedBlocks);
+	for (var i = 0; i < foldedBlockKeys.length; i++) {
+		if (ui.foldedBlocks[foldedBlockKeys[i]])
+			$(ui.foldedBlocks[foldedBlockKeys[i]]).click();
 	}
 
 	ui_setup_color_selector();
@@ -917,6 +995,10 @@ $(document).ready(function () {
 	$("#button-apply-icon").click(ui_apply_default_icon);
 	$("#button-apply-icon-back").click(ui_apply_default_icon_back);
 
+	// ----- Cards list
+
+	$("#button-up").click(ui_card_list_up);
+	$("#button-down").click(ui_card_list_down);
 
 	// ----- Card
 

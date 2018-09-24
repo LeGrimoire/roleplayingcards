@@ -454,11 +454,11 @@ function card_element_header_spell(card_data, options) {
 	result += '<div class="card-title-inlineicon-container">';
 	if (card_data.spell.level)
 		result += '<div class="card-title-spellicon icon-spell-level-' + card_data.spell.level + '"></div>';
-	else {
+	/*else {
 		result += '<svg class="card-title-spell" height="1" width="100" viewbox="0 0 100 1" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">';
 		result += 	'<line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-dasharray="10,10" />';
 		result += '</svg>';		
-	}
+	}*/
 	result += '</div>';
 	result += '<div class="card-subtitle card-spell-subtitle">' + card_data.spell.type + '</div>';
 	return result;
@@ -575,11 +575,12 @@ function card_element_boxes(params, card_data, options) {
 		double = params[2].indexOf("double") > -1;
 	}
 
-	if (params[3])
+	var nextParamsNotBoxes = params[3] && params[3] != "boxes";
+	if (nextParamsNotBoxes)
 		styleSvg += 'top:1px;';
 
 	var result = '';
-	result += '<div class="card-element" style="' + align + (params[3] ? 'display:flex;flex-direction:row;' : '') + '">';
+	result += '<div class="card-element" style="' + align + (nextParamsNotBoxes ? 'display:flex;flex-direction:row;' : '') + '">';
 	if (double) {
 		for (var i = 0; i < count; ++i) {
 			result += '<svg class="card-box" viewbox="-2 -2 104 104" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
@@ -712,6 +713,22 @@ function card_element_table_line(params, card_data, options) {
 	return result;
 }
 
+function card_element_table_line_center(params, card_data, options) {
+	var result = "";
+	if (card_table_previous_line_colored)
+		result += '<table class="card-element card-table card-table-line" style="text-align:center;">';
+	else
+		result += '<table class="card-element card-table card-table-line" style="background-color:' + card_data_color_front(card_data, options) + '33;text-align:center;">';
+	card_table_previous_line_colored = !card_table_previous_line_colored;
+	result += 	'<tr>';
+	for (var i = 0; i < params.length; i++) {
+		result += 		'<td>' + params[i] + '</td>';
+	}
+	result += 	'</tr>';
+	result += '</table>';
+	return result;
+}
+
 function card_element_empty(params, card_data, options) {
 	return '';
 }
@@ -781,6 +798,7 @@ var card_element_generators = {
 	bullet: card_element_bullet,
 	table_header: card_element_table_header,
 	table_line: card_element_table_line,
+	table_line_c: card_element_table_line_center,
 	disabled: card_element_empty,
 	comment: card_element_empty,
 	spells: card_element_spells,
