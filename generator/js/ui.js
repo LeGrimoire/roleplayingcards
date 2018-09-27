@@ -8,7 +8,8 @@ var ui = {
 	foldedSections: {},
 	foldedBlocks: {},
 	selectedCardIdx: 0,
-	filename: []
+	filename: [],
+	saveTime: '-'
 };
 
 
@@ -102,6 +103,7 @@ function ui_load_files(evt) {
 	var files = evt.target.files;
 
 	ui.filename = [];
+	ui.saveTime = '-';
 	ui.selectedCardIdx = 0;
 
 	for (var i = 0, f; f = files[i]; i++) {
@@ -188,6 +190,10 @@ function ui_save_file() {
 	a.download = prompt("Filename:", ui_save_file.filename);
 	if (a.download && a.download != "null") {
 		ui.filename = [a.download];
+
+		var d = new Date();
+		ui.saveTime = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + ' ' + d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear();
+
 		$("#file-name").html('<b>File:</b> ' + ui.filename.join(","));
 		local_store_ui_save();
 		ui_save_file.filename = a.download;
@@ -981,8 +987,9 @@ $(document).ready(function () {
 	$("#filter-execute").click(ui_filter_execute);
 	$("#button-help").click(ui_open_help);
 
-	if (ui.filename)
-		$("#file-name").html('<b>File:</b> ' + ui.filename.join(","));
+	if (ui.filename) {
+		$("#file-name").html('<b>File:</b> ' + ui.filename.join(",") + '<br/><b>Last save:</b> ' + ui.saveTime);
+	}
 
 	// ----- Page settings
 
