@@ -102,6 +102,7 @@ function ui_load_files(evt) {
 	var files = evt.target.files;
 
 	ui.filename = [];
+	ui.selectedCardIdx = 0;
 
 	for (var i = 0, f; f = files[i]; i++) {
 		ui.filename.push(f.name);
@@ -164,7 +165,7 @@ function ui_save_file() {
 			tagsToSave.push();
 		}
 
-		tagsToSave.push("description", "contents", "tags", "compact");
+		tagsToSave.push("description", "contents", "tags", "reference", "compact");
 
 		if (card.type == "creature")
 			str = JSON.stringify(card, tagsToSave, "\t");
@@ -691,7 +692,8 @@ function ui_change_default_icon_size() {
 
 function ui_apply_default_color() {
 	for (var i = 0; i < card_data.length; ++i) {
-		card_data[i].color = card_options.default.color;
+		if (!card_data[i].type)
+			card_data[i].color = card_options.default.color;
 	}
 	ui_render_selected_card();
 }
@@ -1040,7 +1042,10 @@ $(document).ready(function () {
 			var textBetween = value.slice(selectionStart, selectionEnd);
 			var textAfter = value.slice(selectionEnd);
 			$(this)[0].value = textBefore + '<i>' + textBetween + '</i>' + textAfter;
-			$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
+			if (textBetween.length == 0)
+				$(this)[0].selectionStart = selectionStart + 3;
+			else
+				$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
 			$(this)[0].selectionEnd = $(this)[0].selectionStart;
 			if (e.preventDefault)
 				e.preventDefault();
@@ -1054,7 +1059,10 @@ $(document).ready(function () {
 			var textBetween = value.slice(selectionStart, selectionEnd);
 			var textAfter = value.slice(selectionEnd);
 			$(this)[0].value = textBefore + '<b>' + textBetween + '</b>' + textAfter;
-			$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
+			if (textBetween.length == 0)
+				$(this)[0].selectionStart = selectionStart + 3;
+			else
+				$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
 			$(this)[0].selectionEnd = $(this)[0].selectionStart;
 			if (e.preventDefault)
 				e.preventDefault();

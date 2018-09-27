@@ -92,7 +92,7 @@ function card_init(card) {
 	} else if (card.type == CardType.POWER) {
 		card.power = card_power_default_data(card.power);
 		card.color = card.color || "#2F4F4F";
-		card.icon = card.icon || "lob-arrow";
+		card.icon = card.icon || "";
 	} else {
 		card.color = card.color || "#A9A9A9";
 	}
@@ -559,13 +559,13 @@ function card_element_boxes(params, card_data, options) {
 	var count = params[0] || 1;
 	var size = params[1] || 1;
 	var styleSvg = 'width:' + size + 'em;min-width:' + size + 'em;height:' + size + 'em;';
-	var styleRect = '';
+	var styleDash = '';
 	var styleInnerRect = '';
 	var align = '';
 	var double = false;
 	if (params[2]) {
 		if (params[2].indexOf("dash") > -1) {
-			styleRect = 'stroke-dasharray:11,14;stroke-dashoffset:5.5;opacity:0.5;';
+			styleDash = 'stroke-dasharray:11,14;stroke-dashoffset:5.5;opacity:0.5;';
 			styleInnerRect = 'stroke-dasharray:11,13;stroke-dashoffset:5.5;opacity:0.5;';
 		}
 		if (params[2].indexOf("center") > -1)
@@ -584,16 +584,50 @@ function card_element_boxes(params, card_data, options) {
 	if (double) {
 		for (var i = 0; i < count; ++i) {
 			result += '<svg class="card-box" viewbox="-2 -2 104 104" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
-			result += '<rect x="0" y="0" width="100" height="100" fill="none" style="' + styleRect + ';stroke-width:4;stroke:' + color + '"></rect>';
+			result += '<rect x="0" y="0" width="100" height="100" fill="none" style="' + styleDash + ';stroke-width:4;stroke:' + color + '"></rect>';
 			result += '<rect x="14" y="14" width="72" height="72" fill="none" style="' + styleInnerRect + ';stroke-width:4;stroke:' + color + '"></rect>';
 			result += '</svg>';
 		}
 	} else {
 		for (var i = 0; i < count; ++i) {
 			result += '<svg class="card-box" viewbox="-2 -2 104 104" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
-			result += '<rect x="0" y="0" width="100" height="100" fill="none" style="' + styleRect + ';stroke-width:4;stroke:' + color + '"></rect>';
+			result += '<rect x="0" y="0" width="100" height="100" fill="none" style="' + styleDash + ';stroke-width:4;stroke:' + color + '"></rect>';
 			result += '</svg>';
 		}
+	}
+	if (params[3]) {
+		result += card_generate_element(params.splice(3), card_data, options);
+	}
+	result += '</div>';
+	return result;
+}
+
+function card_element_circles(params, card_data, options) {
+	var color = card_data_color_front(card_data, options);
+	var count = params[0] || 1;
+	var size = params[1] || 1;
+	var styleSvg = 'width:' + size + 'em;min-width:' + size + 'em;height:' + size + 'em;';
+	var styleDash = '';
+	var align = '';
+	if (params[2]) {
+		if (params[2].indexOf("dash") > -1)
+			styleDash = 'stroke-dasharray:11,14;stroke-dashoffset:5.5;opacity:0.5;';
+		if (params[2].indexOf("center") > -1)
+			align = 'text-align:center;';
+		else if (params[2].indexOf("right") > -1)
+			align = 'text-align:right;';
+	}
+
+	var nextParamsNotBoxes = params[3] && params[3] != "boxes";
+	if (nextParamsNotBoxes)
+		styleSvg += 'top:1px;';
+
+	var result = '';
+	result += '<div class="card-element" style="' + align + (nextParamsNotBoxes ? 'display:flex;flex-direction:row;' : '') + '">';
+	for (var i = 0; i < count; ++i) {
+		result += '<svg class="card-box" viewbox="-2 -2 104 104" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
+		result += '<circle cx="50" cy="50" r="50" width="100" height="100" fill="none" style="' + styleDash + ';stroke-width:4;stroke:' + color + '"></circle>';
+		result += '</svg>';
 	}
 	if (params[3]) {
 		result += card_generate_element(params.splice(3), card_data, options);
@@ -788,6 +822,7 @@ var card_element_generators = {
 	fill: card_element_fill,
 	margin: card_element_margin,
 	boxes: card_element_boxes,
+	circles: card_element_circles,
 	property: card_element_property,
 	description: card_element_description,
 	text: card_element_text,
@@ -821,6 +856,7 @@ function card_generate_element(parts, card_data, options) {
 }
 
 function card_generate_contents(contents, card_data, options) {
+	card_table_previous_line_colored = true;
 	var result = "";
 	result += contents.map(function (value) {
 		var parts = card_data_split_params(value);

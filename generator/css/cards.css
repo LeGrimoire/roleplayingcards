@@ -44,7 +44,7 @@ h1, h2, h3, h4, h5, h6 {
 /*****************/
 
 .card-content-container {
-	padding: 0.4mm 1mm;
+	padding: 1px 2px;
 	border-radius: 1mm;
 	margin-top: 0px;
 	background-color: white;
@@ -389,9 +389,7 @@ h1, h2, h3, h4, h5, h6 {
 	display: block;
 	width: 102%;
 	height: 1px;
-	margin-top: 1px;
-	margin-bottom: 2px;
-	margin-left: -2px;
+	margin: 1px 0px 1px -2px;
 }
 
 .card-fill {flex:1;}
@@ -414,7 +412,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card-property-line {
-	margin-right: -0.1em;
+	margin-right: -1px;
 	font-size: inherit;
 	color: black;
 }
