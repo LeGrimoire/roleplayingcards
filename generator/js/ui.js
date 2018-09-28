@@ -119,16 +119,15 @@ function ui_load_files(evt) {
 
 	// Reset file input
 	$("#file-load-form")[0].reset();
-	$("#file-name").html('<b>File:</b> ' + ui.filename.join(","));
+	$("#file-name").html('<b>File:</b> ' + ui.filename.join(", ") + '<br/><b>Last save:</b> ' + ui.saveTime);
 	local_store_ui_save();
 }
 
 function ui_import_files(evt) {
 	var files = evt.target.files;
 
-	var newFilenames = [];
 	for (var i = 0, f; f = files[i]; i++) {
-		newFilenames.push(f.name);
+		ui.filename.push(f.name);
 
 		var reader = new FileReader();
 		reader.onload = function (reader) {
@@ -140,7 +139,7 @@ function ui_import_files(evt) {
 
 	// Reset file input
 	$("#file-load-form")[0].reset();
-	$("#file-name").html($("#file-name").html() + ',' + newFilenames.join(","));
+	$("#file-name").html('<b>File:</b> ' + ui.filename.join(", ") + '<br/><b>Last save:</b> ' + ui.saveTime);
 	local_store_ui_save();
 }
 
@@ -186,15 +185,15 @@ function ui_save_file() {
 
 	var a = $("#file-save-link")[0];
 	a.href = url;
-	ui_save_file.filename = ui.filename || ui_save_file.filename;
+	ui_save_file.filename = ui.filename[0] || ui_save_file.filename;
 	a.download = prompt("Filename:", ui_save_file.filename);
 	if (a.download && a.download != "null") {
 		ui.filename = [a.download];
 
 		var d = new Date();
-		ui.saveTime = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + ' ' + d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear();
+		ui.saveTime = d.getDate() + '/' + d.getMonth() + '/' + (d.getFullYear() % 100) + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
 
-		$("#file-name").html('<b>File:</b> ' + ui.filename.join(","));
+		$("#file-name").html('<b>File:</b> ' + ui.filename.join(", ") + '<br/><b>Last save:</b> ' + ui.saveTime);
 		local_store_ui_save();
 		ui_save_file.filename = a.download;
 		a.click();
@@ -428,7 +427,7 @@ function ui_update_selected_card() {
 	}
 
 	var cardsList = $("#cards-list");
-	if (ui.selectedCardIdx || ui.selectedCardIdx == 0) {
+	if ((ui.selectedCardIdx || ui.selectedCardIdx == 0) && ui.selectedCardIdx < card_data.length) {
 		var oldCard = card_data[ui.selectedCardIdx];
 		cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = oldCard.color ? oldCard.color + "33" : "";
 		cardsList[0].children[ui.selectedCardIdx].classList.remove("selected");
@@ -789,6 +788,7 @@ function local_store_ui_load() {
 	}
 }
 
+
 function typeahead_icon_list(items) {
 	var that = this;
 
@@ -811,7 +811,19 @@ function typeahead_icon_list(items) {
 	return this;
 }
 
-function typeahead_list(items) {
+function typeahead_matcher(item) {
+	var words = this.query.toLowerCase().split(" ");
+	return ~item.toLowerCase().indexOf(words[words.length - 1]);
+}
+
+function typeahead_updater(item) {
+	var lastSpaceIdx = this.query.lastIndexOf(" ");
+	if (lastSpaceIdx > 0)
+		return this.query.substring(0, lastSpaceIdx) + " " + item;
+	return item;
+}
+
+function typeahead_render(items) {
 	var that = this;
 
 	items = $(items).map(function (i, item) {
@@ -830,6 +842,7 @@ function typeahead_list(items) {
 	return this;
 }
 
+
 $(document).ready(function () {
 
 	// Shortcuts
@@ -842,28 +855,28 @@ $(document).ready(function () {
 	};
 	$(document).keydown(function (e) {
 		if (e.which == 33) { // Pg up
+			if (e.preventDefault)
+				e.preventDefault();
 			var idx = ui_selected_card_index();
 			if (idx > 0)
 				ui_select_card_by_index(idx - 1);
-			if (e.preventDefault)
-				e.preventDefault();
 			e.returnValue = false;
 		} else if (e.which == 34) { // Pg down
+			if (e.preventDefault)
+				e.preventDefault();
 			var idx = ui_selected_card_index();
 			if (idx < card_data.length - 1)
 				ui_select_card_by_index(idx + 1);
-			if (e.preventDefault)
-				e.preventDefault();
 			e.returnValue = false;
 		} else if (e.ctrlKey && e.key == "s") {
-			ui_save_file();
 			if (e.preventDefault)
 				e.preventDefault();
+			ui_save_file();
 			e.returnValue = false;
 		} else if (e.ctrlKey && e.key == "g") {
-			ui_generate();
 			if (e.preventDefault)
 				e.preventDefault();
+			ui_generate();
 			e.returnValue = false;
 		}
 	});
@@ -987,9 +1000,8 @@ $(document).ready(function () {
 	$("#filter-execute").click(ui_filter_execute);
 	$("#button-help").click(ui_open_help);
 
-	if (ui.filename) {
-		$("#file-name").html('<b>File:</b> ' + ui.filename.join(",") + '<br/><b>Last save:</b> ' + ui.saveTime);
-	}
+	if (ui.filename)
+		$("#file-name").html('<b>File:</b> ' + ui.filename.join(", ") + '<br/><b>Last save:</b> ' + ui.saveTime);
 
 	// ----- Page settings
 
@@ -1087,7 +1099,7 @@ $(document).ready(function () {
 		source: Object.values(I18N.ALIGNMENTS),
 		items: 'all',
 		minLength: 0,
-		render: typeahead_list
+		render: typeahead_render
 	});
 	$("#card-creature-alignment").keydown(preventPageDownOrUp);
 	$("#card-creature-alignment").change(ui_change_creature_property);
@@ -1123,17 +1135,9 @@ $(document).ready(function () {
 		source: Object.values(I18N.SPELL_TYPES),
 		items: 'all',
 		minLength: 0,
-		matcher: function (item) {
-			var words = this.query.toLowerCase().split(" ");
-			return ~item.toLowerCase().indexOf(words[words.length - 1]);
-		},
-		updater: function (item) {
-			var lastSpaceIdx = this.query.lastIndexOf(" ");
-			if (lastSpaceIdx > 0)
-				return this.query.substring(0, lastSpaceIdx) + " " + item;
-			return item;
-		},
-		render: typeahead_list
+		matcher: typeahead_matcher,
+		updater: typeahead_updater,
+		render: typeahead_render
 	});
 	$("#card-spell-type").keydown(preventPageDownOrUp);
 	$("#card-spell-type").change(ui_change_spell_property);
@@ -1141,17 +1145,9 @@ $(document).ready(function () {
 		source: Object.values(I18N.CLASSES),
 		items: 'all',
 		minLength: 0,
-		matcher: function (item) {
-			var words = this.query.toLowerCase().split(" ");
-			return ~item.toLowerCase().indexOf(words[words.length - 1]);
-		},
-		updater: function (item) {
-			var lastSpaceIdx = this.query.lastIndexOf(" ");
-			if (lastSpaceIdx > 0)
-				return this.query.substring(0, lastSpaceIdx) + " " + item;
-			return item;
-		},
-		render: typeahead_list
+		matcher: typeahead_matcher,
+		updater: typeahead_updater,
+		render: typeahead_render
 	});
 	$("#card-spell-classes").keydown(preventPageDownOrUp);
 	$("#card-spell-classes").change(ui_change_spell_property);
