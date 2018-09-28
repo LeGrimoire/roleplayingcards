@@ -789,28 +789,6 @@ function local_store_ui_load() {
 }
 
 
-function typeahead_icon_list(items) {
-	var that = this;
-
-	items = $(items).map(function (i, item) {
-		// Fetch the li tags
-		i = $(that.options.item).data('value', item);
-		// Highlight matching text in the line
-		i.find('a').html(that.highlighter(item));
-		// Add icons with the span
-		var classname = 'icon-' + item.split(' ').join('-').toLowerCase();
-		i.find('a').append('<span class="' + classname + '"></span>');
-		return i[0];
-	});
-
-	if (this.autoSelect) {
-		items.first().addClass('active');
-	}
-	this.$menu.html(items);
-	this.$menu.addClass('dropdown-icons');
-	return this;
-}
-
 function typeahead_matcher(item) {
 	var words = this.query.toLowerCase().split(" ");
 	return ~item.toLowerCase().indexOf(words[words.length - 1]);
@@ -839,6 +817,28 @@ function typeahead_render(items) {
 	}
 	this.$menu.html(items);
 	this.$menu.addClass('dropdown-text');
+	return this;
+}
+
+function typeahead_icon_render(items) {
+	var that = this;
+
+	items = $(items).map(function (i, item) {
+		// Fetch the li tags
+		i = $(that.options.item).data('value', item);
+		// Highlight matching text in the line
+		i.find('a').html(that.highlighter(item));
+		// Add icons with the span
+		var classname = 'icon-' + item.split(' ').join('-').toLowerCase();
+		i.find('a').append('<span class="' + classname + '"></span>');
+		return i[0];
+	});
+
+	if (this.autoSelect) {
+		items.first().addClass('active');
+	}
+	this.$menu.html(items);
+	this.$menu.addClass('dropdown-icons');
 	return this;
 }
 
@@ -981,7 +981,7 @@ $(document).ready(function () {
 	$(".icon-list").typeahead({
 		source: icon_names,
 		items: 'all',
-		render: typeahead_icon_list
+		render: typeahead_icon_render
 	});
 	$(".icon-list").keydown(preventPageDownOrUp);
 	$(".icon-select-button").click(ui_select_icon);
