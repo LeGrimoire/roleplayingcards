@@ -503,9 +503,9 @@ p.card-element {
 }
 .card-table-header, .card-table-line {
 	flex: 0;
-	margin: 0 -1%;
+	margin: 0; /*-1%;*/
 	color: black;
-	width: 102%;
+	width: 100%;
 	line-height: 1.25em;
 }
 .card-content-container .card-table:nth-child(odd).card-table-line {
