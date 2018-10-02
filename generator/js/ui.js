@@ -13,6 +13,17 @@ var ui = {
 };
 
 
+function ui_open_help() {
+	$("#help-modal").modal('show');
+}
+
+function ui_load_sample() {
+	card_data = card_data_example;
+	ui_init_cards(card_data);
+	ui_update_card_list();
+}
+
+
 function mergeSort(arr, compare) {
 	if (arr.length < 2)
 		return arr;
@@ -44,15 +55,6 @@ function merge(left, right, compare) {
 	return result;
 }
 
-function ui_open_help() {
-	$("#help-modal").modal('show');
-}
-
-function ui_load_sample() {
-	card_data = card_data_example;
-	ui_init_cards(card_data);
-	ui_update_card_list();
-}
 
 function ui_sort() {
 	$("#sort-modal").modal('show');
@@ -168,12 +170,7 @@ function ui_save_file() {
 
 		tagsToSave.push("description", "contents", "tags", "reference", "compact");
 
-		if (card.type == "creature")
-			str = JSON.stringify(card, tagsToSave, "\t");
-		else if (card.type == "item")
-			str = JSON.stringify(card, tagsToSave, "\t");
-		else
-			str = JSON.stringify(card, tagsToSave, "\t");
+		str = JSON.stringify(card, tagsToSave, "\t");
 
 		if (i < card_data.length - 1)
 			str = str.concat(",\n");
@@ -289,10 +286,6 @@ function ui_delete_card() {
 	ui_select_card_by_index(Math.min(index, card_data.length - 1));
 }
 
-function ui_select_icon() {
-	window.open("http://game-icons.net/", "_blank");
-}
-
 
 function ui_update_card_list(doNotUpdateSelectedCard) {
 	$("#total_card_count").text("contains " + card_data.length + " unique cards.");
@@ -314,7 +307,9 @@ function ui_update_card_list(doNotUpdateSelectedCard) {
 		ui_update_selected_card();
 }
 
+var dontRenderSelectedCard = false;
 function ui_update_selected_card() {
+	dontRenderSelectedCard = true;
 	var card = ui_selected_card();
 	if (card) {
 		$("#card-type").val(card.type);
@@ -436,10 +431,13 @@ function ui_update_selected_card() {
 	// cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = "#00666633";
 	cardsList[0].children[ui.selectedCardIdx].classList.add("selected");
 
+	dontRenderSelectedCard = false;
 	ui_render_selected_card();
 }
 
 function ui_render_selected_card() {
+	if (dontRenderSelectedCard)
+		return;
 	var card = ui_selected_card();
 	$('#preview-container').empty();
 	if (card) {
@@ -452,58 +450,18 @@ function ui_render_selected_card() {
 	local_store_cards_save();
 }
 
-function ui_setup_color_selector() {
-	// Insert colors
-	$.each(card_colors, function (name, val) {//TODO: Change to a wheel or a line (save as #RRGGBB)
-		$(".colorselector-data")
-			.append($("<option></option>")
-				.attr("value", name)
-				.attr("data-color", val)
-				.text(name));
-	});
-
-	// Callbacks for when the user picks a color
-	$('#default_color_selector').colorselector({
-		callback: function (value, color, title) {
-			$("#default-color").val(title);
-			ui_set_default_color(title);
-		}
-	});
-	$('#card_color_selector').colorselector({
-		callback: function (value, color, title) {
-			$("#card-color").val(title);
-			ui_set_card_color(value);
-		}
-	});
-	$('#foreground_color_selector').colorselector({
-		callback: function (value, color, title) {
-			$("#foreground-color").val(title);
-			ui_set_foreground_color(value);
-		}
-	});
-	$('#background_color_selector').colorselector({
-		callback: function (value, color, title) {
-			$("#background-color").val(title);
-			ui_set_background_color(value);
-		}
-	});
-
-	// Styling
-	$(".dropdown-colorselector").addClass("input-group-addon color-input-addon");
-}
-
 
 function ui_update_card_color_selector(color, input, selector) {
-	/*if ($(selector + " option[value='" + color + "']").length > 0) {
+	if ($(selector + " option[value='" + color + "']").length > 0) {
 		// Update the color selector to the entered value
 		$(selector).colorselector("setColor", color);
 	} else {
 		// Unknown color - select a neutral color and reset the text value
 		$(selector).colorselector("setColor", "");
 		input.val(color);
-	}*/
-	$(selector).colorselector('setColor', color);
-	input.val(color);
+	}
+	// $(selector).colorselector('setColor', color);
+	// input.val(color);
 }
 
 function ui_set_default_color(color) {
@@ -524,8 +482,6 @@ function ui_set_card_color(value) {
 	if (card) {
 		if (value && value != card_options.default.color)
 			card.color = value;
-		else
-			delete card.color;
 		ui_render_selected_card();
 	}
 }
@@ -535,7 +491,6 @@ function ui_change_card_color() {
 	var color = input.val();
 
 	ui_update_card_color_selector(color, input, "#card_color_selector");
-	ui_set_card_color(color);
 }
 
 function ui_change_option() {
@@ -676,7 +631,6 @@ function ui_change_default_color() {
 	var color = input.val();
 
 	ui_update_card_color_selector(color, input, "#default_color_selector");
-	ui_set_default_color(color);
 }
 
 function ui_change_default_icon() {
@@ -843,16 +797,7 @@ function typeahead_icon_render(items) {
 }
 
 
-$(document).ready(function () {
-
-	// Shortcuts
-	var preventPageDownOrUp = function (e) {
-		if (e.which == 33 || e.which == 34) { // Pg up or down
-			if (e.preventDefault)
-				e.preventDefault();
-			e.returnValue = false;
-		}
-	};
+function ui_setup_shortcut() {
 	$(document).keydown(function (e) {
 		if (e.which == 33) { // Pg up
 			if (e.preventDefault)
@@ -880,6 +825,58 @@ $(document).ready(function () {
 			e.returnValue = false;
 		}
 	});
+}
+
+function ui_setup_color_selector() {
+	// Insert colors
+	$.each(card_colors, function (name, val) {//TODO: Change to a wheel or a line (save as #RRGGBB)
+		$(".colorselector-data")
+			.append($("<option></option>")
+				.attr("value", name)
+				.attr("data-color", val)
+				.text(name));
+	});
+
+	// Callbacks for when the user picks a color
+	$('#default_color_selector').colorselector({
+		callback: function (value, color, title) {
+			$("#default-color").val(title);
+			ui_set_default_color(title);
+		}
+	});
+	$('#card_color_selector').colorselector({
+		callback: function (value, color, title) {
+			$("#card-color").val(title);
+			ui_set_card_color(value);
+		}
+	});
+	$('#foreground_color_selector').colorselector({
+		callback: function (value, color, title) {
+			$("#foreground-color").val(title);
+			ui_set_foreground_color(value);
+		}
+	});
+	$('#background_color_selector').colorselector({
+		callback: function (value, color, title) {
+			$("#background-color").val(title);
+			ui_set_background_color(value);
+		}
+	});
+
+	// Styling
+	$(".dropdown-colorselector").addClass("input-group-addon color-input-addon");
+}
+
+$(document).ready(function () {
+
+	var preventPageDownOrUp = function (e) {
+		if (e.which == 33 || e.which == 34) { // Pg up or down
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
+		}
+	};
+	ui_setup_shortcut();
 
 
 	local_store_cards_load();
@@ -984,7 +981,7 @@ $(document).ready(function () {
 		render: typeahead_icon_render
 	});
 	$(".icon-list").keydown(preventPageDownOrUp);
-	$(".icon-select-button").click(ui_select_icon);
+	$(".icon-select-button").click(function () { window.open("http://game-icons.net/", "_blank"); });
 
 	$("#button-generate").click(ui_generate);
 	$("#button-load").click(function () { $("#file-load").click(); });

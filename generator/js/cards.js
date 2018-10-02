@@ -264,50 +264,13 @@ function card_data_split_params(value) {
 	return value.split("|").map(function (str) { return str.trim(); });
 }
 
-function card_data_parse_damage_type_params(value) {
-	return value
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.ACID + "[s]?", 'g'),					'$1<span class="card-inlineicon icon-type-acid"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.BLUDGEONING + "[s]?", 'g'),			'$1<span class="card-inlineicon icon-type-bludgeoning"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.FIRE + "[s]?", 'g'),					'$1<span class="card-inlineicon icon-type-fire"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.FORCE + "[s]?", 'g'),					'$1<span class="card-inlineicon icon-type-force"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.ICE + "[s]?", 'g'),					'$1<span class="card-inlineicon icon-type-ice"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.LIGHTNING + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-lightning"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.NECROTIC + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-necrotic"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.PIERCING + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-piercing"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.POISON + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-poison"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.PSYCHIC + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-psychic"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.RADIANT + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-radiant"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.SLASHING + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-slashing"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.THUNDER + "[s]?", 'g'),				'$1<span class="card-inlineicon icon-type-thunder"></span>')
-		.replace(new RegExp("([ ([0-9]|^){1}[ ]?" + I18N.DAMAGE_TYPES.PHYSICAL + "[s]? " + I18N.DAMAGE_TYPES.NOT_MAGICAL + "[s]?", 'g'), '$1<span class="card-inlineicon icon-type-non-magical"></span>')
-		;
-}
-
-function card_data_parse_condition_params(value) {
-	return value
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.BLINDED + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-blinded"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.CHARMED + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-charmed"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.DEAFENED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-deafened"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.EXHAUSTION + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-exhaustion"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.FRIGHTENED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-frightened"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.GRAPPLED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-grappled"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.INCAPACITATED + "[es]?", 'gi'),			'$1<span class="card-inlineicon icon-condition-incapacitated"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.INVISIBLE + "[es]?", 'gi'),				'<span class="card-inlineicon icon-condition-invisible"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.PARALYZED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-paralyzed"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.PETRIFIED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-petrified"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.POISONED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-poisoned"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.PRONE + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-prone"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.RESTRAINED + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-restrained"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.STUNNED + "[es]?", 'gi'),					'$1<span class="card-inlineicon icon-condition-stunned"></span>')
-		.replace(new RegExp("([ ]|^){1}" + I18N.CONDITION.UNCONSCIOUS + "[es]?", 'gi'),				'$1<span class="card-inlineicon icon-condition-unconscious"></span>')
-		;
-}
-
 function card_data_parse_icons_params(value) {
 	if (!value)
 		return value;
-	value = card_data_parse_damage_type_params(value);
-	value = card_data_parse_condition_params(value);
+	for (var i = 0; i < I18N.DAMAGE_TYPES.length; i++)
+		value = value.replace(I18N.DAMAGE_TYPES[i].regex, '$1<span class="card-inlineicon icon-type-' + I18N.DAMAGE_TYPES[i].file + '"></span>');
+	for (var i = 0; i < I18N.CONDITION.length; i++)
+		value = value.replace(I18N.CONDITION[i].regex, '$1<span class="card-inlineicon icon-condition-' + I18N.CONDITION[i].file + '"></span>');
 	return value
 		.replace(/\\/gi, '')
 		.replace(new RegExp("([ \(\[]|^){1}" + I18N.AC + "([^a-zA-Z]|$)", 'gi'),				'<span class="card-inlineicon icon-custom-ac"></span>$2')
@@ -453,12 +416,7 @@ function card_element_header_spell(card_data, options) {
 	var result = "";
 	result += '<div class="card-title-inlineicon-container">';
 	if (card_data.spell.level)
-		result += '<div class="card-title-spellicon icon-spell-level-' + card_data.spell.level + '"></div>';
-	/*else {
-		result += '<svg class="card-title-spell" height="1" width="100" viewbox="0 0 100 1" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">';
-		result += 	'<line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-dasharray="10,10" />';
-		result += '</svg>';		
-	}*/
+		result += '<div class="card-title-spellicon icon-spell-level_' + card_data.spell.level + '"></div>';
 	result += '</div>';
 	result += '<div class="card-subtitle card-spell-subtitle">' + card_data.spell.type + '</div>';
 	return result;
@@ -775,7 +733,7 @@ function card_element_spells(params, card_data, options) {
 	var result = "";
 	result += '<div class="card-element card-spells-line">';
 	if (params[0])
-		result += 	'<h4 class="card-inlineicon icon-spell-caster-' + params[0] + '"></h4>';
+		result += 	'<h4 class="card-inlineicon icon-spell-caster_' + params[0] + '"></h4>';
 	else
 		result += 	'<h4 class="card-inlineicon icon-spell-caster"></h4>';
 	result += 	'<p class="card-spells-ability">' + params[1] + '</p>';
@@ -784,7 +742,7 @@ function card_element_spells(params, card_data, options) {
 		result += 	'<p class="card-spells-list">' + params[2] + '</p>';
 	} else {
 		if (params[2]) {
-			result += 	'<p class="card-spells-level"><span class="card-inlineicon icon-spell-level-0"></span></p>';
+			result += 	'<p class="card-spells-level"><span class="card-inlineicon icon-spell-level_0"></span></p>';
 			result += 	'<p class="card-spells-list">' + params[2] + '</p>';   
 		}
 		var last = params.length - 1;
@@ -793,7 +751,7 @@ function card_element_spells(params, card_data, options) {
 			if (params[level] && params[level + 1]) {
 				last = level + 2;
 
-				result += '<p class="card-spells-level"><span class="card-inlineicon icon-spell-level-' + i + '"></span>(' + params[level] + ')</p>';
+				result += '<p class="card-spells-level"><span class="card-inlineicon icon-spell-level_' + i + '"></span>(' + params[level] + ')</p>';
 				result += 	'<p class="card-spells-list">' + params[level + 1] + '</p>';
 			}
 		}

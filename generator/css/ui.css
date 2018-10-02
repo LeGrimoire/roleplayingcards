@@ -1,5 +1,6 @@
 h3 {
-	margin-top: 10px;
+	margin: 7px 0px;
+	font-size: 22px;
 }
 
 label, p {
@@ -16,6 +17,10 @@ label, p {
 #menu-container {
 	padding-right: 10px;
     padding-left: 10px;
+}
+
+#menu-container .form-group {
+	margin-bottom: 3px;
 }
 
 .btn-fold-block {
@@ -73,20 +78,23 @@ label, p {
 	margin-left: 15px;
 	margin-top: 0px;
 }
-#title-cards-list h3 ~ button {
+#title-cards-list button {
     width: 50px;
     margin: 0px 5px 0px 0px;
     padding: 2px;
-    float: right;
+	float: right;
+	font-size: 13px;
 }
-#title-cards-list h3 ~ button:first-child {
+#title-cards-list button:first-of-type {
 	margin-right: 0px;
 }
 #cards-list {
-	margin-top: 0px;
+	margin: 0px -17px 0px -20px;
+    overflow-y: scroll;
+    height: 310px;/*TODO: Calculate exact exact in js*/
 }
 #cards-list .card-name {
-	margin: 0px -17px 0px -20px;
+	margin: 0px;
 	padding: 1px 0px 0px 10px;
 	font-size: 16px;
 	min-height: 19px;
@@ -103,11 +111,17 @@ label, p {
 
 #preview-container {
 	margin: 0px 0px;
-	padding: 0px 14px 0px 16px;
+	padding: 0px 12px 0px 12px;
 	background-color: white;
-	display: flex;
 	justify-content: space-around;
 	align-items: center;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	height: 920px;/*TODO: Calculate exact exact in js*/
+}
+#preview-container .card {
+	margin-left: auto;
+	margin-right: auto;
 }
 #preview-container .card-size-25x35,
 #preview-container .card-size-225x35 {
@@ -117,6 +131,7 @@ label, p {
 /* Small screen (preview fills all columns) */
 @media (max-width : 1199px) {
 	#preview-container {
+		display: flex;
 		flex-flow: row wrap;
 	}
 	.card {
@@ -125,9 +140,6 @@ label, p {
 }
 /* Large screen (preview fills one column, columns are narrow) */
 @media (min-width: 1200px) {
-	#preview-container {
-		flex-flow: column wrap;
-	}
 	.card {
 		margin-top: 2.5px;
 	}
