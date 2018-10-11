@@ -201,23 +201,17 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="small-icons" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary btn-block" id="button-apply-icon-back">Set for back</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary btn-block" id="button-apply-icon">Set for front</button>
+                            </div>
+                            <div class="col-sm-4">
                                 <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" checked id="small-icons">Use small front icons
-                                    </label>
+                                    <input type="checkbox" checked id="small-icons" style="margin-left:0px;">
+                                    <label for="small-icons">Small front</label>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-2">
-                            </div>
-                            <div class="col-sm-5">
-                                <button type="button" class="btn btn-primary btn-block" id="button-apply-icon">Apply icon</button>
-                            </div>
-                            <div class="col-sm-5">
-                                <button type="button" class="btn btn-primary btn-block" id="button-apply-icon-back">Apply back icon</button>
                             </div>
                         </div>
                     </form>
@@ -229,14 +223,40 @@
                             <h3 class="btn-fold-block col-sm-6" for="cards-list">
                                 <svg class="" viewbox="-1 -1 102 102" preserveaspectratio="none" style="width:10px;height:10px;margin-left:-15px;margin-right:5px;" xmlns="http://www.w3.org/2000/svg">
                                     <polygon points="0,0 100,0 50,100" fill="black" style="stroke-width:1"></polygon>
-                                </svg>Cards list</h3>
+                                </svg>Cards </h3>
+                            <!-- <div class="col-sm-2"> -->
+                                <p class="form-control-static" id="total_card_count">(0 unique)</p>
+                            <!-- </div> -->
                             <!-- <div class="col-sm-2"></div> -->
                             <!-- <div class="col-sm-2"> -->
-                                <button type="button" class="btn btn-primary btn-block" id="button-up">Up</button>
+                            <button type="button" class="btn btn-primary btn-block" id="button-up">Up</button>
                             <!-- </div> -->
                             <!-- <div class="col-sm-2"> -->
-                                <button type="button" class="btn btn-primary btn-block" id="button-down">Down</button>
+                            <button type="button" class="btn btn-primary btn-block" id="button-down">Down</button>
                             <!-- </div> -->
+                        </div>
+                        <div class="form-group" id="cards-list-buttons">
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-default btn-block" id="button-insert-lexical">Ins. lexical</button>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-danger btn-block" id="button-delete-card">Delete</button>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-success btn-block" id="button-duplicate-card">Copy</button>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-primary btn-block" id="button-add-card">New :</button>
+                            </div>
+                            <div class="col-sm-3">
+                                <select class="form-control" id="card-type" data-property="type">
+                                    <option value="" selected></option>
+                                    <option value="creature">Creature</option>
+                                    <option value="item">Item</option>
+                                    <option value="spell">Spell</option>
+                                    <option value="power">Power</option>
+                                </select>
+                            </div>
                         </div>
                     </form>
                     <form id="cards-list" role="form" class="form-horizontal">
@@ -249,40 +269,6 @@
             <div class="col-md-12 col-lg-5" id="card-form-container">
                 <h3 class="hide-when-large" style="clear:both;padding-top:10px;">Card</h3>
                 <form class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <label for="total_card_count" class="col-sm-2 control-label">Deck</label>
-                        <div class="col-sm-6">
-                            <p class="form-control-static" id="total_card_count">contains 0 cards</p>
-                        </div>
-                        <div class="col-sm-2">
-                            <button type="button" class="btn btn-primary btn-block" id="button-add-card">New card</button>
-                        </div>
-                        <div class="col-sm-2">
-                            <select class="form-control" id="card-type" data-property="type">
-                                <option value="" selected></option>
-                                <option value="creature">Creature</option>
-                                <option value="item">Item</option>
-                                <option value="spell">Spell</option>
-                                <option value="power">Power</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="selected-card" class="col-sm-2 control-label">Card</label>
-                        <div class="col-sm-4">
-                            <select class="form-control" id="selected-card"></select>
-                        </div>
-                        <label for="card-count" class="col-sm-1 control-label">Count</label>
-                        <div class="col-sm-1">
-                            <input type="number" id="card-count" class="form-control" placeholder="1" value="1" data-property="count">
-                        </div>
-                        <div class="col-sm-2">
-                            <button type="button" class="btn btn-danger btn-block" id="button-delete-card">Delete</button>
-                        </div>
-                        <div class="col-sm-2">
-                            <button type="button" class="btn btn-success btn-block" id="button-duplicate-card">Duplicate</button>
-                        </div>
-                    </div>
                     <div class="form-group">
                         <label for="card-title" class="col-sm-2 control-label">Title</label>
                         <div class="col-sm-7">
@@ -492,7 +478,7 @@
                     <div class="form-group">
                         <label for="card-contents" class="col-sm-2 control-label">Contents</label>
                         <div class="col-sm-10">
-                            <textarea class="form-control" rows="14" id="card-contents"></textarea>
+                            <textarea class="form-control" rows="16" id="card-contents"></textarea>
                         </div>
                     </div>
                     <div class="form-group">

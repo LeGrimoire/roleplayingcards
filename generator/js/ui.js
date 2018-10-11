@@ -11,6 +11,7 @@ var ui = {
 	filename: [],
 	saveTime: '-'
 };
+var previousCardIdx;
 
 
 function ui_open_help() {
@@ -239,12 +240,13 @@ function ui_add_cards(data) {
 }
 
 function ui_select_card_by_index(index) {
-	$("#selected-card").val(index);
+	previousCardIdx = ui.selectedCardIdx;
+	ui.selectedCardIdx = index;
 	ui_update_selected_card();
 }
 
 function ui_selected_card_index() {
-	return parseInt($("#selected-card").val(), 10);
+	return ui.selectedCardIdx;
 }
 
 function ui_selected_card() {
@@ -264,8 +266,8 @@ function ui_add_new_card() {
 }
 
 function ui_duplicate_card() {
-	var cardIdx = ui_selected_card_index();
 	if (card_data.length > 0) {
+		var cardIdx = ui_selected_card_index();
 		var old_card = ui_selected_card();
 		var new_card = $.extend({}, old_card);
 		if (cardIdx + 1 != card_data.length) {
@@ -274,30 +276,38 @@ function ui_duplicate_card() {
 		} else
 			card_data.push(new_card);
 		new_card.title = new_card.title + " (Copy)";
+		ui_update_card_list(true);
+		ui_select_card_by_index(cardIdx + 1);
 	}
-	ui_update_card_list(true);
-	ui_select_card_by_index(cardIdx + 1);
 }
 
 function ui_delete_card() {
-	var index = ui_selected_card_index();
-	card_data.splice(index, 1);
-	ui_update_card_list(true);
-	ui_select_card_by_index(Math.min(index, card_data.length - 1));
+	if (card_data.length > 0) {
+		var index = ui_selected_card_index();
+		card_data.splice(index, 1);
+		ui_update_card_list(true);
+		ui_select_card_by_index(Math.min(index, card_data.length - 1));
+	}
 }
 
 
 function ui_update_card_list(doNotUpdateSelectedCard) {
-	$("#total_card_count").text("contains " + card_data.length + " unique cards.");
+	$("#total_card_count").text("(" + card_data.length + " unique)");
 
 	var cardsList = $("#cards-list");
 	cardsList.empty();
-	var selectedCardCombo = $("#selected-card");
-	selectedCardCombo.empty();
 	for (var i = 0; i < card_data.length; ++i) {
 		var card = card_data[i];
-		selectedCardCombo.append($('<option></option>').attr("value", i).text(card.title));
+
 		var newCardInList = $('<h4 class="card-name"></h4>').attr("index", i).text(card.title).click(ui_card_list_select_card);
+		var countBlock = $('<div class="card-count"></div>');
+		var buttonDecrease = $('<button type="button" class="btn btn-default card-count-less">-</button>').click(ui_change_card_count_decrease);
+		if (!card.count || card.count == 1)
+			buttonDecrease[0].disabled = true;
+		countBlock.append(buttonDecrease);
+		countBlock.append($('<span></span>').text(card.count || 1));
+		countBlock.append($('<button type="button" class="btn btn-default card-count-more">+</button>').click(ui_change_card_count_increase));
+		newCardInList.append(countBlock);
 		if (card.color)
 			newCardInList.css("background-color", card.color + "33");
 		cardsList.append(newCardInList);
@@ -317,7 +327,6 @@ function ui_update_selected_card() {
 		$("#card-title").val(card.title);
 		$("#card-title-size").val(card.title_size);
 		$("#card-subtitle").val(card.subtitle);
-		$("#card-count").val(card.count);
 		$("#card-color").val(card.color).change();
 		$("#card-icon").val(card.icon);
 		$("#card-icon-back").val(card.icon_back);
@@ -415,21 +424,37 @@ function ui_update_selected_card() {
 			$(".power-only").hide();
 		}
 	} else {
+		$("#card-type").val("");
+
+		$("#card-title").val("");	
+		$("#card-title-size").val("");
+		$("#card-subtitle").val("");
+		$("#card-color").val("").change();
+		$("#card-icon").val("");
+		$("#card-icon-back").val("");
+		$("#card-background").val("");
+		$("#card-description").val("");
+		$("#card-contents").val("");
+		$("#card-tags").val("");
+		$("#card-reference").val("");
+		$("#card-compact").prop("checked", false);
+
 		$(".creature-only").hide();
 		$(".item-only").hide();
 		$(".spell-only").hide();
 		$(".power-only").hide();
 	}
 
-	var cardsList = $("#cards-list");
-	if ((ui.selectedCardIdx || ui.selectedCardIdx == 0) && ui.selectedCardIdx < card_data.length) {
-		var oldCard = card_data[ui.selectedCardIdx];
-		cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = oldCard.color ? oldCard.color + "33" : "";
-		cardsList[0].children[ui.selectedCardIdx].classList.remove("selected");
+	if (card_data.length > 0) {
+		var cardsList = $("#cards-list");
+		if ((previousCardIdx || previousCardIdx == 0) && previousCardIdx < card_data.length) {
+			var oldCard = card_data[previousCardIdx];
+			cardsList[0].children[previousCardIdx].style.backgroundColor = oldCard.color ? oldCard.color + "33" : "";
+			cardsList[0].children[previousCardIdx].classList.remove("selected");
+		}
+		// cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = "#00666633";
+		cardsList[0].children[ui.selectedCardIdx].classList.add("selected");
 	}
-	ui.selectedCardIdx = ui_selected_card_index();
-	// cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = "#00666633";
-	cardsList[0].children[ui.selectedCardIdx].classList.add("selected");
 
 	dontRenderSelectedCard = false;
 	ui_render_selected_card();
@@ -506,6 +531,31 @@ function ui_change_option() {
 	ui_render_selected_card();
 }
 
+function ui_change_card_count_decrease() {
+	var idx = $(this)[0].parentElement.parentElement.attributes.index.value;
+	var card = card_data[idx];
+	if (!card.count || card.count == 1)
+		card.count = 1;
+	else
+		card.count--;
+	if (card.count == 1)
+		$(this)[0].disabled = true;
+	var cardCount = $(this)[0].parentElement.children[1];
+	cardCount.innerText = card.count;
+}
+
+function ui_change_card_count_increase() {
+	var idx = $(this)[0].parentElement.parentElement.attributes.index.value;
+	var card = card_data[idx];
+	if (!card.count)
+		card.count = 2;
+	else
+		card.count++;
+	$(this)[0].parentElement.children[0].disabled = false;
+	var cardCount = $(this)[0].parentElement.children[1];
+	cardCount.innerText = card.count;
+}
+
 function ui_change_card_title() {
 	var title = $("#card-title").val();
 	var card = ui_selected_card();
@@ -513,7 +563,6 @@ function ui_change_card_title() {
 		card.title = title;
 		if (ui.selectedCardIdx || ui.selectedCardIdx == 0)
 			$("#cards-list")[0].children[ui.selectedCardIdx].innerText = title;
-		$("#selected-card option:selected").text(title);
 		ui_render_selected_card();
 	}
 }
@@ -697,6 +746,18 @@ function ui_card_list_down() {
 		ui_update_card_list(true);
 		ui_select_card_by_index(cardIdx + 1);
 	}
+}
+
+function ui_card_list_insert_lexical() {
+	var cardIdx = ui_selected_card_index();
+	if (cardIdx >= card_data.length - 1 || cardIdx < 0)
+		cardIdx = 0;
+
+	var cardLexicals = card_create_lexicals();
+	card_data = cardLexicals.concat(card_data);
+
+	ui_update_card_list(true);
+	ui_select_card_by_index(cardIdx + cardLexicals.length);
 }
 
 
@@ -1024,19 +1085,18 @@ $(document).ready(function () {
 
 	$("#button-up").click(ui_card_list_up);
 	$("#button-down").click(ui_card_list_down);
+	$("#button-insert-lexical").click(ui_card_list_insert_lexical);
 
 	// ----- Card
 
 	$("#button-add-card").click(ui_add_new_card);
 	$("#button-duplicate-card").click(ui_duplicate_card);
 	$("#button-delete-card").click(ui_delete_card);
-	$("#selected-card").change(ui_update_selected_card);
 
 	$("#card-title").change(ui_change_card_title);
 	$("#card-title-size").change(ui_change_card_property);
 	$("#card-subtitle").change(ui_change_card_property);
 	$("#card-icon").change(ui_change_card_property);
-	$("#card-count").change(ui_change_card_property);
 	$("#card-icon-back").change(ui_change_card_property);
 	$("#card-background").change(ui_change_card_property);
 	$("#card-color").change(ui_change_card_color);

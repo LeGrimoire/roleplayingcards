@@ -35,7 +35,7 @@ var I18N = {
 	ABREVIATIONS: [
 		{ name: "JS", meaning: "Jet de sauvegarde" },
 		{ name: "JA", meaning: "Jet d'attaque" },
-		{ name: "JC", meaning: "Jet de caractéristiqu" },
+		{ name: "JC", meaning: "Jet de caractéristique" },
 		{ name: "CA", meaning: "Classe d'armure" },
 		{ name: "VD", meaning: "Vitesse de déplacement" },
 		{ name: "PP", meaning: "Perception passive" },
@@ -65,6 +65,9 @@ var I18N = {
 
 	DAMAGE_TYPES: [
 		{
+			file: "physical_not_magical", name: "physique non magique",
+			regex: new RegExp("([ ([0-9]|^){1}[ ]?physique[s]? non magique[s]?", 'gi')
+		}, {
 			file: "bludgeoning", name: "contondant",
 			regex: new RegExp("([ ([0-9]|^){1}[ ]?contondant[s]?", 'gi')
 		}, {
@@ -103,60 +106,57 @@ var I18N = {
 		}, {
 			file: "radiant", name: "radiant",
 			regex: new RegExp("([ ([0-9]|^){1}[ ]?radiant[s]?", 'gi')
-		}, {
-			file: "physical_not_magical", name: "physique non magique",
-			regex: new RegExp("([ ([0-9]|^){1}[ ]?physique[s]? non magique[s]?", 'gi')
 		}
 	],
 	CONDITION: [
 		{
 			file: "blinded", name: "aveuglé",
-			regex: new RegExp("([ ]|^){1}aveuglé[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}aveuglé[e]?[s]?", 'gi')
 		}, {
 			file: "charmed", name: "charmé",
-			regex: new RegExp("([ ]|^){1}charmé[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}charmé[e]?[s]?", 'gi')
 		}, {
 			file: "deafened", name: "assourdi",
-			regex: new RegExp("([ ]|^){1}assourdi[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}assourdi[e]?[s]?", 'gi')
 		}, {
 			file: "exhaustion", name: "épuisé",
-			regex: new RegExp("([ ]|^){1}épuisé[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}épuisé[e]?[s]?", 'gi')
 		}, {
 			file: "frightened", name: "effrayé",
-			regex: new RegExp("([ ]|^){1}effrayé[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}effrayé[e]?[s]?", 'gi')
 		}, {
 			file: "grappled", name: "agrippé",
-			regex: new RegExp("([ ]|^){1}agrippé[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}agrippé[e]?[s]?", 'gi')
 		}, {
 			file: "incapacitated", name: "neutralisé",
-			regex: new RegExp("([ ]|^){1}neutralisé[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}neutralisé[e]?[s]?", 'gi')
 		}, {
 			file: "invisible", name: "invisible",
 			regex: new RegExp("([ ]|^){1}invisible[s]?", 'gi')
 		}, {
 			file: "paralyzed", name: "paralysé",
-			regex: new RegExp("([ ]|^){1}paralysé[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}paralysé[e]?[s]?", 'gi')
 		}, {
 			file: "petrified", name: "pétrifié",
-			regex: new RegExp("([ ]|^){1}pétrifié[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}pétrifié[e]?[s]?", 'gi')
 		}, {
 			file: "poisoned", name: "empoisonné",
-			regex: new RegExp("([ ]|^){1}empoisonné[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}empoisonné[e]?[s]?", 'gi')
 		}, {
 			file: "prone", name: "à terre",
 			regex: new RegExp("([ ]|^){1}à terre[s]?", 'gi')
 		}, {
 			file: "restrained", name: "entravé",
-			regex: new RegExp("([ ]|^){1}entravé[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}entravé[e]?[s]?", 'gi')
 		}, {
 			file: "stunned", name: "étourdi",
-			regex: new RegExp("([ ]|^){1}étourdi[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}étourdi[e]?[s]?", 'gi')
 		}, {
 			file: "unconscious", name: "inconscient",
-			regex: new RegExp("([ ]|^){1}inconscient[s]?", 'gi')
+			regex: new RegExp("([ ]|^){1}inconscient[e]?[s]?", 'gi')
 		}
 	],
-
+	
 	CASTING_TIME: "Incantation",
 	RANGE: "Portée",
 	DURATION: "Durée",
@@ -173,6 +173,30 @@ var I18N = {
 		TRANSMUTATION: "Transmutation"
 	},
 
-	GP: "po"
+	CUSTOM: [
+		{
+			file: "creature", name: "créature",
+			regex: new RegExp("([\(\[]|^)?[ ]?cr[ée]ature[s]?()([ ]|$)", 'gi')
+		},
+		{
+			file: "timer", name: "prochain tour",
+			regex: new RegExp("([ \(\[]|^){1}prochain[s]? tour[s]?([^a-zA-Z]|$)", 'gi')
+		},
+		{
+			file: "ac", name: "ca",
+			regex: new RegExp("([^a-zA-Z]|^){1}CA[s]?([^a-zA-Z]|$)", 'gi')
+		},
+		{
+			file: "hp", name: "pv",
+			regex: new RegExp("([^a-zA-Z]|^){1}PV[s]?([^a-zA-Z]|$)", 'gi')
+		},
+		{
+			file: "gp", name: "po",
+			regex: new RegExp("([^a-zA-Z]|^){1}po[s]?([^a-zA-Z]|$)", 'gi')
+		}
+	],
+
+	PICTO: "Picto",
+	LEXICAL: "Lexique"
 };
 

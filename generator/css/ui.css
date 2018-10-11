@@ -7,6 +7,7 @@ label, p {
 	margin-bottom: 0px;
 }
 
+
 #file-name {
 	padding: 0px;
 }
@@ -17,14 +18,16 @@ label, p {
 #menu-container {
 	padding-right: 10px;
     padding-left: 10px;
+    z-index: 0;
 }
 
 #menu-container .form-group {
-	margin-bottom: 3px;
+	margin-bottom: 2px;
 }
 
 .btn-fold-block {
 	width: fit-content;
+    cursor: pointer;
 }
 .btn-fold-block svg {
 	display: inline;
@@ -37,7 +40,7 @@ label, p {
 	z-index: 1;
 	position: relative;
 	height: 800px;
-    width: 10px;
+    width: 12px;
     margin: 0px;
     padding: 0px;
 	border: none;
@@ -52,7 +55,7 @@ label, p {
 }
 .btn-fold-section-right {
 	right: -1px;
-    margin-left: -10px;
+    margin-left: -12px;
 	background: radial-gradient(at 100% 50%, #666666ff 0%, #ffffff00 75%);
 	border-right: 1px solid #aaaaaaaa;
 }
@@ -62,7 +65,7 @@ label, p {
 }
 .btn-fold-section-left {
 	left: -1px;
-    margin-right: -10px;
+    margin-right: -12px;
 	background: radial-gradient(at 0% 50%, #666666ff 0%, #ffffff00 75%);
 	border-left: 1px solid #aaaaaaaa;
 }
@@ -79,19 +82,32 @@ label, p {
 	margin-top: 0px;
 }
 #title-cards-list button {
-    width: 50px;
-    margin: 0px 5px 0px 0px;
+    width: 40px;
+    margin: 0px 2px 0px 0px;
     padding: 2px;
 	float: right;
 	font-size: 13px;
 }
-#title-cards-list button:first-of-type {
-	margin-right: 0px;
+#cards-list-buttons > * {
+	padding-right: 2px;
 }
+#cards-list-buttons button,
+#cards-list-buttons select {
+    margin: 0px 5px 0px 0px;
+    padding: 2px;
+	font-size: 13px;
+	height: 24px;
+}
+
+#total_card_count {
+	padding: 2px 0px 0px 2px;
+	display: inline-block;
+}
+
 #cards-list {
-	margin: 0px -17px 0px -20px;
+	margin: 0px -12px 0px -15px;
     overflow-y: scroll;
-    height: 310px;/*TODO: Calculate exact exact in js*/
+    height: 309px;/*TODO: Calculate exact available height in js*/
 }
 #cards-list .card-name {
 	margin: 0px;
@@ -99,17 +115,39 @@ label, p {
 	font-size: 16px;
 	min-height: 19px;
 	cursor: pointer;
+	position: relative;
 }
 #cards-list .card-name.selected {
 	padding: 0px 0px 0px 9px;
 	border: solid 1px #33333377;
+}
+#cards-list .card-count {
+	position: absolute;
+	right: 0px;
+	top: 1px;
+}
+#cards-list .card-count * {
+	vertical-align: text-bottom;
+}
+#cards-list .card-name.selected .card-count {
+	right: -1px;
+	top: 0px;
+}
+
+.card-count-more, .card-count-less {
+	padding: 0px;
+	width: 17px;
+	font-size: 14px;
+	line-height: unset;
 }
 
 #card-form-container {
 	padding: 0px 17px;
 }
 
+
 #preview-container {
+    z-index: 0;
 	margin: 0px 0px;
 	padding: 0px 12px 0px 12px;
 	background-color: white;
@@ -145,10 +183,28 @@ label, p {
 	}
 }
 
+
 @media (min-width: 992px){
 	.hide-when-large{
 		display:none;
 	}
+}
+
+
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, 
+.col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, 
+.col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, 
+.col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, 
+.col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, 
+.col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, 
+.col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, 
+.col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, 
+.col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, 
+.col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, 
+.col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, 
+.col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 .row-eq-height {
@@ -172,13 +228,11 @@ label, p {
 .form-group .col-sm-1, .form-group .col-sm-2, .form-group .col-sm-3, .form-group .col-sm-4,
 .form-group .col-sm-5, .form-group .col-sm-6, .form-group .col-sm-7, .form-group .col-sm-8, 
 .form-group .col-sm-9, .form-group .col-sm-10, .form-group .col-sm-11, .form-group .col-sm-12 {
-	padding-right: 4px;
+	padding-right: 2px;
 	padding-left: 0px;
 }
-
-#total_card_count {
-	padding-top: 5px;
-	padding-bottom: 0px;
+.form-group .control-label {
+	padding-right: 3px;
 }
 
 .form-group .btn {
@@ -197,7 +251,8 @@ label, p {
 	padding: 3px 6px;
 }
 .col-sm-1 .form-control, select.form-control {
-	padding: 3px 3px;
+	padding: 0px;
+	text-align: center;
 }
 
 select.form-control {

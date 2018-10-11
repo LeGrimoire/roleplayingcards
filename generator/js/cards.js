@@ -74,6 +74,57 @@ function card_power_default_data(power_data) {
 }
 
 
+function card_create_lexicals() {
+	var cards = [];
+	
+	// Picto
+	var card = {};
+	card_init(card);
+	card.title = I18N.PICTO;
+	card.contents = [];
+	for (var i = 0; i < I18N.DAMAGE_TYPES.length; i++) {
+		var line = "property | " + I18N.DAMAGE_TYPES[i].name + " | " + I18N.DAMAGE_TYPES[i].name;
+		if (i < I18N.DAMAGE_TYPES.length - 1) {
+			i++;
+			line += " | property | " + I18N.DAMAGE_TYPES[i].name + " | " + I18N.DAMAGE_TYPES[i].name;
+		}
+		card.contents.push(line);
+	}
+	card.contents.push("ruler");
+	for (var i = 0; i < I18N.CONDITION.length; i++) {
+		var line = "property | " + I18N.CONDITION[i].name + " | " + I18N.CONDITION[i].name;
+		if (i < I18N.CONDITION.length - 1) {
+			i++;
+			line += " | property | " + I18N.CONDITION[i].name + " | " + I18N.CONDITION[i].name;
+		}
+		card.contents.push(line);
+	}
+	card.contents.push("ruler");
+	for (var i = 0; i < I18N.CUSTOM.length; i++) {
+		var line = "property | " + I18N.CUSTOM[i].name + " | " + I18N.CUSTOM[i].name;
+		if (i < I18N.CUSTOM.length - 1) {
+			i++;
+			line += " | property | " + I18N.CUSTOM[i].name + " | " + I18N.CUSTOM[i].name;
+		}
+		card.contents.push(line);
+	}
+	cards.push(card);
+
+	// Lexical
+	card = {};
+	card_init(card);
+	card.title = I18N.LEXICAL;
+	card.contents = [];
+	for (var i = 0; i < I18N.ABREVIATIONS.length; i++) {
+		var line = "property | " + I18N.ABREVIATIONS[i].name + " | " + I18N.ABREVIATIONS[i].meaning;
+		card.contents.push(line);
+	}
+	cards.push(card);
+
+	return cards;
+}
+
+
 function card_init(card) {
 	card.title = card.title || "";
 	if (card.type == CardType.CREATURE) {
@@ -101,6 +152,7 @@ function card_init(card) {
 	card_update(card);
 }
 
+// Remove this function when format is sure
 function card_update(card) {
 	var removeIndexes = [];
 	card.contents.map(function(value, index) {
@@ -160,7 +212,52 @@ function card_update(card) {
 		card.contents.splice(removeIndexes[removeIndexes.pop()], 1);
 
 	if (card.type == CardType.CREATURE) {
-		update_from_cr(card);
+		var pxByCR = [
+			10,
+			200,
+			450,
+			700,
+			1100,
+			1800,
+			2300,
+			2900,
+			3900,
+			5000,
+			5900,
+			7200,
+			8400,
+			10000,
+			11500,
+			13000,
+			15000,
+			18000,
+			20000,
+			22000,
+			25000,
+			33000,
+			41000,
+			50000,
+			62000,
+			75000,
+			90000,
+			105000,
+			120000,
+			135000,
+			155000
+		];
+		var cr = card.creature.cr;
+		if (cr === "1/8") {
+			cr = 1 / 8;
+			card.creature.xp = 25;
+		} else if (cr === "1/4") {
+			cr = 1 / 4;
+			card.creature.xp = 50;
+		} else if (cr === "1/2") {
+			cr = 1 / 2;
+			card.creature.xp = 100;
+		} else
+			card.creature.xp = pxByCR[cr];
+		card.creature.proficiency = Math.floor(cr / 4) + 2;
 	}
 }
 
@@ -194,55 +291,6 @@ function card_remove_tag(card, tag) {
 		delete card.tags;
 }
 
-var pxByCR = [
-	10,
-	200,
-	450,
-	700,
-	1100,
-	1800,
-	2300,
-	2900,
-	3900,
-	5000,
-	5900,
-	7200,
-	8400,
-	10000,
-	11500,
-	13000,
-	15000,
-	18000,
-	20000,
-	22000,
-	25000,
-	33000,
-	41000,
-	50000,
-	62000,
-	75000,
-	90000,
-	105000,
-	120000,
-	135000,
-	155000
-];
-
-function update_from_cr(card) {
-	var cr = card.creature.cr;
-	if (cr === "1/8") {
-		cr = 1/8;
-		card.creature.xp = 25;
-	} else if (cr === "1/4") {
-		cr = 1/4;
-		card.creature.xp = 50;
-	} else if (cr === "1/2") {
-		cr = 1/2;
-		card.creature.xp = 100;
-	} else
-		card.creature.xp = pxByCR[cr];
-	card.creature.proficiency = Math.floor(cr / 4) + 2;
-}
 
 function card_data_color_front(card_data, options) {
 	return card_data.color_front || card_data.color || options.default.color || "black";
@@ -271,14 +319,10 @@ function card_data_parse_icons_params(value) {
 		value = value.replace(I18N.DAMAGE_TYPES[i].regex, '$1<span class="card-inlineicon icon-type-' + I18N.DAMAGE_TYPES[i].file + '"></span>');
 	for (var i = 0; i < I18N.CONDITION.length; i++)
 		value = value.replace(I18N.CONDITION[i].regex, '$1<span class="card-inlineicon icon-condition-' + I18N.CONDITION[i].file + '"></span>');
+	for (var i = 0; i < I18N.CUSTOM.length; i++)
+		value = value.replace(I18N.CUSTOM[i].regex, '$1<span class="card-inlineicon icon-custom-' + I18N.CUSTOM[i].file + '"></span>$2');
 	return value
 		.replace(/\\/gi, '')
-		.replace(new RegExp("([ \(\[]|^){1}" + I18N.AC + "([^a-zA-Z]|$)", 'gi'),				'<span class="card-inlineicon icon-custom-ac"></span>$2')
-		.replace(new RegExp("([ \(\[]|^){1}" + I18N.HP + "[s]?([^a-zA-Z]|$)", 'gi'),			'$1<span class="card-inlineicon icon-custom-hp"></span>$2')
-		.replace(new RegExp("(([\(\[^a-zA-Z])| |^){1}" + I18N.GP + "([^a-zA-Z]|$)", 'gi'),		'$2<span class="card-inlineicon icon-custom-gp"></span>$3')
-		.replace(/[ ]?cr[ée]ature[s]?[ ]?/gi,					'<span class="card-inlineicon icon-custom-creature"></span>')
-		.replace(/prochain[s]? tour[s]?/gi,						'<span class="card-inlineicon icon-custom-timer"></span>')
-		// .replace(/([ ]|^){1}tour[s]?[ ]?/g,       			'$1<span class="card-inlineicon icon-custom-round"></span>')
 		// .replace(/ comme /g,       							' ĉ ')
 		;
 }
@@ -541,15 +585,15 @@ function card_element_boxes(params, card_data, options) {
 	result += '<div class="card-element" style="' + align + (nextParamsNotBoxes ? 'display:flex;flex-direction:row;' : '') + '">';
 	if (double) {
 		for (var i = 0; i < count; ++i) {
-			result += '<svg class="card-box" viewbox="-3 -3 106 106" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
-			result += '<rect x="0" y="0" width="100" height="100" fill="none" style="' + styleDash + ';stroke-width:6;stroke:' + color + '"></rect>';
-			result += '<rect x="14" y="14" width="72" height="72" fill="none" style="' + styleInnerRect + ';stroke-width:4;stroke:' + color + '"></rect>';
+			result += '<svg class="card-box" viewbox="-4 -4 108 108" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
+			result += '<rect x="0" y="0" width="100" height="100" fill="none" style="' + styleDash + ';stroke-width:8;stroke:' + color + '"></rect>';
+			result += '<rect x="14" y="14" width="72" height="72" fill="none" style="' + styleInnerRect + ';stroke-width:6;stroke:' + color + '"></rect>';
 			result += '</svg>';
 		}
 	} else {
 		for (var i = 0; i < count; ++i) {
-			result += '<svg class="card-box" viewbox="-3 -3 106 106" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
-			result += '<rect x="0" y="0" width="100" height="100" fill="none" style="' + styleDash + ';stroke-width:6;stroke:' + color + '"></rect>';
+			result += '<svg class="card-box" viewbox="-4 -4 108 108" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
+			result += '<rect x="0" y="0" width="100" height="100" fill="none" style="' + styleDash + ';stroke-width:8;stroke:' + color + '"></rect>';
 			result += '</svg>';
 		}
 	}
