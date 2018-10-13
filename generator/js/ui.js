@@ -263,6 +263,8 @@ function ui_add_new_card() {
 	card_data.push(card);
 	ui_update_card_list(true);
 	ui_select_card_by_index(card_data.length - 1);
+	
+	$('#card-title').select();
 }
 
 function ui_duplicate_card() {
@@ -299,7 +301,8 @@ function ui_update_card_list(doNotUpdateSelectedCard) {
 	for (var i = 0; i < card_data.length; ++i) {
 		var card = card_data[i];
 
-		var newCardInList = $('<h4 class="card-name"></h4>').attr("index", i).text(card.title).click(ui_card_list_select_card);
+		var newCardInList = $('<div class="card-name"></div>').attr('index', i);
+		newCardInList.append($('<h4></h4>').text(card.title).click(ui_card_list_select_card));
 		var countBlock = $('<div class="card-count"></div>');
 		var buttonDecrease = $('<button type="button" class="btn btn-default card-count-less">-</button>').click(ui_change_card_count_decrease);
 		if (!card.count || card.count == 1)
@@ -562,7 +565,7 @@ function ui_change_card_title() {
 	if (card) {
 		card.title = title;
 		if (ui.selectedCardIdx || ui.selectedCardIdx == 0)
-			$("#cards-list")[0].children[ui.selectedCardIdx].innerText = title;
+			$("#cards-list")[0].children[ui.selectedCardIdx].children[0].innerText = title;
 		ui_render_selected_card();
 	}
 }
@@ -722,8 +725,8 @@ function ui_apply_default_icon_back() {
 
 
 function ui_card_list_select_card() {
-	var idx = $(this).attr("index");
-	ui_select_card_by_index(idx);
+	var idx = $(this).parent().attr("index");
+	ui_select_card_by_index(parseInt(idx));
 }
 
 function ui_card_list_up() {

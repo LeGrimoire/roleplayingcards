@@ -16,13 +16,62 @@ label, p {
 }
 
 #menu-container {
-	padding-right: 10px;
+	padding-right: 12px;
     padding-left: 10px;
-    z-index: 0;
 }
 
 #menu-container .form-group {
 	margin-bottom: 2px;
+}
+
+#default-values-block p,
+#default-values-block button,
+#page-settings-block p,
+#page-settings-block button {
+	padding-top: 0px;
+	padding-bottom: 0px;
+	height: 24px;
+	line-height: 24px;
+}
+#default-values-block label,
+#default-values-block .checkbox,
+#page-settings-block label,
+#page-settings-block .checkbox {
+	min-height: unset;
+	height: 24px;
+	line-height: 24px;
+	padding-top: 0px;
+	vertical-align: middle;
+}
+#default-values-block .checkbox input[type=checkbox],
+#page-settings-block .checkbox input[type=checkbox] {
+	margin-top: 0px;
+}
+#default-values-block select,
+#default-values-block input,
+#page-settings-block select,
+#page-settings-block input {
+	height: 24px;
+    font-size: 13px;
+	vertical-align: middle;
+}
+#default-values-block .btn-colorselector,
+#page-settings-block .btn-colorselector {
+	width: 16px;
+	height: 16px;
+}
+#default-values-block .dropdown,
+#page-settings-block .dropdown {
+	padding: 2px;
+	height: 24px;
+}
+#default-values-block .dropdown > a,
+#page-settings-block .dropdown > a {
+	height: 16px;
+}
+#default-values	-block .dropdown-menu,
+#page-settings-block .dropdown-menu {
+	width: 322px;
 }
 
 .btn-fold-block {
@@ -37,7 +86,7 @@ label, p {
 }
 
 .btn-fold-section {
-	z-index: 1;
+	z-index: 100;
 	position: relative;
 	height: 800px;
     width: 12px;
@@ -111,15 +160,20 @@ label, p {
 }
 #cards-list .card-name {
 	margin: 0px;
-	padding: 1px 0px 0px 10px;
-	font-size: 16px;
+	padding: 1px 0px 0px 5px;
 	min-height: 19px;
+	line-height: 1.1;
 	cursor: pointer;
 	position: relative;
 }
 #cards-list .card-name.selected {
-	padding: 0px 0px 0px 9px;
+	padding: 0px 0px 0px 4px;
 	border: solid 1px #33333377;
+}
+#cards-list .card-name h4 {
+	margin: 0px;
+	padding: 0px;
+	font-size: 16px;
 }
 #cards-list .card-count {
 	position: absolute;
@@ -149,13 +203,14 @@ label, p {
 #preview-container {
     z-index: 0;
 	margin: 0px 0px;
-	padding: 0px 12px 0px 12px;
+	padding: 0px 10px 0px 10px;
 	background-color: white;
 	justify-content: space-around;
 	align-items: center;
 	overflow-y: scroll;
 	overflow-x: hidden;
-	height: 920px;/*TODO: Calculate exact exact in js*/
+	height: 920px;
+	height: -webkit-fill-available;/*920px;/*TODO: Calculate exact exact in js*/
 }
 #preview-container .card {
 	margin-left: auto;
