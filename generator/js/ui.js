@@ -482,14 +482,11 @@ function ui_render_selected_card() {
 function ui_update_card_color_selector(color, input, selector) {
 	if ($(selector + " option[value='" + color + "']").length > 0) {
 		// Update the color selector to the entered value
-		$(selector).colorselector("setColor", color);
+		$(selector).colorselector('setColor', color);
 	} else {
-		// Unknown color - select a neutral color and reset the text value
-		$(selector).colorselector("setColor", "");
+		ui_set_card_color(color);
 		input.val(color);
 	}
-	// $(selector).colorselector('setColor', color);
-	// input.val(color);
 }
 
 function ui_set_default_color(color) {
@@ -508,8 +505,12 @@ function ui_set_background_color(color) {
 function ui_set_card_color(value) {
 	var card = ui_selected_card();
 	if (card) {
-		if (value && value != card_options.default.color)
+		if (value)
 			card.color = value;
+		else
+			card.color = card_options.default.color;
+		if (ui.selectedCardIdx || ui.selectedCardIdx == 0)
+			$("#cards-list")[0].children[ui.selectedCardIdx].style.backgroundColor = card.color + "33";
 		ui_render_selected_card();
 	}
 }

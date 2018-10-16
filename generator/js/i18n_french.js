@@ -176,7 +176,7 @@ var I18N = {
 	CUSTOM: [
 		{
 			file: "creature", name: "créature",
-			regex: new RegExp("([\(\[]|^)?[ ]?cr[ée]ature[s]?()([ ]|$)", 'gi')
+			regex: new RegExp("([\(\[]|^)?[ ]?cr[ée]ature[s]?()([^a-zA-Z]|$)", 'gi')
 		},
 		{
 			file: "timer", name: "prochain tour",
