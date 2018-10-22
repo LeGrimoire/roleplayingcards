@@ -374,6 +374,8 @@ function ui_update_selected_card() {
 			$("#card-creature-resistances").val(card.creature.resistances);
 			$("#card-creature-vulnerabilities").val(card.creature.vulnerabilities);
 			$("#card-creature-immunities").val(card.creature.immunities);
+
+			$('#card-contents').attr("rows", 17);
 		} else if (card.type == CardType.ITEM) {
 			$(".creature-hide").show();
 			$(".item-hide").hide();
@@ -384,6 +386,8 @@ function ui_update_selected_card() {
 			$(".item-only").show();
 			$(".spell-only").hide();
 			$(".power-only").hide();
+
+			$('#card-contents').attr("rows", 27);
 		} else if (card.type == CardType.SPELL) {
 			$(".creature-hide").show();
 			$(".item-hide").show();
@@ -405,6 +409,8 @@ function ui_update_selected_card() {
 			$("#card-spell-duration").val(card.spell.duration);
 			$("#card-spell-type").val(card.spell.type);
 			$("#card-spell-classes").val(card.spell.classes);
+
+			$('#card-contents').attr("rows", 21);
 		} else if (card.type == CardType.POWER) {
 			$(".creature-hide").show();
 			$(".item-hide").show();
@@ -415,6 +421,8 @@ function ui_update_selected_card() {
 			$(".item-only").hide();
 			$(".spell-only").hide();
 			$(".power-only").show();
+
+			$('#card-contents').attr("rows", 27);
 		} else {
 			$(".creature-hide").show();
 			$(".item-hide").show();
@@ -425,6 +433,8 @@ function ui_update_selected_card() {
 			$(".item-only").hide();
 			$(".spell-only").hide();
 			$(".power-only").hide();
+
+			$('#card-contents').attr("rows", 27);
 		}
 	} else {
 		$("#card-type").val("");
@@ -455,7 +465,12 @@ function ui_update_selected_card() {
 			cardsList[0].children[previousCardIdx].style.backgroundColor = oldCard.color ? oldCard.color + "33" : "";
 			cardsList[0].children[previousCardIdx].classList.remove("selected");
 		}
-		// cardsList[0].children[ui.selectedCardIdx].style.backgroundColor = "#00666633";
+		var cardScrollHeight = cardsList[0].children[ui.selectedCardIdx].scrollHeight;
+		var scrollPos = ui.selectedCardIdx * cardScrollHeight;
+		if (scrollPos < cardsList[0].scrollTop + cardScrollHeight)
+			cardsList[0].scrollTop = scrollPos - cardScrollHeight;
+		else if (scrollPos >= cardsList[0].scrollTop + cardsList[0].offsetHeight - 2 * cardScrollHeight)
+			cardsList[0].scrollTop = scrollPos - cardsList[0].offsetHeight + 2 * cardScrollHeight;
 		cardsList[0].children[ui.selectedCardIdx].classList.add("selected");
 	}
 
@@ -641,7 +656,7 @@ function ui_change_card_contents() {
 
 	var card = ui_selected_card();
 	if (card) {
-		card.contents = value.replace(/ /g, " ").split("\n");
+		card.contents = value.replace(/ /g, " ").replace(/ +/g, " ").split("\n");
 		ui_render_selected_card();
 	}
 }
@@ -948,46 +963,55 @@ $(document).ready(function () {
 	local_store_ui_load();
 
 	$(".btn-fold-section").click(function () {
+		var cardFormWrapper = $('#card-form-container-wrapper');
 		var cardFormContainer = $('#card-form-container');
-		var cardFormContainerLG = cardFormContainer[0].classList.value;
-		var cardFormContainerLGIdx = cardFormContainerLG.indexOf('col-lg-') + 7;
-		cardFormContainerLG = parseInt(cardFormContainerLG.substring(cardFormContainerLGIdx, cardFormContainerLGIdx + 2));
-		var cardFormMargin = parseInt(cardFormContainer.css('margin-left'));
-		var cardFormPadding = parseInt(cardFormContainer.css('padding-left'));
+		var cardFormContainerClass = cardFormWrapper[0].classList.value;
+		var cardFormContainerLGIdx = cardFormContainerClass.indexOf('col-lg-') + 7;
+		cardFormContainerClass = parseInt(cardFormContainerClass.substring(cardFormContainerLGIdx, cardFormContainerLGIdx + 2));
 
 		var foldedContainer = $('#' + $(this).attr('for'));
-		var foldedContainerLG = foldedContainer[0].classList.value;
-		var foldedContainerLGIdx = foldedContainerLG.indexOf('col-lg-') + 7;
-		foldedContainerLG = parseInt(foldedContainerLG.substring(foldedContainerLGIdx, foldedContainerLGIdx + 2));
+		var foldedContainerClass = foldedContainer[0].classList.value;
+		var foldedContainerLGIdx = foldedContainerClass.indexOf('col-lg-') + 7;
+		foldedContainerClass = parseInt(foldedContainerClass.substring(foldedContainerLGIdx, foldedContainerLGIdx + 2));
 
 		var buttonSpaceWidth = parseInt($(this).css('width'));
 
 		var display = foldedContainer.css('display');
 		var shouldSave = '';
+		var buttonIncreasedWidth = 8;
 		if (display !== 'none') {
 			shouldSave = !ui.foldedSections[foldedContainer.selector];
 			ui.foldedSections[foldedContainer.selector] = '#' + this.id;
 			foldedContainer.hide();
-			$(this).css('margin', '0px 2px');
-			buttonSpaceWidth += 4;
+			
+			buttonSpaceWidth += buttonIncreasedWidth;
 			$(this).css('width', buttonSpaceWidth + 'px');
-			cardFormContainer.css('margin-left', (cardFormMargin - buttonSpaceWidth / 2 - 2) + 'px');
-			cardFormContainer.css('margin-right', (cardFormMargin - buttonSpaceWidth / 2 - 2) + 'px');
-			cardFormContainer.css('padding-left', (cardFormPadding + buttonSpaceWidth / 2) + 'px');
-			cardFormContainer.css('padding-right', (cardFormPadding + buttonSpaceWidth / 2) + 'px');
-			cardFormContainer.toggleClass('col-lg-' + cardFormContainerLG + ' col-lg-' + (cardFormContainerLG + foldedContainerLG));
+
+			if (parseInt($(this).css('margin-right')) < 0) {
+				cardFormContainer.css('padding-right', (parseInt(cardFormContainer.css('padding-right')) + buttonSpaceWidth) + 'px');
+				$(this).css('margin', '0px 0px 0px ' + (-buttonSpaceWidth - 1) + 'px');
+			} else {
+				cardFormContainer.css('padding-left', (parseInt(cardFormContainer.css('padding-left')) + buttonSpaceWidth) + 'px');
+				$(this).css('margin', '0px ' + (-buttonSpaceWidth - 1) + 'px 0px 0px');
+			}
+
+			cardFormWrapper.toggleClass('col-lg-' + cardFormContainerClass + ' col-lg-' + (cardFormContainerClass + foldedContainerClass));
 		} else {
 			shouldSave = ui.foldedSections[foldedContainer.selector];
 			ui.foldedSections[foldedContainer.selector] = null;
 			foldedContainer.show();
+
+			if (parseInt($(this).css('margin-right')) >= 0)
+				cardFormContainer.css('padding-right', '');
+			else
+				cardFormContainer.css('padding-left', '');
+
 			$(this).css('margin', '');
-			buttonSpaceWidth -= 4;
+
+			buttonSpaceWidth -= buttonIncreasedWidth;
 			$(this).css('width', buttonSpaceWidth + 'px');
-			cardFormContainer.css('margin-left', (cardFormMargin + buttonSpaceWidth / 2 + 4) + 'px');
-			cardFormContainer.css('margin-right', (cardFormMargin + buttonSpaceWidth / 2 + 4) + 'px');
-			cardFormContainer.css('padding-left', (cardFormPadding - buttonSpaceWidth / 2 - 2) + 'px');
-			cardFormContainer.css('padding-right', (cardFormPadding - buttonSpaceWidth / 2 - 2) + 'px');
-			cardFormContainer.toggleClass('col-lg-' + cardFormContainerLG + ' col-lg-' + (cardFormContainerLG - foldedContainerLG));
+
+			cardFormWrapper.toggleClass('col-lg-' + cardFormContainerClass + ' col-lg-' + (cardFormContainerClass - foldedContainerClass));
 		}
 
 		$(this).toggleClass('btn-fold-section-right btn-fold-section-left');

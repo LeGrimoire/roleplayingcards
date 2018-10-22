@@ -184,7 +184,7 @@ var I18N = {
 		},
 		{
 			file: "ac", name: "ca",
-			regex: new RegExp("([^a-zA-Z]|^){1}CA[s]?([^a-zA-Z]|$)", 'gi')
+			regex: new RegExp("([^a-zA-Z]|^){1}CA([^a-zA-Z]|$)", 'gi')
 		},
 		{
 			file: "hp", name: "pv",

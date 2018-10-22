@@ -712,6 +712,8 @@ function card_element_section(params, card_data, options) {
 }
 
 function card_element_bullet(params, card_data, options) {
+	if (params[1] === 'true')
+		params[0] = card_data_parse_icons_params(params[0]);
 	var result = "";
 	result += '<ul class="card-element card-bullet-line">';
 	result += 	'<li class="card-bullet">' + params[0] + '</li>';
