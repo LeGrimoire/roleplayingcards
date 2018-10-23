@@ -947,6 +947,16 @@ function ui_setup_color_selector() {
 	$(".dropdown-colorselector").addClass("input-group-addon color-input-addon");
 }
 
+function ui_update_cards_list_height() {
+	var cardsListParents = $('#cards-list').parents();
+	var top = $('#cards-list').position().top;
+
+	for (var i = 0; i < cardsListParents.length; i++)
+		top += $(cardsListParents[i]).position().top;
+
+	$('#cards-list').css("height", ($(window).height() - top) + 'px');
+}
+
 $(document).ready(function () {
 
 	var preventPageDownOrUp = function (e) {
@@ -958,8 +968,14 @@ $(document).ready(function () {
 	};
 	ui_setup_shortcut();
 
+	$(window).resize(function (e) {
+		$(".container-wrapper").css("height", $(window).height() + 'px');
+		$(".btn-fold-section").css("height", $(window).height() + 'px');
+		ui_update_cards_list_height();
+	});
 
-	local_store_cards_load();
+
+	local_store_cards_load();	
 	local_store_ui_load();
 
 	$(".btn-fold-section").click(function () {
@@ -1056,6 +1072,8 @@ $(document).ready(function () {
 
 		if (shouldSave)
 			local_store_ui_save();
+
+		ui_update_cards_list_height();
 	});
 	var foldedBlockKeys = Object.keys(ui.foldedBlocks);
 	for (var i = 0; i < foldedBlockKeys.length; i++) {
@@ -1238,4 +1256,7 @@ $(document).ready(function () {
 	$("#card-spell-classes").change(ui_change_spell_property);
 
 	ui_update_card_list();
+
+
+	$(window).resize();
 });
