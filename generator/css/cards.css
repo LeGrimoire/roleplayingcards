@@ -411,6 +411,9 @@ h1, h2, h3, h4, h5, h6 {
 	top: -1px;
 	/* align-self: center; */
 }
+.card-element .card-box {
+    top: 0px;
+}
 
 .card-property-line {
 	margin-right: -1px;
@@ -441,9 +444,9 @@ h1, h2, h3, h4, h5, h6 {
 	text-indent: -0.1em;
 	margin-left: 0.1em;
 	margin-right: -0.1em;
-	line-height: 9pt;
+	line-height: 1.2em;
 	font-style: italic;
-	font-size: inherit;
+	font-size: 9px;
 	color: black;
 }
 
@@ -468,6 +471,9 @@ p.card-element {
 }
 .card-section .card-element {
 	flex: 1;
+}
+.card-section .card-box {
+    top: -1px;
 }
 .card-section .card-box:last-child {
     margin-right: 0;
