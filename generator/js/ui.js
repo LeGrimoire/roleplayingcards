@@ -242,6 +242,7 @@ function ui_add_cards(data) {
 function ui_select_card_by_index(index) {
 	previousCardIdx = ui.selectedCardIdx;
 	ui.selectedCardIdx = index;
+	local_store_ui_save();
 	ui_update_selected_card();
 }
 

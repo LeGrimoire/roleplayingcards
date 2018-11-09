@@ -660,41 +660,33 @@ function card_element_description(params, card_data, options) {
 }
 
 function card_element_text(params, card_data, options) {
-	if (params[1] === 'true')
-		params[0] = card_data_parse_icons_params(params[0]);
 	var result = "";
 	result += '<p class="card-element">';
-	result += 	params[0];
+	result += card_data_parse_icons_params(params[0]);
 	result += '</p>';
 	return result;
 }
 
 function card_element_right(params, card_data, options) {
-	if (params[1] === 'true')
-		params[0] = card_data_parse_icons_params(params[0]);
 	var result = "";
 	result += '<p class="card-element" style="text-align:right">';
-	result += 	params[0];
+	result += card_data_parse_icons_params(params[0]);
 	result += '</p>';
 	return result;
 }
 
 function card_element_center(params, card_data, options) {
-	if (params[1] === 'true')
-		params[0] = card_data_parse_icons_params(params[0]);
 	var result = "";
 	result += '<p class="card-element" style="text-align:center">';
-	result += 	params[0];
+	result += card_data_parse_icons_params(params[0]);
 	result += '</p>';
 	return result;
 }
 
 function card_element_justify(params, card_data, options) {
-	if (params[1] === 'true')
-		params[0] = card_data_parse_icons_params(params[0]);
 	var result = "";
 	result += '<p class="card-element" style="text-align:justify;hyphens:auto">';
-	result += 	params[0];
+	result += card_data_parse_icons_params(params[0]);
 	result += '</p>';
 	return result;
 }
@@ -712,11 +704,9 @@ function card_element_section(params, card_data, options) {
 }
 
 function card_element_bullet(params, card_data, options) {
-	if (params[1] === 'true')
-		params[0] = card_data_parse_icons_params(params[0]);
 	var result = "";
 	result += '<ul class="card-element card-bullet-line">';
-	result += 	'<li class="card-bullet">' + params[0] + '</li>';
+	result += 	'<li class="card-bullet">' + card_data_parse_icons_params(params[0]) + '</li>';
 	result += '</ul>';
 	return result;
 }
