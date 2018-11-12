@@ -50,7 +50,7 @@ h1, h2, h3, h4, h5, h6 {
 	background-color: white;
 	border-color: inherit;
 	display: flex;
-	flex-flow: column wrap;
+	flex-flow: column;
 	flex: 1;
 	font-size: inherit;
 }
@@ -538,8 +538,6 @@ p.card-element {
 }
 .card-table th, .card-table td {
 	flex: 1;
-}
-.card-table th, .card-table td {
 	border-left: solid 1px #9993;
 }
 .card-table th:first-child, .card-table td:first-child {

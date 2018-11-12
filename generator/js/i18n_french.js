@@ -66,46 +66,46 @@ var I18N = {
 	DAMAGE_TYPES: [
 		{
 			file: "physical_not_magical", name: "physique non magique",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?physique[s]? non magique[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}physique[s]? non magique[s]?", 'gi')
 		}, {
 			file: "bludgeoning", name: "contondant",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?contondant[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}contondant[s]?", 'gi')
 		}, {
 			file: "piercing", name: "perforant",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?perforant[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}perforant[s]?", 'gi')
 		}, {
 			file: "slashing", name: "tranchant",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?tranchant[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}tranchant[s]?", 'gi')
 		}, {
 			file: "fire", name: "feu",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?feu[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}feu[s]?", 'gi')
 		}, {
 			file: "ice", name: "froid",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?froid[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}froid[s]?", 'gi')
 		}, {
 			file: "lightning", name: "foudre",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?foudre[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}foudre[s]?", 'gi')
 		}, {
 			file: "acid", name: "acide",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?acide[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}acide[s]?", 'gi')
 		}, {
 			file: "poison", name: "poison",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?poison[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}poison[s]?", 'gi')
 		}, {
 			file: "necrotic", name: "nécrotique",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?nécrotique[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}nécrotique[s]?", 'gi')
 		}, {
 			file: "thunder", name: "tonnerre",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?tonnerre[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}tonnerre[s]?", 'gi')
 		}, {
 			file: "force", name: "force",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?force[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}force[s]?", 'gi')
 		}, {
 			file: "psychic", name: "psychique",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?psychique[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}psychique[s]?", 'gi')
 		}, {
 			file: "radiant", name: "radiant",
-			regex: new RegExp("([ \(\[0-9]|^){1}[ ]?radiant[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}radiant[s]?", 'gi')
 		}
 	],
 	CONDITION: [
@@ -184,11 +184,11 @@ var I18N = {
 		},
 		{
 			file: "ac", name: "ca",
-			regex: new RegExp("(?:([\(\[])|^| ){1}CA([^a-zA-Z]|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9])|^){1}CA([^a-zA-Z]|$)", 'gi')
 		},
 		{
 			file: "hp", name: "pv",
-			regex: new RegExp("(?:([ \(\[])|^){1}PV[s]?([^a-zA-Z]|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9])|^){1}PV[s]?([^a-zA-Z]|$)", 'gi')
 		},
 		{
 			file: "gp", name: "po",

@@ -255,15 +255,19 @@ function ui_selected_card() {
 }
 
 function ui_add_new_card() {
-	var type = $("#card-type").val();
-	var card = {};
-	card.type = type;
-	card_init(card);
-	card.title = "New " + card.type;
-	card.contents = [];
-	card_data.push(card);
+	var cardIdx = ui_selected_card_index();
+	var new_card = {};
+	new_card.type = $("#card-type").val();
+	card_init(new_card);
+	new_card.title = "New " + new_card.type;
+	new_card.contents = [];
+	if (cardIdx + 1 != card_data.length) {
+		var cards_after = card_data.splice(cardIdx + 1, card_data.length - cardIdx - 1, new_card);
+		card_data = card_data.concat(cards_after);
+	} else
+		card_data.push(new_card);
 	ui_update_card_list(true);
-	ui_select_card_by_index(card_data.length - 1);
+	ui_select_card_by_index(cardIdx + 1);
 	
 	$('#card-title').select();
 }
@@ -273,14 +277,16 @@ function ui_duplicate_card() {
 		var cardIdx = ui_selected_card_index();
 		var old_card = ui_selected_card();
 		var new_card = $.extend({}, old_card);
+		new_card.title = new_card.title + " (Copy)";
 		if (cardIdx + 1 != card_data.length) {
 			var cards_after = card_data.splice(cardIdx + 1, card_data.length - cardIdx - 1, new_card);
 			card_data = card_data.concat(cards_after);
 		} else
 			card_data.push(new_card);
-		new_card.title = new_card.title + " (Copy)";
 		ui_update_card_list(true);
 		ui_select_card_by_index(cardIdx + 1);
+
+		$('#card-title').select();
 	}
 }
 
@@ -1155,6 +1161,29 @@ $(document).ready(function () {
 	$("#card-contents").keyup(ui_change_card_contents_keyup);
 	$("#card-contents").change(ui_change_card_contents);
 	$("#card-contents").keydown(function (e) {
+		if (e.shiftKey && e.key == "Delete") {
+			var value = $(this)[0].value;
+
+			var textBefore = value.slice(0, $(this)[0].selectionStart);
+			var idxLineFirstChar = textBefore.lastIndexOf('\n');
+			if (idxLineFirstChar == -1)
+				textBefore = '';
+			else
+				textBefore = textBefore.slice(0, idxLineFirstChar);
+
+			var textAfter = value.slice($(this)[0].selectionEnd);
+			var idxLineLastChar = textAfter.indexOf('\n');
+			if (idxLineLastChar == -1)
+				textAfter = '';
+			else
+				textAfter = textAfter.slice(idxLineLastChar);
+
+			$(this)[0].value = textBefore + textAfter;
+			$(this)[0].selectionEnd = $(this)[0].selectionStart;
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
+		}
 		if (!e.altKey)
 			return;
 		if (e.key == "i") {
