@@ -716,11 +716,12 @@ function card_element_table_header(params, card_data, options) {
 	card_table_previous_line_colored = true;
 	var result = "";
 	result += '<table class="card-element card-table card-table-header" style="background-color:' + card_data_color_front(card_data, options) + '88;">';
-	result += 	'<tr>';
+	result += '<tr>';
+	var width = 100 / params.length;
 	for (var i = 0; i < params.length; i++) {
-		result += 		'<th>' + params[i] + '</th>';
+		result += '<th style="min-width:' + width + '%;width:' + width + '%">' + params[i] + '</th>';
 	}
-	result += 	'</tr>';
+	result += '</tr>';
 	result += '</table>';
 	return result;
 }
@@ -732,11 +733,12 @@ function card_element_table_line(params, card_data, options) {
 	else
 		result += '<table class="card-element card-table card-table-line" style="background-color:' + card_data_color_front(card_data, options) + '33;">';
 	card_table_previous_line_colored = !card_table_previous_line_colored;
-	result += 	'<tr>';
+	result += '<tr>';
+	var width = 100 / params.length;
 	for (var i = 0; i < params.length; i++) {
-		result += 		'<td>' + params[i] + '</td>';
+		result += '<td style="min-width:' + width + '%;width:' + width + '%">' + params[i] + '</td>';
 	}
-	result += 	'</tr>';
+	result += '</tr>';
 	result += '</table>';
 	return result;
 }
@@ -748,11 +750,12 @@ function card_element_table_line_center(params, card_data, options) {
 	else
 		result += '<table class="card-element card-table card-table-line" style="background-color:' + card_data_color_front(card_data, options) + '33;text-align:center;">';
 	card_table_previous_line_colored = !card_table_previous_line_colored;
-	result += 	'<tr>';
+	result += '<tr>';
+	var width = 100 / params.length;
 	for (var i = 0; i < params.length; i++) {
-		result += 		'<td>' + params[i] + '</td>';
+		result += '<td style="min-width:' + width + '%;width:' + width + '%">' + params[i] + '</td>';
 	}
-	result += 	'</tr>';
+	result += '</tr>';
 	result += '</table>';
 	return result;
 }
