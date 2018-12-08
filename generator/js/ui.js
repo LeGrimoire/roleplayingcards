@@ -1166,9 +1166,10 @@ $(document).ready(function () {
 
 			var textBefore = value.slice(0, $(this)[0].selectionStart);
 			var idxLineFirstChar = textBefore.lastIndexOf('\n');
-			if (idxLineFirstChar == -1)
+			if (idxLineFirstChar == -1) {
+				idxLineFirstChar = 0;
 				textBefore = '';
-			else
+			} else
 				textBefore = textBefore.slice(0, idxLineFirstChar);
 
 			var textAfter = value.slice($(this)[0].selectionEnd);
@@ -1179,6 +1180,7 @@ $(document).ready(function () {
 				textAfter = textAfter.slice(idxLineLastChar);
 
 			$(this)[0].value = textBefore + textAfter;
+			$(this)[0].selectionStart = idxLineFirstChar;
 			$(this)[0].selectionEnd = $(this)[0].selectionStart;
 			if (e.preventDefault)
 				e.preventDefault();

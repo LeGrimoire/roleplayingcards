@@ -577,7 +577,7 @@ function card_element_boxes(params, card_data, options) {
 		double = params[2].indexOf("double") > -1;
 	}
 
-	var nextParamsNotBoxes = params[3] && params[3] != "boxes";
+	var nextParamsNotBoxes = params[3] && params[3] != "boxes" && params[3] != "circles";
 	if (nextParamsNotBoxes)
 		styleSvg += 'top:1px;';
 
@@ -620,7 +620,7 @@ function card_element_circles(params, card_data, options) {
 			align = 'text-align:right;';
 	}
 
-	var nextParamsNotBoxes = params[3] && params[3] != "boxes";
+	var nextParamsNotBoxes = params[3] && params[3] != "boxes" && params[3] != "circles";
 	if (nextParamsNotBoxes)
 		styleSvg += 'top:1px;';
 
@@ -694,11 +694,13 @@ function card_element_justify(params, card_data, options) {
 function card_element_section(params, card_data, options) {
 	var color = card_data_color_front(card_data, options);
 	var result = '';
+	result += '<div class="card-element">';
 	result += '<div class="card-section">';
 	result += 	'<h3 style="color:' + color + '">' + params[0] + '</h3>';
 	if (params[1]) {
 		result += card_generate_element(params.splice(1), card_data, options);
 	}
+	result += '</div>';
 	result += '</div>';
 	return result;
 }

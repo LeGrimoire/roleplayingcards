@@ -916,6 +916,8 @@ var icon_names = [
     "cursed-star",
     "curvy-knife",
     "custom-ac",
+    "custom-action",
+    "custom-action_bonus",
     "custom-arrow-down",
     "custom-creature",
     "custom-gp",
