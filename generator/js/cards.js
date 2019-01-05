@@ -25,7 +25,6 @@ function card_default_options() {
 		page_columns: 3,
 		card_arrangement: "front_only",
 		card_size: "25x35",
-		card_count: null,
 		icon_inline: true,
 		rounded_corners: true
 	};
@@ -1091,7 +1090,7 @@ function card_pages_generate_html(card_data, options) {
 	var front_cards = [];
 	var back_cards = [];
 	card_data.forEach(function (data) {
-		var count = options.card_count || data.count || 1;
+		var count = data.count == 0 ? 0 : (data.count || 1);
 		var front = card_generate_front(data, options);
 		var back = card_generate_back(data, options);
 		front_cards = front_cards.concat(card_repeat(front, count));

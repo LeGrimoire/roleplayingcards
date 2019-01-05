@@ -312,10 +312,14 @@ function ui_update_card_list(doNotUpdateSelectedCard) {
 		newCardInList.append($('<h4></h4>').text(card.title).click(ui_card_list_select_card));
 		var countBlock = $('<div class="card-count"></div>');
 		var buttonDecrease = $('<button type="button" class="btn btn-default card-count-less">-</button>').click(ui_change_card_count_decrease);
-		if (!card.count || card.count == 1)
+		var count;
+		if (card.count == 0) {
 			buttonDecrease[0].disabled = true;
+			count = $('<span></span>').text(0);
+		} else
+			count = $('<span></span>').text(card.count || 1);
 		countBlock.append(buttonDecrease);
-		countBlock.append($('<span></span>').text(card.count || 1));
+		countBlock.append(count);
 		countBlock.append($('<button type="button" class="btn btn-default card-count-more">+</button>').click(ui_change_card_count_increase));
 		newCardInList.append(countBlock);
 		if (card.color)
@@ -560,14 +564,15 @@ function ui_change_option() {
 function ui_change_card_count_decrease() {
 	var idx = $(this)[0].parentElement.parentElement.attributes.index.value;
 	var card = card_data[idx];
-	if (!card.count || card.count == 1)
-		card.count = 1;
+	if (!card.count || card.count == 0)
+		card.count = 0;
 	else
 		card.count--;
-	if (card.count == 1)
+	if (card.count == 0)
 		$(this)[0].disabled = true;
 	var cardCount = $(this)[0].parentElement.children[1];
 	cardCount.innerText = card.count;
+	local_store_cards_save();
 }
 
 function ui_change_card_count_increase() {
@@ -580,6 +585,7 @@ function ui_change_card_count_increase() {
 	$(this)[0].parentElement.children[0].disabled = false;
 	var cardCount = $(this)[0].parentElement.children[1];
 	cardCount.innerText = card.count;
+	local_store_cards_save();
 }
 
 function ui_change_card_title() {
