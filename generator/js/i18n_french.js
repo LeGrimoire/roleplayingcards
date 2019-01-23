@@ -81,16 +81,16 @@ var I18N = {
 			regex: new RegExp("([ \(\[0-9]|^){1}tranchant[s]?", 'gi')
 		}, {
 			file: "fire", name: "feu",
-			regex: new RegExp("([ \(\[0-9]|^){1}feu[s]?([^a-zA-Z]|$)", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}feu[s]?", 'gi')
 		}, {
 			file: "ice", name: "froid",
-			regex: new RegExp("([ \(\[0-9]|^){1}froid[s]?([^a-zA-Z]|$)", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}froid[s]?", 'gi')
 		}, {
 			file: "lightning", name: "foudre",
-			regex: new RegExp("([ \(\[0-9]|^){1}foudre[s]?([^a-zA-Z]|$)", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}foudre[s]?", 'gi')
 		}, {
 			file: "acid", name: "acide",
-			regex: new RegExp("([ \(\[0-9]|^){1}acide[s]?([^a-zA-Z]|$)", 'gi')
+			regex: new RegExp("([ \(\[0-9'’]|^){1}acide[s]?", 'gi')
 		}, {
 			file: "poison", name: "poison",
 			regex: new RegExp("([ \(\[0-9]|^){1}poison[s]?", 'gi')
@@ -102,7 +102,7 @@ var I18N = {
 			regex: new RegExp("([ \(\[0-9]|^){1}tonnerre[s]?", 'gi')
 		}, {
 			file: "force", name: "force",
-			regex: new RegExp("([ \(\[0-9]|^){1}force[s]?([^a-zA-Z]|$)", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}force[s]?", 'gi')
 		}, {
 			file: "psychic", name: "psychique",
 			regex: new RegExp("([ \(\[0-9]|^){1}psychique[s]?", 'gi')

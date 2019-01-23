@@ -581,7 +581,7 @@ function card_element_boxes(params, card_data, options) {
 		styleSvg += 'top:1px;';
 
 	var result = '';
-	result += '<div class="card-element" style="' + align + (nextParamsNotBoxes ? 'display:flex;flex-direction:row;' : '') + '">';
+	result += '<div class="card-element" style="' + align + (nextParamsNotBoxes ? 'display:flex;flex-direction:row;min-height:' + size + 'em;' : '') + '">';
 	if (double) {
 		for (var i = 0; i < count; ++i) {
 			result += '<svg class="card-box" viewbox="-4 -4 108 108" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
@@ -624,7 +624,7 @@ function card_element_circles(params, card_data, options) {
 		styleSvg += 'top:1px;';
 
 	var result = '';
-	result += '<div class="card-element" style="' + align + (nextParamsNotBoxes ? 'display:flex;flex-direction:row;' : '') + '">';
+	result += '<div class="card-element" style="' + align + (nextParamsNotBoxes ? 'display:flex;flex-direction:row;min-height:' + size + 'em;' : '') + '">';
 	for (var i = 0; i < count; ++i) {
 		result += '<svg class="card-box" viewbox="-2 -2 104 104" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
 		result += '<circle cx="50" cy="50" r="50" width="100" height="100" fill="none" style="' + styleDash + ';stroke-width:4;stroke:' + color + '"></circle>';
