@@ -1,7 +1,5 @@
 'use strict'
 
-var keyup_timeout = 200;
-
 
 // Ugly global variable holding the current card deck
 var card_data = [];
@@ -602,14 +600,6 @@ function ui_change_card_title() {
 	}
 }
 
-function ui_change_card_title_keyup() {
-	clearTimeout(ui_change_card_title_keyup.timeout);
-	ui_change_card_title_keyup.timeout = setTimeout(function () {
-		$('#card-title').trigger('change');
-	}, keyup_timeout);
-}
-ui_change_card_title_keyup.timeout = null;
-
 function ui_change_card_property() {
 	var property = $(this).attr("data-property");
 	var value = $(this).val();
@@ -667,14 +657,6 @@ function ui_change_card_description() {
 	}
 }
 
-function ui_change_card_description_keyup() {
-	clearTimeout(ui_change_card_description_keyup.timeout);
-	ui_change_card_description_keyup.timeout = setTimeout(function () {
-		$('#card-description').trigger('change');
-	}, keyup_timeout);
-}
-ui_change_card_description_keyup.timeout = null;
-
 function ui_change_card_contents() {
 	var value = $(this).val();
 
@@ -684,14 +666,6 @@ function ui_change_card_contents() {
 		ui_render_selected_card();
 	}
 }
-
-function ui_change_card_contents_keyup() {
-	clearTimeout(ui_change_card_contents_keyup.timeout);
-	ui_change_card_contents_keyup.timeout = setTimeout(function () {
-		$('#card-contents').trigger('change');
-	}, keyup_timeout);
-}
-ui_change_card_contents_keyup.timeout = null;
 
 function ui_change_card_tags() {
 	var value = $(this).val();
@@ -716,6 +690,14 @@ function ui_change_card_compact() {
 		ui_render_selected_card();
 	}
 }
+
+function ui_change_card_element_keyup() {
+	clearTimeout(ui_change_card_element_keyup.timeout);
+	ui_change_card_element_keyup.timeout = setTimeout(function (element) {
+		$(element).trigger('change');
+	}, 200, this);
+}
+ui_change_card_element_keyup.timeout = null;
 
 
 function ui_change_default_color() {
@@ -1163,7 +1145,7 @@ $(document).ready(function () {
 	$("#button-duplicate-card").click(ui_duplicate_card);
 	$("#button-delete-card").click(ui_delete_card);
 
-	$("#card-title").keyup(ui_change_card_title_keyup);
+	$("#card-title").keyup(ui_change_card_element_keyup);
 	$("#card-title").change(ui_change_card_title);
 	$("#card-title-size").change(ui_change_card_property);
 	$("#card-subtitle").change(ui_change_card_property);
@@ -1172,11 +1154,12 @@ $(document).ready(function () {
 	$("#card-background").change(ui_change_card_property);
 	$("#card-color").change(ui_change_card_color);
 	$("#card-tags").change(ui_change_card_tags);
+	$("#card-reference").keyup(ui_change_card_element_keyup);
 	$("#card-reference").change(ui_change_card_property);
 
-	$("#card-description").keyup(ui_change_card_description_keyup);
+	$("#card-description").keyup(ui_change_card_element_keyup);
 	$("#card-description").change(ui_change_card_description);
-	$("#card-contents").keyup(ui_change_card_contents_keyup);
+	$("#card-contents").keyup(ui_change_card_element_keyup);
 	$("#card-contents").change(ui_change_card_contents);
 	$("#card-contents").keydown(function (e) {
 		if (e.shiftKey && e.key == "Delete") {
