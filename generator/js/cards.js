@@ -151,6 +151,31 @@ function card_init(card) {
 	card_update(card);
 }
 
+function clone(originalCard) {
+	if ((typeof originalCard !== 'object') || originalCard === null) {
+		throw new TypeError("originalCard parameter must be an object which is not null");
+	}
+
+	// Some recursivity
+	function deepProto(originalCard) {
+		// Create a new object with the same prototype then the original
+		var deepCopy = Object.create(Object.getPrototypeOf(originalCard));
+
+		// Handle "deep copy" 
+		for (var attribute in originalCard) {
+			if (originalCard.hasOwnProperty(attribute))
+				deepCopy[attribute] = originalCard[attribute];
+
+			if (typeof originalCard[attribute] === 'object' && originalCard[attribute] !== null)
+				deepCopy[attribute] = deepProto(originalCard[attribute]);
+		}
+
+		return deepCopy;
+	}
+
+	return deepProto(originalCard);
+}
+
 // Remove this function when format is sure
 function card_update(card) {
 	var removeIndexes = [];

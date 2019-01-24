@@ -277,7 +277,7 @@ function ui_duplicate_card() {
 	if (card_data.length > 0) {
 		var cardIdx = ui_selected_card_index();
 		var old_card = ui_selected_card();
-		var new_card = $.extend({}, old_card);
+		var new_card = clone(old_card);
 		new_card.title = new_card.title + " (Copy)";
 		if (cardIdx + 1 != card_data.length) {
 			var cards_after = card_data.splice(cardIdx + 1, card_data.length - cardIdx - 1, new_card);
