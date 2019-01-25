@@ -157,17 +157,19 @@ function clone(originalCard) {
 	}
 
 	// Some recursivity
-	function deepProto(originalCard) {
+	function deepProto(originalObject) {
 		// Create a new object with the same prototype then the original
-		var deepCopy = Object.create(Object.getPrototypeOf(originalCard));
+		var deepCopy = Array.isArray(originalObject) ? [] : Object.create(Object.getPrototypeOf(originalObject));
 
 		// Handle "deep copy" 
-		for (var attribute in originalCard) {
-			if (originalCard.hasOwnProperty(attribute))
-				deepCopy[attribute] = originalCard[attribute];
+		for (var attribute in originalObject) {
+			if (originalObject.hasOwnProperty(attribute))
+			{
+				deepCopy[attribute] = originalObject[attribute];
 
-			if (typeof originalCard[attribute] === 'object' && originalCard[attribute] !== null)
-				deepCopy[attribute] = deepProto(originalCard[attribute]);
+				if (typeof originalObject[attribute] === 'object' && originalObject[attribute] !== null)
+					deepCopy[attribute] = deepProto(originalObject[attribute]);
+			}
 		}
 
 		return deepCopy;
@@ -874,7 +876,7 @@ function card_generate_element(parts, card_data, options) {
 	if (element_generator) {
 		return element_generator(element_params, card_data, options);
 	} else if (element_name.length > 0) {
-		return card_element_unknown(element_params, card_data, options);
+		return card_element_text(parts, card_data, options);
 	}
 }
 

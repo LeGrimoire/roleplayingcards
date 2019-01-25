@@ -247,16 +247,12 @@ function ui_select_card_by_index(index) {
 	ui_update_selected_card();
 }
 
-function ui_selected_card_index() {
-	return ui.selectedCardIdx;
-}
-
 function ui_selected_card() {
-	return card_data[ui_selected_card_index()];
+	return card_data[ui.selectedCardIdx];
 }
 
 function ui_add_new_card() {
-	var cardIdx = ui_selected_card_index();
+	var cardIdx = ui.selectedCardIdx;
 	var new_card = {};
 	new_card.type = $("#card-type").val();
 	card_init(new_card);
@@ -275,7 +271,7 @@ function ui_add_new_card() {
 
 function ui_duplicate_card() {
 	if (card_data.length > 0) {
-		var cardIdx = ui_selected_card_index();
+		var cardIdx = ui.selectedCardIdx;
 		var old_card = ui_selected_card();
 		var new_card = clone(old_card);
 		new_card.title = new_card.title + " (Copy)";
@@ -293,7 +289,7 @@ function ui_duplicate_card() {
 
 function ui_delete_card() {
 	if (card_data.length > 0) {
-		var index = ui_selected_card_index();
+		var index = ui.selectedCardIdx;
 		card_data.splice(index, 1);
 		ui_update_card_list(true);
 		ui_select_card_by_index(Math.min(index, card_data.length - 1));
@@ -752,7 +748,7 @@ function ui_card_list_select_card() {
 }
 
 function ui_card_list_up() {
-	var cardIdx = ui_selected_card_index();
+	var cardIdx = ui.selectedCardIdx;
 	if (cardIdx > 0) {
 		var old_card = ui_selected_card();
 		card_data[cardIdx] = card_data[cardIdx - 1];
@@ -763,7 +759,7 @@ function ui_card_list_up() {
 }
 
 function ui_card_list_down() {
-	var cardIdx = ui_selected_card_index();
+	var cardIdx = ui.selectedCardIdx;
 	if (cardIdx < card_data.length - 1) {
 		var old_card = ui_selected_card();
 		card_data[cardIdx] = card_data[cardIdx + 1];
@@ -774,7 +770,7 @@ function ui_card_list_down() {
 }
 
 function ui_card_list_insert_lexical() {
-	var cardIdx = ui_selected_card_index();
+	var cardIdx = ui.selectedCardIdx;
 	if (cardIdx >= card_data.length - 1 || cardIdx < 0)
 		cardIdx = 0;
 
@@ -888,14 +884,14 @@ function ui_setup_shortcut() {
 		if (e.which == 33) { // Pg up
 			if (e.preventDefault)
 				e.preventDefault();
-			var idx = ui_selected_card_index();
+			var idx = ui.selectedCardIdx;
 			if (idx > 0)
 				ui_select_card_by_index(idx - 1);
 			e.returnValue = false;
 		} else if (e.which == 34) { // Pg down
 			if (e.preventDefault)
 				e.preventDefault();
-			var idx = ui_selected_card_index();
+			var idx = ui.selectedCardIdx;
 			if (idx < card_data.length - 1)
 				ui_select_card_by_index(idx + 1);
 			e.returnValue = false;
@@ -1262,11 +1258,14 @@ $(document).ready(function () {
 	$("#card-spell-level").change(ui_change_spell_property);
 	$("#card-spell-ritual").change(ui_change_spell_property);
 	$("#card-spell-casting-time").change(ui_change_spell_property);
+	$("#card-spell-casting-time").keyup(ui_change_card_element_keyup);
 	$("#card-spell-range").change(ui_change_spell_property);
+	$("#card-spell-range").keyup(ui_change_card_element_keyup);
 	$("#card-spell-verbal").change(ui_change_spell_property);
 	$("#card-spell-somatic").change(ui_change_spell_property);
 	$("#card-spell-materials").change(ui_change_spell_property);
 	$("#card-spell-duration").change(ui_change_spell_property);
+	$("#card-spell-duration").keyup(ui_change_card_element_keyup);
 	$("#card-spell-type").typeahead({
 		source: Object.values(I18N.SPELL_TYPES),
 		items: 'all',
