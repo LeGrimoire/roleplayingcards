@@ -1,4 +1,8 @@
 
+body {
+	overflow: hidden;
+}
+
 .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, 
 .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, 
 .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, 
@@ -108,6 +112,13 @@ label, p {
 	margin-bottom: 0px;
 }
 
+@media (max-width : 1199px) {
+	.form-horizontal .form-group {
+  		margin-right: -10px;
+		margin-left: -10px;
+	}
+}
+
 
 /****************************/
 /****** MENU CONTAINER ******/
@@ -115,7 +126,7 @@ label, p {
 
 #menu-container {
 	padding-right: 12px;
-    padding-left: 10px;
+	padding-left: 10px;
 }
 
 #menu-container .form-group {
@@ -157,7 +168,7 @@ label, p {
 #page-settings-block select,
 #page-settings-block input {
 	height: 24px;
-    font-size: 13px;
+	font-size: 13px;
 	vertical-align: middle;
 }
 #default-values-block .btn-colorselector,
@@ -187,9 +198,9 @@ label, p {
 	margin-top: 0px;
 }
 #title-cards-list button {
-    width: 40px;
-    margin: 0px 2px 0px 0px;
-    padding: 2px;
+	width: 40px;
+	margin: 0px 2px 0px 0px;
+	padding: 2px;
 	float: right;
 	font-size: 13px;
 }
@@ -198,8 +209,8 @@ label, p {
 }
 #cards-list-buttons button,
 #cards-list-buttons select {
-    margin: 0px 5px 0px 0px;
-    padding: 2px;
+	margin: 0px 5px 0px 0px;
+	padding: 2px;
 	font-size: 13px;
 	height: 24px;
 }
@@ -211,7 +222,7 @@ label, p {
 
 #cards-list {
 	margin: 0px -39px 0px -15px;
-    overflow-y: scroll;
+	overflow-y: scroll;
 }
 #cards-list .card-name {
 	margin: 0px;
@@ -252,12 +263,41 @@ label, p {
 	line-height: unset;
 }
 
+@media (max-width : 1199px) {
+	#menu-container-wrapper {
+		position: absolute;
+		z-index: 99;
+		top: 0px;
+		left: -480px;
+		width: 480px;
+		background: white;
+		padding-left: 0px;
+	}
+	
+	#cards-list {
+		margin-right: -30px;
+	}
+}
+
 
 /****************************/
 /**** CARD FORM CONTAINER ***/
 /****************************/
 
 #card-form-container {
+	/* Don't set margin, it's done in js and would break the folding of menu and preview. */
+}
+
+@media (max-width : 1199px) {
+	#card-form-container-wrapper {
+		display: inline-block;
+		width: 100%;
+		padding: 0px 24px;
+	}
+
+	#card-form-container h3 {
+		display:none;
+	}
 }
 
 
@@ -266,7 +306,7 @@ label, p {
 /****************************/
 
 #preview-container {
-    z-index: 0;
+	z-index: 0;
 	padding: 0px 0px 0px 10px;
 	background-color: white;
 	justify-content: space-around;
@@ -283,10 +323,16 @@ label, p {
 
 /* Small screen (preview fills all columns) */
 @media (max-width : 1199px) {
-	#preview-container {
-		display: flex;
-		flex-flow: row wrap;
+	#preview-container-wrapper {
+		position: absolute;
+		z-index: 99;
+		top: 0px;
+		right: -400px;
+		width: 400px;
+		background: white;
+		padding-left: 0px;
 	}
+
 	.card {
 		margin-right: 10px;
 	}
@@ -305,7 +351,7 @@ label, p {
 
 .btn-fold-block {
 	width: fit-content;
-    cursor: pointer;
+	cursor: pointer;
 }
 .btn-fold-block svg {
 	display: inline;
@@ -317,36 +363,47 @@ label, p {
 .btn-fold-section {
 	z-index: 100;
 	position: relative;
-    width: 12px;
-    margin: 0px;
-    padding: 0px;
+	width: 12px;
+	margin: 0px;
+	padding: 0px;
 	border: none;
 	border-radius: 1px / 100px;
 	outline: 0px;
 	float: left;
 }
-@media (max-width: 1199px) {
-	.btn-fold-section {
-		display: none;
-	}
-}
-.btn-fold-section-right {
-    margin-left: -12px;
+.btn-fold-section-left {
+	margin-left: -12px;
 	background: radial-gradient(at 100% 50%, #666666ff 0%, #ffffff00 75%);
 	border-right: 1px solid #aaaaaaaa;
 }
-.btn-fold-section-right:hover {
+.btn-fold-section-left:hover {
 	background: radial-gradient(at 100% 50%, #331111ff 0%, #ffffff00 75%);
 	border-right: 1px solid #88666666;
 }
-.btn-fold-section-left {
-    margin-right: -12px;
+.btn-fold-section-right {
+	margin-right: -12px;
 	background: radial-gradient(at 0% 50%, #666666ff 0%, #ffffff00 75%);
 	border-left: 1px solid #aaaaaaaa;
 }
-.btn-fold-section-left:hover {
+.btn-fold-section-right:hover {
 	background: radial-gradient(at 0% 50%, #331111ff 0%, #ffffff00 75%);
 	border-left: 1px solid #88666666;
+}
+
+@media (max-width: 1199px) {	
+	.btn-fold-section {
+		position: absolute;
+		top: 0px;
+		float: none;
+		margin-left: 0px;
+		margin-right: 0px;
+	}
+	#button-fold-menu {
+		left: 0px;
+	}
+	#button-fold-preview {
+		right: 0px;
+	}
 }
 
 @media (min-width: 992px){

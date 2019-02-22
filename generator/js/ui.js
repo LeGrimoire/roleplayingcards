@@ -2,17 +2,17 @@
 
 
 // Ugly global variable holding the current card deck
-var card_data = [];
-var card_options = card_default_options();
+var g_card_data = [];
+var g_card_options = card_default_options();
 
-var ui = {
+var g_ui = {
 	foldedSections: {},
 	foldedBlocks: {},
 	selectedCardIdx: 0,
 	filename: [],
 	saveTime: '-'
 };
-var previousCardIdx;
+var g_previousCardIdx;
 
 
 function ui_open_help() {
@@ -20,8 +20,8 @@ function ui_open_help() {
 }
 
 function ui_load_sample() {
-	card_data = card_data_example;
-	ui_init_cards(card_data);
+	g_card_data = card_data_example;
+	ui_init_cards(g_card_data);
 	ui_update_card_list();
 }
 
@@ -68,7 +68,7 @@ function ui_sort_execute() {
 	var fn_code = $("#sort-function").val();
 	var fn = new Function("card_a", "card_b", fn_code);
 
-	card_data = card_data.sort(function (card_a, card_b) {
+	g_card_data = g_card_data.sort(function (card_a, card_b) {
 		var result = fn(card_a, card_b);
 		return result;
 	});
@@ -86,7 +86,7 @@ function ui_filter_execute() {
 	var fn_code = $("#filter-function").val();
 	var fn = new Function("card", fn_code);
 
-	card_data = card_data.filter(function (card) {
+	g_card_data = g_card_data.filter(function (card) {
 		var result = fn(card);
 		if (result === undefined) return true;
 		else return result;
@@ -96,22 +96,22 @@ function ui_filter_execute() {
 }
 
 function ui_clear_all() {
-	card_data = [];
+	g_card_data = [];
 	ui_update_card_list();
 }
 
 function ui_load_files(evt) {
 	// ui_clear_all();
-	card_data = [];
+	g_card_data = [];
 
 	var files = evt.target.files;
 
-	ui.filename = [];
-	ui.saveTime = '-';
-	ui.selectedCardIdx = 0;
+	g_ui.filename = [];
+	g_ui.saveTime = '-';
+	g_ui.selectedCardIdx = 0;
 
 	for (var i = 0, f; f = files[i]; i++) {
-		ui.filename.push(f.name);
+		g_ui.filename.push(f.name);
 
 		var reader = new FileReader();
 		reader.onload = function (reader) {
@@ -123,7 +123,7 @@ function ui_load_files(evt) {
 
 	// Reset file input
 	$("#file-load-form")[0].reset();
-	$("#file-name").html('<b>File:</b> ' + ui.filename.join(", ") + '<br/><b>Last save:</b> ' + ui.saveTime);
+	$("#file-name").html('<b>File:</b> ' + g_ui.filename.join(", ") + '<br/><b>Last save:</b> ' + g_ui.saveTime);
 	local_store_ui_save();
 }
 
@@ -131,7 +131,7 @@ function ui_import_files(evt) {
 	var files = evt.target.files;
 
 	for (var i = 0, f; f = files[i]; i++) {
-		ui.filename.push(f.name);
+		g_ui.filename.push(f.name);
 
 		var reader = new FileReader();
 		reader.onload = function (reader) {
@@ -143,14 +143,14 @@ function ui_import_files(evt) {
 
 	// Reset file input
 	$("#file-load-form")[0].reset();
-	$("#file-name").html('<b>File:</b> ' + ui.filename.join(", ") + '<br/><b>Last save:</b> ' + ui.saveTime);
+	$("#file-name").html('<b>File:</b> ' + g_ui.filename.join(", ") + '<br/><b>Last save:</b> ' + g_ui.saveTime);
 	local_store_ui_save();
 }
 
 function ui_save_file() {
 	var parts = ["[\n"];
-	for (var i = 0; i < card_data.length; ++i) {
-		var card = card_data[i];
+	for (var i = 0; i < g_card_data.length; ++i) {
+		var card = g_card_data[i];
 		var str = "";
 
 		if (card.tags && card.tags.length == 0)
@@ -174,7 +174,7 @@ function ui_save_file() {
 
 		str = JSON.stringify(card, tagsToSave, "\t");
 
-		if (i < card_data.length - 1)
+		if (i < g_card_data.length - 1)
 			str = str.concat(",\n");
 		parts.push(str);
 	}
@@ -184,15 +184,15 @@ function ui_save_file() {
 
 	var a = $("#file-save-link")[0];
 	a.href = url;
-	ui_save_file.filename = ui.filename[0] || ui_save_file.filename;
+	ui_save_file.filename = g_ui.filename[0] || ui_save_file.filename;
 	a.download = prompt("Filename:", ui_save_file.filename);
 	if (a.download && a.download != "null") {
-		ui.filename = [a.download];
+		g_ui.filename = [a.download];
 
 		var d = new Date();
-		ui.saveTime = d.getDate() + '/' + d.getMonth() + '/' + (d.getFullYear() % 100) + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+		g_ui.saveTime = d.getDate() + '/' + d.getMonth() + '/' + (d.getFullYear() % 100) + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
 
-		$("#file-name").html('<b>File:</b> ' + ui.filename.join(", ") + '<br/><b>Last save:</b> ' + ui.saveTime);
+		$("#file-name").html('<b>File:</b> ' + g_ui.filename.join(", ") + '<br/><b>Last save:</b> ' + g_ui.saveTime);
 		local_store_ui_save();
 		ui_save_file.filename = a.download;
 		a.click();
@@ -202,23 +202,23 @@ function ui_save_file() {
 }
 ui_save_file.filename = 'Cards.json';
 
-var ui_generate_modal_shown = false;
+var g_ui_generate_modal_shown = false;
 function ui_generate() {
-	if (card_data.length === 0) {
+	if (g_card_data.length === 0) {
 		alert("Your deck is empty. Please define some cards first, or load the sample deck.");
 		return;
 	}
 
 	// Generate output HTML
-	var card_html = card_pages_generate_html(card_data, card_options);
+	var card_html = card_pages_generate_html(g_card_data, g_card_options);
 
 	// Open a new window for the output
 	// Use a separate window to avoid CSS conflicts
 	var tab = window.open("output.html", 'rpg-cards-output');
 
-	if (ui_generate_modal_shown === false) {
+	if (g_ui_generate_modal_shown === false) {
 		$("#print-modal").modal('show');
-		ui_generate_modal_shown = true;
+		g_ui_generate_modal_shown = true;
 	}
 
 	// Send the generated HTML to the new window
@@ -236,33 +236,33 @@ function ui_init_cards(data) {
 
 function ui_add_cards(data) {
 	ui_init_cards(data);
-	card_data = card_data.concat(data);
+	g_card_data = g_card_data.concat(data);
 	ui_update_card_list();
 }
 
 function ui_select_card_by_index(index) {
-	previousCardIdx = ui.selectedCardIdx;
-	ui.selectedCardIdx = index;
+	g_previousCardIdx = g_ui.selectedCardIdx;
+	g_ui.selectedCardIdx = index;
 	local_store_ui_save();
 	ui_update_selected_card();
 }
 
 function ui_selected_card() {
-	return card_data[ui.selectedCardIdx];
+	return g_card_data[g_ui.selectedCardIdx];
 }
 
 function ui_add_new_card() {
-	var cardIdx = ui.selectedCardIdx;
+	var cardIdx = g_ui.selectedCardIdx;
 	var new_card = {};
 	new_card.type = $("#card-type").val();
 	card_init(new_card);
 	new_card.title = "New " + new_card.type;
 	new_card.contents = [];
-	if (cardIdx + 1 != card_data.length) {
-		var cards_after = card_data.splice(cardIdx + 1, card_data.length - cardIdx - 1, new_card);
-		card_data = card_data.concat(cards_after);
+	if (cardIdx + 1 != g_card_data.length) {
+		var cards_after = g_card_data.splice(cardIdx + 1, g_card_data.length - cardIdx - 1, new_card);
+		g_card_data = g_card_data.concat(cards_after);
 	} else
-		card_data.push(new_card);
+		g_card_data.push(new_card);
 	ui_update_card_list(true);
 	ui_select_card_by_index(cardIdx + 1);
 	
@@ -270,16 +270,16 @@ function ui_add_new_card() {
 }
 
 function ui_duplicate_card() {
-	if (card_data.length > 0) {
-		var cardIdx = ui.selectedCardIdx;
+	if (g_card_data.length > 0) {
+		var cardIdx = g_ui.selectedCardIdx;
 		var old_card = ui_selected_card();
 		var new_card = clone(old_card);
 		new_card.title = new_card.title + " (Copy)";
-		if (cardIdx + 1 != card_data.length) {
-			var cards_after = card_data.splice(cardIdx + 1, card_data.length - cardIdx - 1, new_card);
-			card_data = card_data.concat(cards_after);
+		if (cardIdx + 1 != g_card_data.length) {
+			var cards_after = g_card_data.splice(cardIdx + 1, g_card_data.length - cardIdx - 1, new_card);
+			g_card_data = g_card_data.concat(cards_after);
 		} else
-			card_data.push(new_card);
+			g_card_data.push(new_card);
 		ui_update_card_list(true);
 		ui_select_card_by_index(cardIdx + 1);
 
@@ -288,22 +288,22 @@ function ui_duplicate_card() {
 }
 
 function ui_delete_card() {
-	if (card_data.length > 0) {
-		var index = ui.selectedCardIdx;
-		card_data.splice(index, 1);
+	if (g_card_data.length > 0) {
+		var index = g_ui.selectedCardIdx;
+		g_card_data.splice(index, 1);
 		ui_update_card_list(true);
-		ui_select_card_by_index(Math.min(index, card_data.length - 1));
+		ui_select_card_by_index(Math.min(index, g_card_data.length - 1));
 	}
 }
 
 
 function ui_update_card_list(doNotUpdateSelectedCard) {
-	$("#total_card_count").text("(" + card_data.length + " unique)");
+	$("#total_card_count").text("(" + g_card_data.length + " unique)");
 
 	var cardsList = $("#cards-list");
 	cardsList.empty();
-	for (var i = 0; i < card_data.length; ++i) {
-		var card = card_data[i];
+	for (var i = 0; i < g_card_data.length; ++i) {
+		var card = g_card_data[i];
 
 		var newCardInList = $('<div class="card-name"></div>').attr('index', i);
 		newCardInList.append($('<h4></h4>').text(card.title).click(ui_card_list_select_card));
@@ -328,9 +328,9 @@ function ui_update_card_list(doNotUpdateSelectedCard) {
 		ui_update_selected_card();
 }
 
-var dontRenderSelectedCard = false;
+var g_dontRenderSelectedCard = false;
 function ui_update_selected_card() {
-	dontRenderSelectedCard = true;
+	g_dontRenderSelectedCard = true;
 	var card = ui_selected_card();
 	if (card) {
 		$("#card-type").val(card.type);
@@ -466,36 +466,36 @@ function ui_update_selected_card() {
 		$(".power-only").hide();
 	}
 
-	if (card_data.length > 0) {
+	if (g_card_data.length > 0) {
 		var cardsList = $("#cards-list");
-		if ((previousCardIdx || previousCardIdx == 0) && previousCardIdx < card_data.length) {
-			var oldCard = card_data[previousCardIdx];
-			cardsList[0].children[previousCardIdx].style.backgroundColor = oldCard.color ? oldCard.color + "33" : "";
-			cardsList[0].children[previousCardIdx].classList.remove("selected");
+		if ((g_previousCardIdx || g_previousCardIdx == 0) && g_previousCardIdx < g_card_data.length) {
+			var oldCard = g_card_data[g_previousCardIdx];
+			cardsList[0].children[g_previousCardIdx].style.backgroundColor = oldCard.color ? oldCard.color + "33" : "";
+			cardsList[0].children[g_previousCardIdx].classList.remove("selected");
 		}
-		var cardScrollHeight = cardsList[0].children[ui.selectedCardIdx].scrollHeight;
-		var scrollPos = ui.selectedCardIdx * cardScrollHeight;
+		var cardScrollHeight = cardsList[0].children[g_ui.selectedCardIdx].scrollHeight;
+		var scrollPos = g_ui.selectedCardIdx * cardScrollHeight;
 		if (scrollPos < cardsList[0].scrollTop + cardScrollHeight)
 			cardsList[0].scrollTop = scrollPos - cardScrollHeight;
 		else if (scrollPos >= cardsList[0].scrollTop + cardsList[0].offsetHeight - 2 * cardScrollHeight)
 			cardsList[0].scrollTop = scrollPos - cardsList[0].offsetHeight + 2 * cardScrollHeight;
-		cardsList[0].children[ui.selectedCardIdx].classList.add("selected");
+		cardsList[0].children[g_ui.selectedCardIdx].classList.add("selected");
 	}
 
-	dontRenderSelectedCard = false;
+	g_dontRenderSelectedCard = false;
 	ui_render_selected_card();
 }
 
 function ui_render_selected_card() {
-	if (dontRenderSelectedCard)
+	if (g_dontRenderSelectedCard)
 		return;
 	var card = ui_selected_card();
 	$('#preview-container').empty();
 	if (card) {
 		card_update(card);
 
-		var front = card_generate_front(card, card_options);
-		var back = card_generate_back(card, card_options);
+		var front = card_generate_front(card, g_card_options);
+		var back = card_generate_back(card, g_card_options);
 		$('#preview-container').html(front + "\n" + back);
 	}
 	local_store_cards_save();
@@ -513,16 +513,16 @@ function ui_update_card_color_selector(color, input, selector) {
 }
 
 function ui_set_default_color(color) {
-	card_options.default.color = color;
+	g_card_options.default.color = color;
 	ui_render_selected_card();
 }
 
 function ui_set_foreground_color(color) {
-	card_options.foreground_color = color;
+	g_card_options.foreground_color = color;
 }
 
 function ui_set_background_color(color) {
-	card_options.background_color = color;
+	g_card_options.background_color = color;
 }
 
 function ui_set_card_color(value) {
@@ -531,9 +531,9 @@ function ui_set_card_color(value) {
 		if (value)
 			card.color = value;
 		else
-			card.color = card_options.default.color;
-		if (ui.selectedCardIdx || ui.selectedCardIdx == 0)
-			$("#cards-list")[0].children[ui.selectedCardIdx].style.backgroundColor = card.color + "33";
+			card.color = g_card_options.default.color;
+		if (g_ui.selectedCardIdx || g_ui.selectedCardIdx == 0)
+			$("#cards-list")[0].children[g_ui.selectedCardIdx].style.backgroundColor = card.color + "33";
 		ui_render_selected_card();
 	}
 }
@@ -554,13 +554,13 @@ function ui_change_option() {
 	else {
 		value = $(this).val();
 	}
-	card_options[property] = value;
+	g_card_options[property] = value;
 	ui_render_selected_card();
 }
 
 function ui_change_card_count_decrease() {
 	var idx = $(this)[0].parentElement.parentElement.attributes.index.value;
-	var card = card_data[idx];
+	var card = g_card_data[idx];
 	if (!card.count || card.count == 0)
 		card.count = 0;
 	else
@@ -574,7 +574,7 @@ function ui_change_card_count_decrease() {
 
 function ui_change_card_count_increase() {
 	var idx = $(this)[0].parentElement.parentElement.attributes.index.value;
-	var card = card_data[idx];
+	var card = g_card_data[idx];
 	if (!card.count)
 		card.count = 2;
 	else
@@ -590,8 +590,8 @@ function ui_change_card_title() {
 	var card = ui_selected_card();
 	if (card) {
 		card.title = title;
-		if (ui.selectedCardIdx || ui.selectedCardIdx == 0)
-			$("#cards-list")[0].children[ui.selectedCardIdx].children[0].innerText = title;
+		if (g_ui.selectedCardIdx || g_ui.selectedCardIdx == 0)
+			$("#cards-list")[0].children[g_ui.selectedCardIdx].children[0].innerText = title;
 		ui_render_selected_card();
 	}
 }
@@ -601,7 +601,7 @@ function ui_change_card_property() {
 	var value = $(this).val();
 	var card = ui_selected_card();
 	if (card) {
-		if (value == card_options.default[property])
+		if (value == g_card_options.default[property])
 			delete card[property];
 		else
 			card[property] = value;
@@ -705,38 +705,38 @@ function ui_change_default_color() {
 
 function ui_change_default_icon() {
 	var value = $(this).val();
-	card_options.default.icon = value;
+	g_card_options.default.icon = value;
 	ui_render_selected_card();
 }
 
 function ui_change_default_title_size() {
-	card_options.default.title_size = $(this).val();
+	g_card_options.default.title_size = $(this).val();
 	ui_render_selected_card();
 }
 
 function ui_change_default_icon_size() {
-	card_options.icon_inline = $(this).is(':checked');
+	g_card_options.icon_inline = $(this).is(':checked');
 	ui_render_selected_card();
 }
 
 function ui_apply_default_color() {
-	for (var i = 0; i < card_data.length; ++i) {
-		if (!card_data[i].type)
-			card_data[i].color = card_options.default.color;
+	for (var i = 0; i < g_card_data.length; ++i) {
+		if (!g_card_data[i].type)
+			g_card_data[i].color = g_card_options.default.color;
 	}
 	ui_render_selected_card();
 }
 
 function ui_apply_default_icon() {
-	for (var i = 0; i < card_data.length; ++i) {
-		card_data[i].icon = card_options.default.icon;
+	for (var i = 0; i < g_card_data.length; ++i) {
+		g_card_data[i].icon = g_card_options.default.icon;
 	}
 	ui_render_selected_card();
 }
 
 function ui_apply_default_icon_back() {
-	for (var i = 0; i < card_data.length; ++i) {
-		card_data[i].icon_back = card_options.default.icon;
+	for (var i = 0; i < g_card_data.length; ++i) {
+		g_card_data[i].icon_back = g_card_options.default.icon;
 	}
 	ui_render_selected_card();
 }
@@ -748,34 +748,34 @@ function ui_card_list_select_card() {
 }
 
 function ui_card_list_up() {
-	var cardIdx = ui.selectedCardIdx;
+	var cardIdx = g_ui.selectedCardIdx;
 	if (cardIdx > 0) {
 		var old_card = ui_selected_card();
-		card_data[cardIdx] = card_data[cardIdx - 1];
-		card_data[cardIdx - 1] = old_card;
+		g_card_data[cardIdx] = g_card_data[cardIdx - 1];
+		g_card_data[cardIdx - 1] = old_card;
 		ui_update_card_list(true);
 		ui_select_card_by_index(cardIdx - 1);
 	}
 }
 
 function ui_card_list_down() {
-	var cardIdx = ui.selectedCardIdx;
-	if (cardIdx < card_data.length - 1) {
+	var cardIdx = g_ui.selectedCardIdx;
+	if (cardIdx < g_card_data.length - 1) {
 		var old_card = ui_selected_card();
-		card_data[cardIdx] = card_data[cardIdx + 1];
-		card_data[cardIdx + 1] = old_card;
+		g_card_data[cardIdx] = g_card_data[cardIdx + 1];
+		g_card_data[cardIdx + 1] = old_card;
 		ui_update_card_list(true);
 		ui_select_card_by_index(cardIdx + 1);
 	}
 }
 
 function ui_card_list_insert_lexical() {
-	var cardIdx = ui.selectedCardIdx;
-	if (cardIdx >= card_data.length - 1 || cardIdx < 0)
+	var cardIdx = g_ui.selectedCardIdx;
+	if (cardIdx >= g_card_data.length - 1 || cardIdx < 0)
 		cardIdx = 0;
 
 	var cardLexicals = card_create_lexicals();
-	card_data = cardLexicals.concat(card_data);
+	g_card_data = cardLexicals.concat(g_card_data);
 
 	ui_update_card_list(true);
 	ui_select_card_by_index(cardIdx + cardLexicals.length);
@@ -786,7 +786,7 @@ function ui_card_list_insert_lexical() {
 function local_store_cards_save() {
 	if (window.localStorage) {
 		try {
-			localStorage.setItem("card_data", JSON.stringify(card_data));
+			localStorage.setItem("card_data", JSON.stringify(g_card_data));
 		} catch (e) {
 			//if the local store save failed should we notify the user that the data is not being saved?
 			console.log(e);
@@ -796,7 +796,7 @@ function local_store_cards_save() {
 function local_store_cards_load() {
 	if (window.localStorage) {
 		try {
-			card_data = JSON.parse(localStorage.getItem("card_data")) || card_data;
+			g_card_data = JSON.parse(localStorage.getItem("card_data")) || g_card_data;
 		} catch (e) {
 			//if the local store load failed should we notify the user that the data load failed?
 			console.log(e);
@@ -806,7 +806,7 @@ function local_store_cards_load() {
 function local_store_ui_save() {
 	if (window.localStorage) {
 		try {
-			localStorage.setItem("ui", JSON.stringify(ui));
+			localStorage.setItem("ui", JSON.stringify(g_ui));
 		} catch (e) {
 			//if the local store save failed should we notify the user that the data is not being saved?
 			console.log(e);
@@ -816,7 +816,7 @@ function local_store_ui_save() {
 function local_store_ui_load() {
 	if (window.localStorage) {
 		try {
-			ui = JSON.parse(localStorage.getItem("ui")) || ui;
+			g_ui = JSON.parse(localStorage.getItem("ui")) || g_ui;
 		} catch (e) {
 			//if the local store load failed should we notify the user that the data load failed?
 			console.log(e);
@@ -884,15 +884,15 @@ function ui_setup_shortcut() {
 		if (e.which == 33) { // Pg up
 			if (e.preventDefault)
 				e.preventDefault();
-			var idx = ui.selectedCardIdx;
+			var idx = g_ui.selectedCardIdx;
 			if (idx > 0)
 				ui_select_card_by_index(idx - 1);
 			e.returnValue = false;
 		} else if (e.which == 34) { // Pg down
 			if (e.preventDefault)
 				e.preventDefault();
-			var idx = ui.selectedCardIdx;
-			if (idx < card_data.length - 1)
+			var idx = g_ui.selectedCardIdx;
+			if (idx < g_card_data.length - 1)
 				ui_select_card_by_index(idx + 1);
 			e.returnValue = false;
 		} else if (e.ctrlKey && e.key == "s") {
@@ -959,28 +959,26 @@ function ui_update_cards_list_height() {
 	$('#cards-list').css("height", ($(window).height() - top) + 'px');
 }
 
-$(document).ready(function () {
+function ui_fold_section() {
+	var shouldSave = '';
 
-	var preventPageDownOrUp = function (e) {
-		if (e.which == 33 || e.which == 34) { // Pg up or down
-			if (e.preventDefault)
-				e.preventDefault();
-			e.returnValue = false;
+	if (g_isSmallLayout) {
+		var foldedContainer = $('#' + $(this).attr('for'));
+		var sideName = '';
+		if ($(this).hasClass('btn-fold-section-right')) {
+			sideName = 'right';
+		} else {
+			sideName = 'left';
 		}
-	};
-	ui_setup_shortcut();
-
-	$(window).resize(function (e) {
-		$(".container-wrapper").css("height", $(window).height() + 'px');
-		$(".btn-fold-section").css("height", $(window).height() + 'px');
-		ui_update_cards_list_height();
-	});
-
-
-	local_store_cards_load();	
-	local_store_ui_load();
-
-	$(".btn-fold-section").click(function () {
+		var cssSideInt = parseInt(foldedContainer.css(sideName));
+		if (cssSideInt < 0) {
+			foldedContainer.css(sideName, '0px');
+			$(this).css(sideName, parseInt(foldedContainer.css('width')) - parseInt($(this).css('width')) + 'px');
+		} else {
+			foldedContainer.css(sideName, '-' + foldedContainer.css('width'));
+			$(this).css(sideName, '0px');
+		}
+	} else {
 		var cardFormWrapper = $('#card-form-container-wrapper');
 		var cardFormContainer = $('#card-form-container');
 		var cardFormContainerClass = cardFormWrapper[0].classList.value;
@@ -992,16 +990,16 @@ $(document).ready(function () {
 		var foldedContainerLGIdx = foldedContainerClass.indexOf('col-lg-') + 7;
 		foldedContainerClass = parseInt(foldedContainerClass.substring(foldedContainerLGIdx, foldedContainerLGIdx + 2));
 
+		var foldedContainerDisplay = foldedContainer.css('display');
+
 		var buttonSpaceWidth = parseInt($(this).css('width'));
 
-		var display = foldedContainer.css('display');
-		var shouldSave = '';
 		var buttonIncreasedWidth = 8;
-		if (display !== 'none') {
-			shouldSave = !ui.foldedSections[foldedContainer.selector];
-			ui.foldedSections[foldedContainer.selector] = '#' + this.id;
+		if (foldedContainerDisplay !== 'none') {
+			shouldSave = !g_ui.foldedSections[foldedContainer.selector];
+			g_ui.foldedSections[foldedContainer.selector] = '#' + this.id;
 			foldedContainer.hide();
-			
+
 			buttonSpaceWidth += buttonIncreasedWidth;
 			$(this).css('width', buttonSpaceWidth + 'px');
 
@@ -1015,8 +1013,8 @@ $(document).ready(function () {
 
 			cardFormWrapper.toggleClass('col-lg-' + cardFormContainerClass + ' col-lg-' + (cardFormContainerClass + foldedContainerClass));
 		} else {
-			shouldSave = ui.foldedSections[foldedContainer.selector];
-			ui.foldedSections[foldedContainer.selector] = null;
+			shouldSave = g_ui.foldedSections[foldedContainer.selector];
+			g_ui.foldedSections[foldedContainer.selector] = null;
 			foldedContainer.show();
 
 			if (parseInt($(this).css('margin-right')) >= 0)
@@ -1033,54 +1031,147 @@ $(document).ready(function () {
 		}
 
 		$(this).toggleClass('btn-fold-section-right btn-fold-section-left');
-		if (shouldSave)
-			local_store_ui_save();
-	});
-	var foldedSectionsKeys = Object.keys(ui.foldedSections);
-	for (var i = 0; i < foldedSectionsKeys.length; i++) {
-		if (ui.foldedSections[foldedSectionsKeys[i]])
-			$(ui.foldedSections[foldedSectionsKeys[i]]).click();
 	}
 
-	$(".btn-fold-block").click(function () {
-		var button = $('#' + this.id);
+	if (shouldSave)
+		local_store_ui_save();
+}
 
-		var foldedBlock = $('#' + $(this).attr('for'));
-		var display = foldedBlock.css('display');
-		var shouldSave = '';
-		if (display !== 'none') {
-			shouldSave = !ui.foldedBlocks[foldedBlock.selector];
-			ui.foldedBlocks[foldedBlock.selector] = button.selector;
-			foldedBlock.hide();
-			var buttonsPoints = button[0].children[0].children[0].points;
-			buttonsPoints[0].x = 0;
-			buttonsPoints[0].y = 0;
-			buttonsPoints[1].x = 100;
-			buttonsPoints[1].y = 50;
-			buttonsPoints[2].x = 0;
-			buttonsPoints[2].y = 100;
+function ui_small_layout_fold_all_sections(e) {
+	if (e && e.isDefaultPrevented())
+		return;
+	var foldMenuButton = $('#button-fold-menu');
+	if (parseInt(foldMenuButton.css('left')) > 0) {
+		foldMenuButton.click();
+	}
+	var foldPreviewButton = $('#button-fold-preview');
+	if (parseInt(foldPreviewButton.css('right')) > 0) {
+		foldPreviewButton.click();
+	}
+}
+
+function ui_fold_block() {
+	var button = $('#' + this.id);
+
+	var foldedBlock = $('#' + $(this).attr('for'));
+	var display = foldedBlock.css('display');
+	var shouldSave = '';
+	if (display !== 'none') {
+		shouldSave = !g_ui.foldedBlocks[foldedBlock.selector];
+		g_ui.foldedBlocks[foldedBlock.selector] = button.selector;
+		foldedBlock.hide();
+		var buttonsPoints = button[0].children[0].children[0].points;
+		buttonsPoints[0].x = 0;
+		buttonsPoints[0].y = 0;
+		buttonsPoints[1].x = 100;
+		buttonsPoints[1].y = 50;
+		buttonsPoints[2].x = 0;
+		buttonsPoints[2].y = 100;
+	} else {
+		shouldSave = g_ui.foldedBlocks[foldedBlock.selector];
+		g_ui.foldedBlocks[foldedBlock.selector] = null;
+		foldedBlock.show();
+		var buttonsPoints = button[0].children[0].children[0].points;
+		buttonsPoints[0].x = 0;
+		buttonsPoints[0].y = 0;
+		buttonsPoints[1].x = 100;
+		buttonsPoints[1].y = 0;
+		buttonsPoints[2].x = 50;
+		buttonsPoints[2].y = 100;
+	}
+
+	if (shouldSave)
+		local_store_ui_save();
+
+	ui_update_cards_list_height();
+}
+
+function clean_style(styleObj) {
+	for (var i = styleObj.length; i--;) {
+		var nameString = styleObj[i];
+		styleObj.removeProperty(nameString);
+	}
+}
+
+var g_isSmallLayout;
+$(document).ready(function () {
+
+	var preventPageDownOrUp = function (e) {
+		if (e.which == 33 || e.which == 34) { // Pg up or down
+			if (e.preventDefault)
+				e.preventDefault();
+			e.returnValue = false;
+		}
+	};
+	ui_setup_shortcut();
+
+	g_isSmallLayout = $('html').width() < 1200;
+	$(window).resize(function (e) {
+		var isSmallLayout = $('html').width() < 1200;
+		if (isSmallLayout) {
+			var foldedSectionsKeys = Object.keys(g_ui.foldedSections);
+			if (isSmallLayout != g_isSmallLayout) {
+				for (var i = 0; i < foldedSectionsKeys.length; i++) {
+					if (g_ui.foldedSections[foldedSectionsKeys[i]])
+						$(g_ui.foldedSections[foldedSectionsKeys[i]]).click();
+				}
+			}
+			for (var i = 0; i < foldedSectionsKeys.length; i++) {
+				g_ui.foldedSections[foldedSectionsKeys[i]] = null;
+			}
+
+			$('#menu-container-wrapper').click(function (e) {
+				if (e.preventDefault)
+					e.preventDefault();
+			});
+			$('#preview-container-wrapper').click(function (e) {
+				if (e.preventDefault)
+					e.preventDefault();
+			});
+			$('.container-wrapper').click(ui_small_layout_fold_all_sections);
 		} else {
-			shouldSave = ui.foldedBlocks[foldedBlock.selector];
-			ui.foldedBlocks[foldedBlock.selector] = null;
-			foldedBlock.show();
-			var buttonsPoints = button[0].children[0].children[0].points;
-			buttonsPoints[0].x = 0;
-			buttonsPoints[0].y = 0;
-			buttonsPoints[1].x = 100;
-			buttonsPoints[1].y = 0;
-			buttonsPoints[2].x = 50;
-			buttonsPoints[2].y = 100;
+			$('#menu-container-wrapper').click(null);
+			$('#preview-container-wrapper').click(null);
+			$('.container-wrapper').click(null);
 		}
 
-		if (shouldSave)
-			local_store_ui_save();
+		if (g_isSmallLayout != isSmallLayout) {
+			clean_style($('#button-fold-menu')[0].style);
+			clean_style($('#menu-container-wrapper')[0].style);
+			clean_style($('#button-fold-preview')[0].style);
+			clean_style($('#preview-container-wrapper')[0].style);
+			g_isSmallLayout = isSmallLayout;
+		}
 
+		$('body').children(0).children(0).css('height', $(window).height() + 'px');
+		$('.container-wrapper').css('height', $(window).height() + 'px');
+		$('.btn-fold-section').css('height', $(window).height() + 'px');
 		ui_update_cards_list_height();
 	});
-	var foldedBlockKeys = Object.keys(ui.foldedBlocks);
+
+
+	local_store_cards_load();	
+	local_store_ui_load();
+
+	$(".btn-fold-section").click(ui_fold_section);
+	var isSmallLayout = $('html').width() < 1200;
+	var foldedSectionsKeys = Object.keys(g_ui.foldedSections);
+	if (isSmallLayout) {
+		for (var i = 0; i < foldedSectionsKeys.length; i++) {
+			g_ui.foldedSections[foldedSectionsKeys[i]] = null;
+		}
+	} else {
+		for (var i = 0; i < foldedSectionsKeys.length; i++) {
+			if (g_ui.foldedSections[foldedSectionsKeys[i]])
+				$(g_ui.foldedSections[foldedSectionsKeys[i]]).click();
+		}
+	}
+
+	$(".btn-fold-block").click(ui_fold_block);
+	var foldedBlockKeys = Object.keys(g_ui.foldedBlocks);
 	for (var i = 0; i < foldedBlockKeys.length; i++) {
-		if (ui.foldedBlocks[foldedBlockKeys[i]])
-			$(ui.foldedBlocks[foldedBlockKeys[i]]).click();
+		if (g_ui.foldedBlocks[foldedBlockKeys[i]])
+			$(g_ui.foldedBlocks[foldedBlockKeys[i]]).click();
 	}
 
 	ui_setup_color_selector();
@@ -1106,8 +1197,8 @@ $(document).ready(function () {
 	$("#filter-execute").click(ui_filter_execute);
 	$("#button-help").click(ui_open_help);
 
-	if (ui.filename)
-		$("#file-name").html('<b>File:</b> ' + ui.filename.join(", ") + '<br/><b>Last save:</b> ' + ui.saveTime);
+	if (g_ui.filename)
+		$("#file-name").html('<b>File:</b> ' + g_ui.filename.join(", ") + '<br/><b>Last save:</b> ' + g_ui.saveTime);
 
 	// ----- Page settings
 
