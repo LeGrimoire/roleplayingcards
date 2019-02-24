@@ -209,17 +209,17 @@ function ui_generate() {
 		return;
 	}
 
+	if (g_ui_generate_modal_shown === false) {
+		$("#print-modal").modal('show');
+		g_ui_generate_modal_shown = true;
+	}
+
 	// Generate output HTML
 	var card_html = card_pages_generate_html(g_card_data, g_card_options);
 
 	// Open a new window for the output
 	// Use a separate window to avoid CSS conflicts
 	var tab = window.open("output.html", 'rpg-cards-output');
-
-	if (g_ui_generate_modal_shown === false) {
-		$("#print-modal").modal('show');
-		g_ui_generate_modal_shown = true;
-	}
 
 	// Send the generated HTML to the new window
 	// Use a delay to give the new window time to set up a message listener

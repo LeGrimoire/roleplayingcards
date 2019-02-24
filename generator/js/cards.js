@@ -514,12 +514,14 @@ function card_element_base_spell(card_data, options) {
 		result += 	'<p class="card-spell-ritual">' + I18N.RITUAL + '</p>';
 	result += 	'<div class="card-spell-components">';
 	// var colorStyle = 'filter:sepia(1) hue-rotate(86deg) saturate(10) brightness(0.7);';
+	if (card_data.spell.materials) {
+		result += '<span class="card-inlineicon icon-custom-arrow-down" style="top:1px;"></span>';
+	}
+	result += '<span class="card-inlineicon icon-spell-material" style="' + (card_data.spell.materials ? 'margin-left:0px;' : 'opacity:0.4;') + '"></span>';
 	result += 		'<span class="card-inlineicon icon-spell-verbal" style="' + (card_data.spell.verbal ? '' : 'opacity:0.4;') + '"></span>';
 	result += 		'<span class="card-inlineicon icon-spell-somatic" style="' + (card_data.spell.somatic ? '' : 'opacity:0.4;') + '"></span>';
-	result += 		'<span class="card-inlineicon icon-spell-material" style="' + (card_data.spell.materials ? '' : 'opacity:0.4;margin-right:10px;') + '"></span>';
 	if (card_data.spell.materials) {
-		result += 	'<span class="card-inlineicon icon-custom-arrow-down"></span>';
-		result += 	'<p class="card-spell-materials">' + card_data.spell.materials + '</p>';
+		result += '<p class="card-spell-materials">' + card_data.spell.materials + '</p>';
 	}
 	result += 	'</div>';
 	result += '</div>'
