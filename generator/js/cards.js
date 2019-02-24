@@ -579,7 +579,7 @@ function card_element_fill(params, card_data, options) {
 	return '<span class="card-fill" style="flex:' + flex + '"></span>';
 }
 
-function card_element_margin(params, card_data, options) {
+function card_element_space(params, card_data, options) {
 	var height = params[0] || "1";
 	return '<span style="height:' + height + 'px"></span>';
 }
@@ -847,7 +847,7 @@ var card_element_generators = {
 	rule: card_element_ruler,
 	ruler: card_element_ruler,
 	fill: card_element_fill,
-	margin: card_element_margin,
+	space: card_element_space,
 	boxes: card_element_boxes,
 	circles: card_element_circles,
 	property: card_element_property,
