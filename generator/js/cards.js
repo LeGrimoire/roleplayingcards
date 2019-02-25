@@ -384,7 +384,7 @@ function card_element_subtitle(card_data, options) {
 	return result;
 }
 
-function card_element_header_creature(card_data, options) {
+function card_creature_element_header(card_data, options) {
 	var result = "";
 	result += '<div class="card-title-cr-container">';
 	result += 	'<p class="card-title-cr">' + card_data.creature.cr + '</p>';
@@ -410,7 +410,7 @@ function card_element_header_creature(card_data, options) {
 	return result;
 }
 
-function card_element_base_creature(card_data, options) {
+function card_creature_element_base(card_data, options) {
 	var result = "";
 	result += '<div class="card-creature-base">';
 	result += '<div class="card-creature-base-element">';
@@ -482,7 +482,7 @@ function card_element_base_creature(card_data, options) {
 	return result;
 }
 
-function card_element_header_spell(card_data, options) {
+function card_spell_element_header(card_data, options) {
 	var result = "";
 	result += '<div class="card-title-inlineicon-container">';
 	if (card_data.spell.level)
@@ -492,7 +492,7 @@ function card_element_header_spell(card_data, options) {
 	return result;
 }
 
-function card_element_base_spell(card_data, options) {
+function card_spell_element_base(card_data, options) {
 	var color = card_data_color_front(card_data, options);
 	var result = "";
 	result += '<div class="card-spell-base">';
@@ -524,12 +524,12 @@ function card_element_base_spell(card_data, options) {
 		result += '<p class="card-spell-materials">' + card_data.spell.materials + '</p>';
 	}
 	result += 	'</div>';
-	result += '</div>'
 	result += card_element_ruler(null, card_data, options);
+	result += '</div>'
 	return result;
 }
 
-function card_element_footer_spell(card_data, options) {
+function card_spell_element_footer(card_data, options) {
 	var result = "";
 	result += '<div class="card-spell-classes">';
 	var classesKeys = Object.keys(I18N.CLASSES);
@@ -905,14 +905,18 @@ function card_generate_front(card_data, options) {
 	var style_color = card_generate_color_style(color, options);
 
 	var result = "";
-	result += '<div class="card card-size-' + options.card_size + ' ' + (options.rounded_corners ? 'rounded-corners' : '') + ' ' + (card_data.compact ? 'card-compact' : '') + '">';
+	result += '<div class="card card-size-' + options.card_size + ' ' 
+	+ (options.rounded_corners ? 'rounded-corners' : '')
+	+ (card_data.compact ? ' card-compact' : '')
+	+ (card_data.type ? ' card-type-' + card_data.type : '')
+	+ '">';
 	result += 	'<div class="card-border" ' + style_color + '>';
 	result += 		card_element_title(card_data, options);
 
 	if (card_data.type == CardType.CREATURE) {
-		result += 	card_element_header_creature(card_data, options);
+		result += 	card_creature_element_header(card_data, options);
 		result += 	'<div class="card-content-container">';
-		result += 		card_element_base_creature(card_data, options);
+		result += 		card_creature_element_base(card_data, options);
 		if (card_data.creature.vulnerabilities)
 			result += 	card_element_property([I18N.VULNERABILITIES, card_data.creature.vulnerabilities], card_data, options);
 		if (card_data.creature.resistances)
@@ -926,9 +930,9 @@ function card_generate_front(card_data, options) {
 		result += 		card_element_subtitle(card_data, options);
 	} 
 	else if (card_data.type == CardType.SPELL) {
-		result += 	card_element_header_spell(card_data, options);
+		result += 	card_spell_element_header(card_data, options);
 		result += 	'<div class="card-content-container">';
-		result += 		card_element_base_spell(card_data, options);
+		result += 		card_spell_element_base(card_data, options);
 	} 
 	else if (card_data.type == CardType.POWER) {
 		result += 	card_element_icon(card_data, options);
@@ -946,7 +950,7 @@ function card_generate_front(card_data, options) {
 	result += 	'</div>';
 
 	if (card_data.type == CardType.SPELL) {
-		result += card_element_footer_spell(card_data, options);
+		result += card_spell_element_footer(card_data, options);
 	}
 
 	if (card_data.reference)
