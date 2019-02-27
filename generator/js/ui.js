@@ -881,7 +881,7 @@ function typeahead_contents_updater(item) {
 	this.$element[0].selectionEnd = this.$element[0].selectionStart;
 
 	var textAfter = this.query.slice(selectionStart);
-	return textBefore + item + textAfter;
+	return textBefore + item + ' | ' + textAfter;
 }
 
 function typeahead_render(items) {

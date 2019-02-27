@@ -81,16 +81,16 @@ var I18N = {
 			regex: new RegExp("([ \(\[0-9]|^){1}tranchant[s]?", 'gi')
 		}, {
 			file: "fire", name: "feu",
-			regex: new RegExp("([ \(\[0-9]|^){1}feu[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}feu[s]?(?:[^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "ice", name: "froid",
-			regex: new RegExp("([ \(\[0-9]|^){1}froid[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}froid[s]?(?:[^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "lightning", name: "foudre",
-			regex: new RegExp("([ \(\[0-9]|^){1}foudre[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9]|^){1}foudre[s]?(?:[^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "acid", name: "acide",
-			regex: new RegExp("([ \(\[0-9'’]|^){1}acide[s]?", 'gi')
+			regex: new RegExp("([ \(\[0-9'’]|^){1}acide[s]?(?:[^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "poison", name: "poison",
 			regex: new RegExp("([ \(\[0-9]|^){1}poison[s]?", 'gi')
