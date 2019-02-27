@@ -156,7 +156,7 @@ function ui_save_file() {
 		if (card.tags && card.tags.length == 0)
 			delete card.tags;
 
-		var tagsToSave = ["type", "title", "subtitle", "color", "color_front", "color_back", "icon", "icon_back"];
+		var tagsToSave = ["type", "title", "title_size", "subtitle", "color", "color_front", "color_back", "icon", "icon_back"];
 
 		if (card.type == CardType.CREATURE) {
 			tagsToSave.push("creature", "cr", "size", "alignment", "ac", "hp", "perception", "speed", "stats", "vulnerabilities", "resistances", "immunities");
@@ -711,6 +711,7 @@ function ui_change_default_icon() {
 
 function ui_change_default_title_size() {
 	g_card_options.default.title_size = $(this).val();
+	$("#card-title-size")[0].options[0].innerText = "default (" + g_card_options.default.title_size + "pt)";
 	ui_render_selected_card();
 }
 
@@ -783,8 +784,31 @@ function ui_card_list_insert_lexical() {
 
 
 //Adding support for local store
+function storageAvailable(type) {
+	try {
+		var storage = window[type],
+			x = '__storage_test__';
+		storage.setItem(x, x);
+		storage.removeItem(x);
+		return true;
+	}
+	catch (e) {
+		return e instanceof DOMException && (
+			// everything except Firefox
+			e.code === 22 ||
+			// Firefox
+			e.code === 1014 ||
+			// test name field too, because code might not be present
+			// everything except Firefox
+			e.name === 'QuotaExceededError' ||
+			// Firefox
+			e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+			// acknowledge QuotaExceededError only if there's something already stored
+			storage.length !== 0;
+	}
+} 
 function local_store_cards_save() {
-	if (window.localStorage) {
+	if (storageAvailable('localStorage') && window.localStorage) {
 		try {
 			localStorage.setItem("card_data", JSON.stringify(g_card_data));
 		} catch (e) {
@@ -794,7 +818,7 @@ function local_store_cards_save() {
 	}
 }
 function local_store_cards_load() {
-	if (window.localStorage) {
+	if (storageAvailable('localStorage') && window.localStorage) {
 		try {
 			g_card_data = JSON.parse(localStorage.getItem("card_data")) || g_card_data;
 		} catch (e) {
@@ -804,7 +828,7 @@ function local_store_cards_load() {
 	}
 }
 function local_store_ui_save() {
-	if (window.localStorage) {
+	if (storageAvailable('localStorage') && window.localStorage) {
 		try {
 			localStorage.setItem("ui", JSON.stringify(g_ui));
 		} catch (e) {
@@ -814,7 +838,7 @@ function local_store_ui_save() {
 	}
 }
 function local_store_ui_load() {
-	if (window.localStorage) {
+	if (storageAvailable('localStorage') && window.localStorage) {
 		try {
 			g_ui = JSON.parse(localStorage.getItem("ui")) || g_ui;
 		} catch (e) {
@@ -830,11 +854,34 @@ function typeahead_matcher(item) {
 	return ~item.toLowerCase().indexOf(words[words.length - 1]);
 }
 
+function typeahead_contents_matcher(item) {
+	var selectionStart = this.$element[0].selectionStart;
+	var textBefore = this.query.substring(0, selectionStart);
+	var lastSpaceIdx = textBefore.search(/\n[^\W]*$/);
+	var newWord = textBefore.substring(lastSpaceIdx + 1);
+	if (newWord == "")
+		return false;
+	return item.startsWith(newWord);
+}
+
 function typeahead_updater(item) {
 	var lastSpaceIdx = this.query.lastIndexOf(" ");
 	if (lastSpaceIdx > 0)
 		return this.query.substring(0, lastSpaceIdx) + " " + item;
 	return item;
+}
+
+function typeahead_contents_updater(item) {
+	var selectionStart = this.$element[0].selectionStart;
+	var textBefore = this.query.substring(0, selectionStart);
+	var lastSpaceIdx = textBefore.search(/\W[^\W]*$/);
+	textBefore = textBefore.substring(0, lastSpaceIdx + 1);
+
+	this.$element[0].selectionStart = (textBefore + item).length;
+	this.$element[0].selectionEnd = this.$element[0].selectionStart;
+
+	var textAfter = this.query.slice(selectionStart);
+	return textBefore + item + textAfter;
 }
 
 function typeahead_render(items) {
@@ -852,7 +899,6 @@ function typeahead_render(items) {
 		items.first().addClass('active');
 	}
 	this.$menu.html(items);
-	this.$menu.addClass('dropdown-text');
 	return this;
 }
 
@@ -1234,6 +1280,7 @@ $(document).ready(function () {
 
 	$("#card-title").keyup(ui_change_card_element_keyup);
 	$("#card-title").change(ui_change_card_title);
+	$("#card-title-size")[0].options[0].innerText = "default (" + g_card_options.default.title_size + "pt)";
 	$("#card-title-size").change(ui_change_card_property);
 	$("#card-subtitle").change(ui_change_card_property);
 	$("#card-icon").change(ui_change_card_property);
@@ -1246,6 +1293,14 @@ $(document).ready(function () {
 
 	$("#card-description").keyup(ui_change_card_element_keyup);
 	$("#card-description").change(ui_change_card_description);
+	$("#card-contents").typeahead({
+		source: Object.keys(card_element_generators),
+		items: 'all',
+		minLength: 0,
+		matcher: typeahead_contents_matcher,
+		updater: typeahead_contents_updater,
+		render: typeahead_render
+	});
 	$("#card-contents").keyup(ui_change_card_element_keyup);
 	$("#card-contents").change(ui_change_card_contents);
 	$("#card-contents").keydown(function (e) {
@@ -1274,41 +1329,42 @@ $(document).ready(function () {
 				e.preventDefault();
 			e.returnValue = false;
 		}
-		if (!e.altKey)
-			return;
-		if (e.key == "i") {
-			var value = $(this)[0].value;
-			var selectionStart = $(this)[0].selectionStart;
-			var selectionEnd = $(this)[0].selectionEnd;
-			var textBefore = value.slice(0, selectionStart);
-			var textBetween = value.slice(selectionStart, selectionEnd);
-			var textAfter = value.slice(selectionEnd);
-			$(this)[0].value = textBefore + '<i>' + textBetween + '</i>' + textAfter;
-			if (textBetween.length == 0)
-				$(this)[0].selectionStart = selectionStart + 3;
-			else
-				$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
-			$(this)[0].selectionEnd = $(this)[0].selectionStart;
-			if (e.preventDefault)
-				e.preventDefault();
-			e.returnValue = false;
-		}
-		if (e.key == "b") {
-			var value = $(this)[0].value;
-			var selectionStart = $(this)[0].selectionStart;
-			var selectionEnd = $(this)[0].selectionEnd;
-			var textBefore = value.slice(0, selectionStart);
-			var textBetween = value.slice(selectionStart, selectionEnd);
-			var textAfter = value.slice(selectionEnd);
-			$(this)[0].value = textBefore + '<b>' + textBetween + '</b>' + textAfter;
-			if (textBetween.length == 0)
-				$(this)[0].selectionStart = selectionStart + 3;
-			else
-				$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
-			$(this)[0].selectionEnd = $(this)[0].selectionStart;
-			if (e.preventDefault)
-				e.preventDefault();
-			e.returnValue = false;
+		if (e.altKey)
+		{
+			if (e.key == "i") {
+				var value = $(this)[0].value;
+				var selectionStart = $(this)[0].selectionStart;
+				var selectionEnd = $(this)[0].selectionEnd;
+				var textBefore = value.slice(0, selectionStart);
+				var textBetween = value.slice(selectionStart, selectionEnd);
+				var textAfter = value.slice(selectionEnd);
+				$(this)[0].value = textBefore + '<i>' + textBetween + '</i>' + textAfter;
+				if (textBetween.length == 0)
+					$(this)[0].selectionStart = selectionStart + 3;
+				else
+					$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
+				$(this)[0].selectionEnd = $(this)[0].selectionStart;
+				if (e.preventDefault)
+					e.preventDefault();
+				e.returnValue = false;
+			}
+			if (e.key == "b") {
+				var value = $(this)[0].value;
+				var selectionStart = $(this)[0].selectionStart;
+				var selectionEnd = $(this)[0].selectionEnd;
+				var textBefore = value.slice(0, selectionStart);
+				var textBetween = value.slice(selectionStart, selectionEnd);
+				var textAfter = value.slice(selectionEnd);
+				$(this)[0].value = textBefore + '<b>' + textBetween + '</b>' + textAfter;
+				if (textBetween.length == 0)
+					$(this)[0].selectionStart = selectionStart + 3;
+				else
+					$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
+				$(this)[0].selectionEnd = $(this)[0].selectionStart;
+				if (e.preventDefault)
+					e.preventDefault();
+				e.returnValue = false;
+			}
 		}
 	});
 

@@ -71,14 +71,6 @@ select.form-control option {
 	padding: 0px;
 }
 
-.dropdown-text {
-	width: 100%;
-}
-.dropdown-text>li>a {
-	margin: 0px;
-	padding-left: 3px;
-	position: relative;
-}
 .dropdown-icons {
 	width: 300px;
 }
@@ -88,6 +80,11 @@ select.form-control option {
 }
 .dropdown-menu {
 	width: 540px;
+}
+.dropdown-menu>li>a {
+	margin: 0px;
+	padding-left: 3px;
+	position: relative;
 }
 .dropdown-menu a > span {
 	position: absolute;
