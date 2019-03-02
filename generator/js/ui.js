@@ -26,17 +26,6 @@ function ui_load_sample() {
 }
 
 
-function mergeSort(arr, compare) {
-	if (arr.length < 2)
-		return arr;
-
-	var middle = parseInt(arr.length / 2);
-	var left = arr.slice(0, middle);
-	var right = arr.slice(middle, arr.length);
-
-	return merge(mergeSort(left, compare), mergeSort(right, compare), compare);
-}
-
 function merge(left, right, compare) {
 	var result = [];
 
@@ -55,6 +44,17 @@ function merge(left, right, compare) {
 		result.push(right.shift());
 
 	return result;
+}
+
+function mergeSort(arr, compare) {
+	if (arr.length < 2)
+		return arr;
+
+	var middle = parseInt(arr.length / 2);
+	var left = arr.slice(0, middle);
+	var right = arr.slice(middle, arr.length);
+
+	return merge(mergeSort(left, compare), mergeSort(right, compare), compare);
 }
 
 
@@ -100,8 +100,19 @@ function ui_clear_all() {
 	ui_update_card_list();
 }
 
+function ui_init_cards(data) {
+	data.forEach(function (card) {
+		card_update(card);
+	});
+}
+
+function ui_add_cards(data) {
+	ui_init_cards(data);
+	g_card_data = g_card_data.concat(data);
+	ui_update_card_list();
+}
+
 function ui_load_files(evt) {
-	// ui_clear_all();
 	g_card_data = [];
 
 	var files = evt.target.files;
@@ -116,6 +127,21 @@ function ui_load_files(evt) {
 		var reader = new FileReader();
 		reader.onload = function (reader) {
 			var data = JSON.parse(this.result);
+			for (var i in data) {
+				var card;
+				if (data[i].cardType == CardType.CREATURE)
+					card = new CreatureCard();
+				else if (data[i].cardType == CardType.ITEM)
+					card = new ItemCard();
+				else if (data[i].cardType == CardType.SPELL)
+					card = new SpellCard();
+				else if (data[i].cardType == CardType.POWER)
+					card = new PowerCard();
+				else
+					card = new Card();
+				Object.assign(card, data[i]);
+				data[i] = card;
+			}
 			ui_add_cards(data);
 		};
 		reader.readAsText(f);
@@ -136,6 +162,18 @@ function ui_import_files(evt) {
 		var reader = new FileReader();
 		reader.onload = function (reader) {
 			var data = JSON.parse(this.result);
+			for (var i in g_card_data) {
+				if (g_card_data[i].cardType == CardType.CREATURE)
+					g_card_data[i].__proto__ = CreatureCard.prototype;
+				else if (g_card_data[i].cardType == CardType.ITEM)
+					g_card_data[i].__proto__ = ItemCard.prototype;
+				else if (g_card_data[i].cardType == CardType.SPELL)
+					g_card_data[i].__proto__ = SpellCard.prototype;
+				else if (g_card_data[i].cardType == CardType.POWER)
+					g_card_data[i].__proto__ = PowerCard.prototype;
+				else
+					g_card_data[i].__proto__ = Card.prototype;
+			}
 			ui_add_cards(data);
 		};
 		reader.readAsText(f);
@@ -149,6 +187,11 @@ function ui_import_files(evt) {
 
 function ui_save_file() {
 	var parts = ["[\n"];
+	var defaultCreature = new CreatureCard();
+	var defaultItem = new ItemCard();
+	var defaultSpell = new SpellCard();
+	var defaultPower = new PowerCard();
+	var defaultCard = new Card();
 	for (var i = 0; i < g_card_data.length; ++i) {
 		var card = g_card_data[i];
 		var str = "";
@@ -156,23 +199,32 @@ function ui_save_file() {
 		if (card.tags && card.tags.length == 0)
 			delete card.tags;
 
-		var tagsToSave = ["type", "title", "title_size", "subtitle", "color", "color_front", "color_back", "icon", "icon_back"];
-
-		if (card.type == CardType.CREATURE) {
-			tagsToSave.push("creature", "cr", "size", "alignment", "ac", "hp", "perception", "speed", "stats", "vulnerabilities", "resistances", "immunities");
-		} else if (card.type == CardType.ITEM) {
-			tagsToSave.push("item");
-		} else if (card.type == CardType.SPELL) {
-			tagsToSave.push("spell", "level", "ritual", "casting_time", "range", "verbal", "somatic", "material", "duration", "type", "classes");
-		} else if (card.type == CardType.POWER) {
-			tagsToSave.push("power");
+		if (card.cardType === CardType.CREATURE) {
+			str = JSON.stringify(card, function (key, value) {
+				if (key == "cardType" || value !== defaultCreature[key])
+					return value;
+			}, "\t");
+		} else if (card.cardType === CardType.ITEM) {
+			str = JSON.stringify(card, function (key, value) {
+				if (key == "cardType" || value !== defaultItem[key])
+					return value;
+			}, "\t");
+		} else if (card.cardType === CardType.SPELL) {
+			str = JSON.stringify(card, function (key, value) {
+				if (key == "cardType" || value !== defaultSpell[key])
+					return value;
+			}, "\t");
+		} else if (card.cardType === CardType.POWER) {
+			str = JSON.stringify(card, function (key, value) {
+				if (key == "cardType" || value !== defaultPower[key])
+					return value;
+			}, "\t");
 		} else {
-			tagsToSave.push();
+			str = JSON.stringify(card, function (key, value) {
+				if (key == "cardType" || value !== defaultCard[key])
+					return value;
+			}, "\t");
 		}
-
-		tagsToSave.push("description", "contents", "tags", "reference", "compact");
-
-		str = JSON.stringify(card, tagsToSave, "\t");
 
 		if (i < g_card_data.length - 1)
 			str = str.concat(",\n");
@@ -227,19 +279,6 @@ function ui_generate() {
 }
 
 
-
-function ui_init_cards(data) {
-	data.forEach(function (card) {
-		card_init(card);
-	});
-}
-
-function ui_add_cards(data) {
-	ui_init_cards(data);
-	g_card_data = g_card_data.concat(data);
-	ui_update_card_list();
-}
-
 function ui_select_card_by_index(index) {
 	g_previousCardIdx = g_ui.selectedCardIdx;
 	g_ui.selectedCardIdx = index;
@@ -253,11 +292,20 @@ function ui_selected_card() {
 
 function ui_add_new_card() {
 	var cardIdx = g_ui.selectedCardIdx;
-	var new_card = {};
-	new_card.type = $("#card-type").val();
-	card_init(new_card);
-	new_card.title = "New " + new_card.type;
-	new_card.contents = [];
+	var cardType = $("#card-type").val();
+	var new_card;
+	if (cardType == CardType.CREATURE)
+		new_card = new CreatureCard();
+	else if (cardType == CardType.ITEM)
+		new_card = new ItemCard();
+	else if (cardType == CardType.SPELL)
+		new_card = new SpellCard();
+	else if (cardType == CardType.POWER)
+		new_card = new PowerCard();
+	else
+		new_card = new Card();
+
+	new_card.title = "New " + new_card.cardType;
 	if (cardIdx + 1 != g_card_data.length) {
 		var cards_after = g_card_data.splice(cardIdx + 1, g_card_data.length - cardIdx - 1, new_card);
 		g_card_data = g_card_data.concat(cards_after);
@@ -265,7 +313,7 @@ function ui_add_new_card() {
 		g_card_data.push(new_card);
 	ui_update_card_list(true);
 	ui_select_card_by_index(cardIdx + 1);
-	
+
 	$('#card-title').select();
 }
 
@@ -302,7 +350,7 @@ function ui_update_card_list(doNotUpdateSelectedCard) {
 
 	var cardsList = $("#cards-list");
 	cardsList.empty();
-	for (var i = 0; i < g_card_data.length; ++i) {
+	for (var i in g_card_data) {
 		var card = g_card_data[i];
 
 		var newCardInList = $('<div class="card-name"></div>').attr('index', i);
@@ -333,7 +381,7 @@ function ui_update_selected_card() {
 	g_dontRenderSelectedCard = true;
 	var card = ui_selected_card();
 	if (card) {
-		$("#card-type").val(card.type);
+		$("#card-type").val(card.cardType);
 
 		$("#card-title").val(card.title);
 		$("#card-title-size").val(card.title_size);
@@ -351,7 +399,7 @@ function ui_update_selected_card() {
 		$("#card-reference").val(card.reference);
 		$("#card-compact").prop("checked", card.compact);
 
-		if (card.type == CardType.CREATURE) {
+		if (card.cardType == CardType.CREATURE) {
 			$(".creature-hide").hide();
 			$(".item-hide").show();
 			$(".spell-hide").show();
@@ -362,29 +410,29 @@ function ui_update_selected_card() {
 			$(".spell-only").hide();
 			$(".power-only").hide();
 
-			$("#card-creature-cr").val(card.creature.cr);
-			$("#card-creature-size").val(card.creature.size);
-			$("#card-creature-alignment").val(card.creature.alignment);
-			$("#card-creature-type").val(card.creature.type);
+			$("#card-creature-cr").val(card.cr);
+			$("#card-creature-size").val(card.size);
+			$("#card-creature-alignment").val(card.alignment);
+			$("#card-creature-type").val(card.type);
 
-			$("#card-creature-ac").val(card.creature.ac);
-			$("#card-creature-hp").val(card.creature.hp);
-			$("#card-creature-perception").val(card.creature.perception);
-			$("#card-creature-speed").val(card.creature.speed);
+			$("#card-creature-ac").val(card.ac);
+			$("#card-creature-hp").val(card.hp);
+			$("#card-creature-perception").val(card.perception);
+			$("#card-creature-speed").val(card.speed);
 
-			$("#card-creature-strength").val(card.creature.stats[0]);
-			$("#card-creature-dexterity").val(card.creature.stats[1]);
-			$("#card-creature-constitution").val(card.creature.stats[2]);
-			$("#card-creature-intelligence").val(card.creature.stats[3]);
-			$("#card-creature-wisdom").val(card.creature.stats[4]);
-			$("#card-creature-charisma").val(card.creature.stats[5]);
+			$("#card-creature-strength").val(card.stats[0]);
+			$("#card-creature-dexterity").val(card.stats[1]);
+			$("#card-creature-constitution").val(card.stats[2]);
+			$("#card-creature-intelligence").val(card.stats[3]);
+			$("#card-creature-wisdom").val(card.stats[4]);
+			$("#card-creature-charisma").val(card.stats[5]);
 
-			$("#card-creature-resistances").val(card.creature.resistances);
-			$("#card-creature-vulnerabilities").val(card.creature.vulnerabilities);
-			$("#card-creature-immunities").val(card.creature.immunities);
+			$("#card-creature-resistances").val(card.resistances);
+			$("#card-creature-vulnerabilities").val(card.vulnerabilities);
+			$("#card-creature-immunities").val(card.immunities);
 
 			$('#card-contents').attr("rows", 17);
-		} else if (card.type == CardType.ITEM) {
+		} else if (card.cardType == CardType.ITEM) {
 			$(".creature-hide").show();
 			$(".item-hide").hide();
 			$(".spell-hide").show();
@@ -396,7 +444,7 @@ function ui_update_selected_card() {
 			$(".power-only").hide();
 
 			$('#card-contents').attr("rows", 27);
-		} else if (card.type == CardType.SPELL) {
+		} else if (card.cardType == CardType.SPELL) {
 			$(".creature-hide").show();
 			$(".item-hide").show();
 			$(".spell-hide").hide();
@@ -407,19 +455,19 @@ function ui_update_selected_card() {
 			$(".spell-only").show();
 			$(".power-only").hide();
 
-			$("#card-spell-level").val(card.spell.level);
-			$("#card-spell-ritual").prop("checked", card.spell.ritual);
-			$("#card-spell-casting-time").val(card.spell.casting_time);
-			$("#card-spell-range").val(card.spell.range);
-			$("#card-spell-verbal").prop("checked", card.spell.verbal);
-			$("#card-spell-somatic").prop("checked", card.spell.somatic);
-			$("#card-spell-materials").val(card.spell.materials);
-			$("#card-spell-duration").val(card.spell.duration);
-			$("#card-spell-type").val(card.spell.type);
-			$("#card-spell-classes").val(card.spell.classes);
+			$("#card-spell-level").val(card.level);
+			$("#card-spell-ritual").prop("checked", card.ritual);
+			$("#card-spell-casting-time").val(card.casting_time);
+			$("#card-spell-range").val(card.range);
+			$("#card-spell-verbal").prop("checked", card.verbal);
+			$("#card-spell-somatic").prop("checked", card.somatic);
+			$("#card-spell-materials").val(card.materials);
+			$("#card-spell-duration").val(card.duration);
+			$("#card-spell-type").val(card.type);
+			$("#card-spell-classes").val(card.classes);
 
 			$('#card-contents').attr("rows", 21);
-		} else if (card.type == CardType.POWER) {
+		} else if (card.cardType == CardType.POWER) {
 			$(".creature-hide").show();
 			$(".item-hide").show();
 			$(".spell-hide").show();
@@ -447,7 +495,7 @@ function ui_update_selected_card() {
 	} else {
 		$("#card-type").val("");
 
-		$("#card-title").val("");	
+		$("#card-title").val("");
 		$("#card-title-size").val("");
 		$("#card-subtitle").val("");
 		$("#card-color").val("").change();
@@ -598,23 +646,14 @@ function ui_change_card_title() {
 
 function ui_change_card_property() {
 	var property = $(this).attr("data-property");
-	var value = $(this).val();
+	var value;
+	if ($(this).attr('type') === 'checkbox')
+		value = $(this).is(':checked');
+	else
+		value = $(this).val();
 	var card = ui_selected_card();
 	if (card) {
-		if (value == g_card_options.default[property])
-			delete card[property];
-		else
-			card[property] = value;
-		ui_render_selected_card();
-	}
-}
-
-function ui_change_creature_property() {
-	var property = $(this).attr("data-property");
-	var value = $(this).val();
-	var card = ui_selected_card();
-	if (card) {
-		card.creature[property] = value;
+		card[property] = value;
 		ui_render_selected_card();
 	}
 }
@@ -624,21 +663,7 @@ function ui_change_creature_stats() {
 	var value = $(this).val();
 	var card = ui_selected_card();
 	if (card) {
-		card.creature.stats[property] = value;
-		ui_render_selected_card();
-	}
-}
-
-function ui_change_spell_property() {
-	var property = $(this).attr("data-property");
-	var value;
-	if ($(this).attr('type') === 'checkbox')
-		value = $(this).is(':checked');
-	else
-		value = $(this).val();
-	var card = ui_selected_card();
-	if (card) {
-		card.spell[property] = value;
+		card.stats[property] = value;
 		ui_render_selected_card();
 	}
 }
@@ -722,7 +747,7 @@ function ui_change_default_icon_size() {
 
 function ui_apply_default_color() {
 	for (var i = 0; i < g_card_data.length; ++i) {
-		if (!g_card_data[i].type)
+		if (!g_card_data[i].cardType)
 			g_card_data[i].color = g_card_options.default.color;
 	}
 	ui_render_selected_card();
@@ -806,7 +831,7 @@ function storageAvailable(type) {
 			// acknowledge QuotaExceededError only if there's something already stored
 			storage.length !== 0;
 	}
-} 
+}
 function local_store_cards_save() {
 	if (storageAvailable('localStorage') && window.localStorage) {
 		try {
@@ -821,6 +846,21 @@ function local_store_cards_load() {
 	if (storageAvailable('localStorage') && window.localStorage) {
 		try {
 			g_card_data = JSON.parse(localStorage.getItem("card_data")) || g_card_data;
+			for (var i in g_card_data) {
+				var card;
+				if (g_card_data[i].cardType == CardType.CREATURE)
+					card = new CreatureCard();
+				else if (g_card_data[i].cardType == CardType.ITEM)
+					card = new ItemCard();
+				else if (g_card_data[i].cardType == CardType.SPELL)
+					card = new SpellCard();
+				else if (g_card_data[i].cardType == CardType.POWER)
+					card = new PowerCard();
+				else
+					card = new Card();
+				Object.assign(card, g_card_data[i]);
+				g_card_data[i] = card;
+			}
 		} catch (e) {
 			//if the local store load failed should we notify the user that the data load failed?
 			console.log(e);
@@ -1196,8 +1236,11 @@ $(document).ready(function () {
 	});
 
 
-	local_store_cards_load();	
+	local_store_cards_load();
 	local_store_ui_load();
+
+	if (g_ui.selectedCardIdx >= g_card_data.length)
+		g_ui.selectedCardIdx = g_card_data.length - 1;
 
 	$(".btn-fold-section").click(ui_fold_section);
 	var isSmallLayout = $('html').width() < 1200;
@@ -1329,8 +1372,7 @@ $(document).ready(function () {
 				e.preventDefault();
 			e.returnValue = false;
 		}
-		if (e.altKey)
-		{
+		if (e.altKey) {
 			if (e.key == "i") {
 				var value = $(this)[0].value;
 				var selectionStart = $(this)[0].selectionStart;
@@ -1372,8 +1414,8 @@ $(document).ready(function () {
 
 	// ----- Creature
 
-	$("#card-creature-cr").change(ui_change_creature_property);
-	$("#card-creature-size").change(ui_change_creature_property);
+	$("#card-creature-cr").change(ui_change_card_property);
+	$("#card-creature-size").change(ui_change_card_property);
 	$("#card-creature-alignment").typeahead({
 		source: Object.values(I18N.ALIGNMENTS),
 		items: 'all',
@@ -1381,13 +1423,13 @@ $(document).ready(function () {
 		render: typeahead_render
 	});
 	$("#card-creature-alignment").keydown(preventPageDownOrUp);
-	$("#card-creature-alignment").change(ui_change_creature_property);
-	$("#card-creature-type").change(ui_change_creature_property);
+	$("#card-creature-alignment").change(ui_change_card_property);
+	$("#card-creature-type").change(ui_change_card_property);
 
-	$("#card-creature-ac").change(ui_change_creature_property);
-	$("#card-creature-hp").change(ui_change_creature_property);
-	$("#card-creature-perception").change(ui_change_creature_property);
-	$("#card-creature-speed").change(ui_change_creature_property);
+	$("#card-creature-ac").change(ui_change_card_property);
+	$("#card-creature-hp").change(ui_change_card_property);
+	$("#card-creature-perception").change(ui_change_card_property);
+	$("#card-creature-speed").change(ui_change_card_property);
 
 	$("#card-creature-strength").change(ui_change_creature_stats);
 	$("#card-creature-dexterity").change(ui_change_creature_stats);
@@ -1396,22 +1438,22 @@ $(document).ready(function () {
 	$("#card-creature-wisdom").change(ui_change_creature_stats);
 	$("#card-creature-charisma").change(ui_change_creature_stats);
 
-	$("#card-creature-resistances").change(ui_change_creature_property);
-	$("#card-creature-vulnerabilities").change(ui_change_creature_property);
-	$("#card-creature-immunities").change(ui_change_creature_property);
+	$("#card-creature-resistances").change(ui_change_card_property);
+	$("#card-creature-vulnerabilities").change(ui_change_card_property);
+	$("#card-creature-immunities").change(ui_change_card_property);
 
 	// ----- Spell
 
-	$("#card-spell-level").change(ui_change_spell_property);
-	$("#card-spell-ritual").change(ui_change_spell_property);
-	$("#card-spell-casting-time").change(ui_change_spell_property);
+	$("#card-spell-level").change(ui_change_card_property);
+	$("#card-spell-ritual").change(ui_change_card_property);
+	$("#card-spell-casting-time").change(ui_change_card_property);
 	$("#card-spell-casting-time").keyup(ui_change_card_element_keyup);
-	$("#card-spell-range").change(ui_change_spell_property);
+	$("#card-spell-range").change(ui_change_card_property);
 	$("#card-spell-range").keyup(ui_change_card_element_keyup);
-	$("#card-spell-verbal").change(ui_change_spell_property);
-	$("#card-spell-somatic").change(ui_change_spell_property);
-	$("#card-spell-materials").change(ui_change_spell_property);
-	$("#card-spell-duration").change(ui_change_spell_property);
+	$("#card-spell-verbal").change(ui_change_card_property);
+	$("#card-spell-somatic").change(ui_change_card_property);
+	$("#card-spell-materials").change(ui_change_card_property);
+	$("#card-spell-duration").change(ui_change_card_property);
 	$("#card-spell-duration").keyup(ui_change_card_element_keyup);
 	$("#card-spell-type").typeahead({
 		source: Object.values(I18N.SPELL_TYPES),
@@ -1422,7 +1464,7 @@ $(document).ready(function () {
 		render: typeahead_render
 	});
 	$("#card-spell-type").keydown(preventPageDownOrUp);
-	$("#card-spell-type").change(ui_change_spell_property);
+	$("#card-spell-type").change(ui_change_card_property);
 	$("#card-spell-classes").typeahead({
 		source: Object.values(I18N.CLASSES),
 		items: 'all',
@@ -1432,7 +1474,7 @@ $(document).ready(function () {
 		render: typeahead_render
 	});
 	$("#card-spell-classes").keydown(preventPageDownOrUp);
-	$("#card-spell-classes").change(ui_change_spell_property);
+	$("#card-spell-classes").change(ui_change_card_property);
 
 	ui_update_card_list();
 

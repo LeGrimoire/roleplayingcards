@@ -7,6 +7,87 @@ var CardType = {
 	POWER: "power"
 };
 
+class Card {
+	cardType;
+	title = "";
+	title_size;
+	subtitle = "";
+	color = "#A9A9A9";
+	icon = "";
+	icon_back;
+	description;
+	contents = [];
+	tags;
+	reference;
+	compact = false;
+
+	constructor() {
+	}
+}
+
+class CreatureCard extends Card {
+	cr = "1/2";
+	px = 100;
+	proficiency = 2;
+	size = "M";
+	alignment = I18N.ALIGNMENTS.UNALIGNED;
+	type = "";
+	ac = "10";
+	hp = "3 (1d6)";
+	perception = "10";
+	speed = "9 m";
+	stats = ["10", "10", "10", "10", "10", "10"];
+	vulnerabilities = "";
+	resistances = "";
+	immunities = "";
+
+	constructor() {
+		super();
+		this.cardType = CardType.CREATURE;
+		this.color = "#000000";
+		this.icon = "";
+	}
+}
+
+class ItemCard extends Card {
+	constructor() {
+		super();
+		this.cardType = CardType.ITEM;
+		this.color = "#696969";
+		this.icon = "swap-bag";
+	}
+}
+
+class SpellCard extends Card {
+	level = 1;
+	ritual = false;
+	casting_time = "1 action";
+	range = "18 m";
+	verbal = false;
+	somatic = false;
+	material = "";
+	duration = "1 round";
+	type = "";
+	classes = "";
+
+	constructor() {
+		super();
+		this.cardType = CardType.SPELL;
+		this.color = "#800000";
+		this.icon_back = "magic-swirl";
+	}
+}
+
+class PowerCard extends Card {
+	constructor() {
+		super();
+		this.cardType = CardType.POWER;
+		this.color = "#2F4F4F";
+		this.icon = "";
+	}
+}
+
+
 // ============================================================================
 // Card definition related functions
 // ============================================================================
@@ -30,57 +111,12 @@ function card_default_options() {
 	};
 }
 
-function card_creature_default_data(creature_data) {
-	var data = creature_data || {};
-	data.cr = data.cr || "1/2";
-	data.size = data.size || "M";
-	data.alignment = data.alignment || I18N.ALIGNMENTS.UNALIGNED;
-	data.type = data.type || "";
-	data.ac = data.ac || "10";
-	data.hp = data.hp || "3 (1d6)";
-	data.perception = data.perception || "10";
-	data.speed = data.speed || "9 m";
-	data.stats = data.stats || ["10", "10", "10", "10", "10", "10"];
-	data.vulnerabilities = data.vulnerabilities || "";
-	data.resistances = data.resistances || "";
-	data.immunities = data.immunities || "";
-	return data;
-}
-
-function card_item_default_data(item_data) {
-	var data = item_data || {};
-	return data;
-}
-
-function card_spell_default_data(spell_data) {
-	var data = spell_data || {};
-	data.level = data.level || 1;
-	data.ritual = data.ritual || false;
-	data.casting_time = data.casting_time || "1 action";
-	data.range = data.range || "18 m";
-	data.verbal = data.verbal || false;
-	data.somatic = data.somatic || false;
-	data.material = data.material || "";
-	data.duration = data.duration || "1 round";
-	data.type = data.type || "";
-	data.classes = data.classes || "";
-	return data;
-}
-
-function card_power_default_data(power_data) {
-	var data = power_data || {};
-	return data;
-}
-
-
 function card_create_lexicals() {
 	var cards = [];
-	
+
 	// Picto
-	var card = {};
-	card_init(card);
+	var card = new Card();
 	card.title = I18N.PICTO;
-	card.contents = [];
 	for (var i = 0; i < I18N.DAMAGE_TYPES.length; i++) {
 		var line = "property | " + I18N.DAMAGE_TYPES[i].name + " | " + I18N.DAMAGE_TYPES[i].name;
 		if (i < I18N.DAMAGE_TYPES.length - 1) {
@@ -110,10 +146,8 @@ function card_create_lexicals() {
 	cards.push(card);
 
 	// Lexical
-	card = {};
-	card_init(card);
+	card = new Card();
 	card.title = I18N.LEXICAL;
-	card.contents = [];
 	for (var i = 0; i < I18N.ABREVIATIONS.length; i++) {
 		var line = "property | " + I18N.ABREVIATIONS[i].name + " | " + I18N.ABREVIATIONS[i].meaning;
 		card.contents.push(line);
@@ -124,120 +158,28 @@ function card_create_lexicals() {
 }
 
 
-function card_init(card) {
-	card.title = card.title || "";
-	if (card.type == CardType.CREATURE) {
-		if (card.subtitle)
-			delete card.subtitle;
-		card.creature = card_creature_default_data(card.creature);
-		card.color = card.color || "#000000";
-	} else if (card.type == CardType.ITEM) {
-		card.item = card_item_default_data(card.item);
-		card.color = card.color || "#696969";
-		card.icon = card.icon || "swap-bag";
-	} else if (card.type == CardType.SPELL) {
-		card.spell = card_spell_default_data(card.spell);
-		card.color = card.color || "#800000";
-		card.icon = card.icon || "magic-swirl";
-	} else if (card.type == CardType.POWER) {
-		card.power = card_power_default_data(card.power);
-		card.color = card.color || "#2F4F4F";
-		card.icon = card.icon || "";
-	} else {
-		card.color = card.color || "#A9A9A9";
-	}
-	card.contents = card.contents || [];
-	card.compact = card.compact || false;
-	card_update(card);
-}
-
 function clone(originalCard) {
 	if ((typeof originalCard !== 'object') || originalCard === null) {
 		throw new TypeError("originalCard parameter must be an object which is not null");
 	}
-
-	// Some recursivity
-	function deepProto(originalObject) {
-		// Create a new object with the same prototype then the original
-		var deepCopy = Array.isArray(originalObject) ? [] : Object.create(Object.getPrototypeOf(originalObject));
-
-		// Handle "deep copy" 
-		for (var attribute in originalObject) {
-			if (originalObject.hasOwnProperty(attribute))
-			{
-				deepCopy[attribute] = originalObject[attribute];
-
-				if (typeof originalObject[attribute] === 'object' && originalObject[attribute] !== null)
-					deepCopy[attribute] = deepProto(originalObject[attribute]);
-			}
-		}
-
-		return deepCopy;
-	}
-
-	return deepProto(originalCard);
+	var card;
+	if (originalCard.cardType == CardType.CREATURE)
+		card = new CreatureCard();
+	else if (originalCard.cardType == CardType.ITEM)
+		card = new ItemCard();
+	else if (originalCard.cardType == CardType.SPELL)
+		card = new SpellCard();
+	else if (originalCard.cardType == CardType.POWER)
+		card = new PowerCard();
+	else
+		card = new Card();
+	Object.assign(card, originalCard);
+	return card;
 }
 
 // Remove this function when format is sure
 function card_update(card) {
-	var removeIndexes = [];
-	card.contents.map(function(value, index) {
-		var parts = card_data_split_params(value);
-		if (parts[0] == "subtitle")
-		{
-			removeIndexes.push(index);
-			card.subtitle = parts[1];
-		}
-		else if (parts[0] == "creature")
-		{
-			removeIndexes.push(index);
-			card.creature.cr = parts[1];
-			card.creature.size = parts[3];
-			card.creature.alignment = parts[4];
-			card.creature.type = parts[2];
-		}
-		else if (parts[0] == "ac_hp_pp_spd")
-		{
-			removeIndexes.push(index);
-			removeIndexes.push(index + 1);
-			card.creature.ac = parts[1];
-			card.creature.hp = parts[2];
-			card.creature.perception = parts[3];
-			card.creature.speed = parts[4];
-		}
-		else if (parts[0] == "dndstats")
-		{
-			removeIndexes.push(index);
-			removeIndexes.push(index + 1);
-			card.creature.stats = [];
-			card.creature.stats[0] = parts[1];
-			card.creature.stats[1] = parts[2];
-			card.creature.stats[2] = parts[3];
-			card.creature.stats[3] = parts[4];
-			card.creature.stats[4] = parts[5];
-			card.creature.stats[5] = parts[6];
-		}
-		else if (parts[0] == "vulnerabilities")
-		{
-			removeIndexes.push(index);
-			card.creature.vulnerabilities = parts[1];
-		}
-		else if (parts[0] == "resistances")
-		{
-			removeIndexes.push(index);
-			card.creature.resistances = parts[1];
-		}
-		else if (parts[0] == "immunities")
-		{
-			removeIndexes.push(index);
-			card.creature.immunities = parts[1];
-		}
-	});
-
-	while (removeIndexes.length > 0)
-		card.contents.splice(removeIndexes[removeIndexes.pop()], 1);
-
-	if (card.type == CardType.CREATURE) {
+	if (card.cardType == CardType.CREATURE) {
 		var pxByCR = [
 			10,
 			200,
@@ -271,19 +213,19 @@ function card_update(card) {
 			135000,
 			155000
 		];
-		var cr = card.creature.cr;
+		var cr = card.cr;
 		if (cr === "1/8") {
 			cr = 1 / 8;
-			card.creature.xp = 25;
+			card.xp = 25;
 		} else if (cr === "1/4") {
 			cr = 1 / 4;
-			card.creature.xp = 50;
+			card.xp = 50;
 		} else if (cr === "1/2") {
 			cr = 1 / 2;
-			card.creature.xp = 100;
+			card.xp = 100;
 		} else
-			card.creature.xp = pxByCR[cr];
-		card.creature.proficiency = Math.floor(cr / 4) + 2;
+			card.xp = pxByCR[cr];
+		card.proficiency = Math.floor(cr / 4) + 2;
 	}
 }
 
@@ -387,11 +329,11 @@ function card_element_subtitle(card_data, options) {
 function card_creature_element_header(card_data, options) {
 	var result = "";
 	result += '<div class="card-title-cr-container">';
-	result += 	'<p class="card-title-cr">' + card_data.creature.cr + '</p>';
-	result += 	'<p class="card-title-proficiency">(+' + card_data.creature.proficiency + ')</p>';
-	if (card_data.creature.xp > 1000) {
-		var thousands = Math.floor(card_data.creature.xp / 1000);
-		var rest = (card_data.creature.xp - thousands * 1000);
+	result += 	'<p class="card-title-cr">' + card_data.cr + '</p>';
+	result += 	'<p class="card-title-proficiency">(+' + card_data.proficiency + ')</p>';
+	if (card_data.xp > 1000) {
+		var thousands = Math.floor(card_data.xp / 1000);
+		var rest = (card_data.xp - thousands * 1000);
 		if (rest == 0)
 			result += '<p class="card-title-xp">' + thousands + ' 000px</p>';
 		else if (rest < 10)
@@ -401,11 +343,11 @@ function card_creature_element_header(card_data, options) {
 		else 
 			result += '<p class="card-title-xp">' + thousands + ' ' + rest + 'px</p>';
 	} else
-		result += '    <p class="card-title-xp">' + card_data.creature.xp + 'px</p>';
+		result += '    <p class="card-title-xp">' + card_data.xp + 'px</p>';
 	result += '</div>';
-	result += '<div class="card-subtitle card-creature-subtitle">' + card_data.creature.type + ", taille " + card_data.creature.size;
-	if (card_data.creature.alignment)
-		result += '<div style="float:right">' + card_data.creature.alignment + '</div>';
+	result += '<div class="card-subtitle card-creature-subtitle">' + card_data.type + ", taille " + card_data.size;
+	if (card_data.alignment)
+		result += '<div style="float:right">' + card_data.alignment + '</div>';
 	result += '</div>';
 	return result;
 }
@@ -415,18 +357,18 @@ function card_creature_element_base(card_data, options) {
 	result += '<div class="card-creature-base">';
 	result += '<div class="card-creature-base-element">';
 	result += 	'<h4 class="card-inlineicon icon-custom-ac"></h4>';
-	result += 	'<p class="card-property-text">' + card_data.creature.ac + '</p>';
+	result += 	'<p class="card-property-text">' + card_data.ac + '</p>';
 	result += 	'<div class="card-creature-base-element">';
 	result += 		'<h4 class="card-property-name">' + I18N.PERCEPTION + '.</h4>';
-	result += 		'<p class="card-property-text">' + card_data.creature.perception + '</p>';
+	result += 		'<p class="card-property-text">' + card_data.perception + '</p>';
 	result += 	'</div>';
 	result += '</div>';
 	result += '<div class="card-creature-base-element">';
 	result += 	'<h4 class="card-inlineicon icon-custom-hp"></h4>';
-	result += 	'<p class="card-property-text">' + card_data.creature.hp + '</p>';
+	result += 	'<p class="card-property-text">' + card_data.hp + '</p>';
 	result += 	'<div class="card-creature-base-element">';
 	result += 		'<h4 class="card-property-name">' + I18N.SPEED + '.</h4>';
-	result += 		'<p class="card-property-text">' + card_data.creature.speed + '</p>';
+	result += 		'<p class="card-property-text">' + card_data.speed + '</p>';
 	result += 	'</div>';
 	result += '</div>';
 	result += card_element_ruler(null, card_data, options);
@@ -435,7 +377,7 @@ function card_creature_element_base(card_data, options) {
 	var spellcasting = ["", "", "", "", "", ""];
 	var saving = ["", "", "", "", "", ""];
 	for (var i = 0; i < 6; ++i) {
-		stats[i] = card_data.creature.stats[i];
+		stats[i] = card_data.stats[i];
 		if (stats[i].includes("M")) {
 			stats[i] = stats[i].replace("M", "");
 			spellcasting[i] = '<span class="card-stats-header-spellcasting">★</span>';
@@ -485,10 +427,10 @@ function card_creature_element_base(card_data, options) {
 function card_spell_element_header(card_data, options) {
 	var result = "";
 	result += '<div class="card-title-inlineicon-container">';
-	if (card_data.spell.level)
-		result += '<div class="card-title-spellicon icon-spell-level_' + card_data.spell.level + '"></div>';
+	if (card_data.level)
+		result += '<div class="card-title-spellicon icon-spell-level_' + card_data.level + '"></div>';
 	result += '</div>';
-	result += '<div class="card-subtitle card-spell-subtitle">' + card_data.spell.type + '</div>';
+	result += '<div class="card-subtitle card-spell-subtitle">' + card_data.type + '</div>';
 	return result;
 }
 
@@ -499,29 +441,29 @@ function card_spell_element_base(card_data, options) {
 	result +=	'<div class="card-spell-base-texts">';
 	result +=		'<div>';
 	result += 			'<h4>' + I18N.CASTING_TIME + ':</h4>';
-	result += 			'<p>' + card_data.spell.casting_time + '</p>';
+	result += 			'<p>' + card_data.casting_time + '</p>';
 	result +=		'</div>';
 	result +=		'<div>';
 	result += 			'<h4>' + I18N.RANGE + ':</h4>';
-	result += 			'<p>' + card_data.spell.range + '</p>';
+	result += 			'<p>' + card_data.range + '</p>';
 	result +=		'</div>';
 	result +=		'<div>';
 	result += 			'<h4>' + I18N.DURATION + ':</h4>';
-	result += 			'<p>' + card_data.spell.duration + '</p>';
+	result += 			'<p>' + card_data.duration + '</p>';
 	result +=		'</div>';
 	result +=	'</div>';
-	if (card_data.spell.ritual)
+	if (card_data.ritual)
 		result += 	'<p class="card-spell-ritual">' + I18N.RITUAL + '</p>';
 	result += 	'<div class="card-spell-components">';
 	// var colorStyle = 'filter:sepia(1) hue-rotate(86deg) saturate(10) brightness(0.7);';
-	if (card_data.spell.materials) {
+	if (card_data.materials) {
 		result += '<span class="card-inlineicon icon-custom-arrow-down" style="top:1px;"></span>';
 	}
-	result += '<span class="card-inlineicon icon-spell-material" style="' + (card_data.spell.materials ? 'margin-left:0px;' : 'opacity:0.4;') + '"></span>';
-	result += 		'<span class="card-inlineicon icon-spell-verbal" style="' + (card_data.spell.verbal ? '' : 'opacity:0.4;') + '"></span>';
-	result += 		'<span class="card-inlineicon icon-spell-somatic" style="' + (card_data.spell.somatic ? '' : 'opacity:0.4;') + '"></span>';
-	if (card_data.spell.materials) {
-		result += '<p class="card-spell-materials">' + card_data.spell.materials + '</p>';
+	result += '<span class="card-inlineicon icon-spell-material" style="' + (card_data.materials ? 'margin-left:0px;' : 'opacity:0.4;') + '"></span>';
+	result += 		'<span class="card-inlineicon icon-spell-verbal" style="' + (card_data.verbal ? '' : 'opacity:0.4;') + '"></span>';
+	result += 		'<span class="card-inlineicon icon-spell-somatic" style="' + (card_data.somatic ? '' : 'opacity:0.4;') + '"></span>';
+	if (card_data.materials) {
+		result += '<p class="card-spell-materials">' + card_data.materials + '</p>';
 	}
 	result += 	'</div>';
 	result += card_element_ruler(null, card_data, options);
@@ -534,14 +476,17 @@ function card_spell_element_footer(card_data, options) {
 	result += '<div class="card-spell-classes">';
 	var classesKeys = Object.keys(I18N.CLASSES);
 	for (var i = 0; i < classesKeys.length; i++) {
-		var isForClass = card_data.spell.classes.search(new RegExp(I18N.CLASSES[classesKeys[i]], 'gi')) != -1;
+		var isForClass = card_data.classes.search(new RegExp(I18N.CLASSES[classesKeys[i]], 'gi')) != -1;
 		result += '<span class="card-class-inlineicon icon-class-' + classesKeys[i].toLowerCase() + (isForClass ? '' : ' card-class-hidden') + '""></span>';
 	}
 	result += '</div>';
 	return result;
 }
 
-
+/**
+ * My Function
+ * @prop {}
+ */
 function card_element_inline_icon(params, card_data, options) {
 	var icon = params[0] || "";
 	var size = params[1] || "40";
@@ -550,6 +495,9 @@ function card_element_inline_icon(params, card_data, options) {
 	var result = '';
 	result += '<div class="card-element card-inline-icon align-' + align + '">';
 	result += '<span class="icon-' + icon + '" style="height:' + size + 'px;min-height:' + size + 'px;width:' + size + 'px;background-color:' + color + ';display:inline-block;"></span>';
+	if (params[3]) {
+		result += card_generate_element(params.splice(3), card_data, options);
+	}
 	result += '</div>';
 	return result;
 }
@@ -906,35 +854,35 @@ function card_generate_front(card_data, options) {
 
 	var result = "";
 	result += '<div class="card card-size-' + options.card_size + ' ' 
-	+ (options.rounded_corners ? 'rounded-corners' : '')
-	+ (card_data.compact ? ' card-compact' : '')
-	+ (card_data.type ? ' card-type-' + card_data.type : '')
-	+ '">';
+		+ (options.rounded_corners ? 'rounded-corners' : '')
+		+ (card_data.compact ? ' card-compact' : '')
+		+ (card_data.cardType ? ' card-type-' + card_data.cardType : '')
+		+ '">';
 	result += 	'<div class="card-border" ' + style_color + '>';
 	result += 		card_element_title(card_data, options);
 
-	if (card_data.type == CardType.CREATURE) {
+	if (card_data.cardType == CardType.CREATURE) {
 		result += 	card_creature_element_header(card_data, options);
 		result += 	'<div class="card-content-container">';
 		result += 		card_creature_element_base(card_data, options);
-		if (card_data.creature.vulnerabilities)
-			result += 	card_element_property([I18N.VULNERABILITIES, card_data.creature.vulnerabilities], card_data, options);
-		if (card_data.creature.resistances)
-			result += 	card_element_property([I18N.RESISTANCES, card_data.creature.resistances], card_data, options);
-		if (card_data.creature.immunities)
-			result += 	card_element_property([I18N.IMMUNITIES, card_data.creature.immunities], card_data, options);
+		if (card_data.vulnerabilities)
+			result += 	card_element_property([I18N.VULNERABILITIES, card_data.vulnerabilities], card_data, options);
+		if (card_data.resistances)
+			result += 	card_element_property([I18N.RESISTANCES, card_data.resistances], card_data, options);
+		if (card_data.immunities)
+			result += 	card_element_property([I18N.IMMUNITIES, card_data.immunities], card_data, options);
 	} 
-	else if (card_data.type == CardType.ITEM) {
+	else if (card_data.cardType == CardType.ITEM) {
 		result += 	card_element_icon(card_data, options);
 		result += 	'<div class="card-content-container">';
 		result += 		card_element_subtitle(card_data, options);
 	} 
-	else if (card_data.type == CardType.SPELL) {
+	else if (card_data.cardType == CardType.SPELL) {
 		result += 	card_spell_element_header(card_data, options);
 		result += 	'<div class="card-content-container">';
 		result += 		card_spell_element_base(card_data, options);
 	} 
-	else if (card_data.type == CardType.POWER) {
+	else if (card_data.cardType == CardType.POWER) {
 		result += 	card_element_icon(card_data, options);
 		result += 	'<div class="card-content-container">';
 		result += 		card_element_subtitle(card_data, options);
@@ -949,7 +897,7 @@ function card_generate_front(card_data, options) {
 	result += 		'</div>';
 	result += 	'</div>';
 
-	if (card_data.type == CardType.SPELL) {
+	if (card_data.cardType == CardType.SPELL) {
 		result += card_spell_element_footer(card_data, options);
 	}
 
