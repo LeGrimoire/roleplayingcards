@@ -483,21 +483,20 @@ function card_spell_element_footer(card_data, options) {
 	return result;
 }
 
-/**
- * My Function
- * @prop {}
- */
 function card_element_inline_icon(params, card_data, options) {
 	var icon = params[0] || "";
 	var size = params[1] || "40";
 	var align = params[2] || "center";
 	var color = card_data_color_front(card_data, options);
 	var result = '';
-	result += '<div class="card-element card-inline-icon align-' + align + '">';
-	result += '<span class="icon-' + icon + '" style="height:' + size + 'px;min-height:' + size + 'px;width:' + size + 'px;background-color:' + color + ';display:inline-block;"></span>';
+
+	result += '<div class="card-element">';
+	result += '<div class="card-icon align-' + align + '">';
+	result += '<span class="icon-' + icon + '" style="height:' + size + 'px;min-height:' + size + 'px;width:' + size + 'px;background-color:' + color + ';"></span>';
 	if (params[3]) {
 		result += card_generate_element(params.splice(3), card_data, options);
 	}
+	result += '</div>';
 	result += '</div>';
 	return result;
 }
@@ -536,7 +535,7 @@ function card_element_boxes(params, card_data, options) {
 	var color = card_data_color_front(card_data, options);
 	var count = params[0] || 1;
 	var size = params[1] || 1;
-	var styleSvg = 'width:' + size + 'em;min-width:' + size + 'em;height:' + size + 'em;';
+	var styleSvg = 'width:' + size + 'em;min-width:' + size + 'em;height:' + size + 'em;min-height:' + size + 'em;';
 	var styleDash = '';
 	var styleInnerRect = '';
 	var align = '';
@@ -553,12 +552,9 @@ function card_element_boxes(params, card_data, options) {
 		double = params[2].indexOf("double") > -1;
 	}
 
-	var nextParamsNotBoxes = params[3] && params[3] != "boxes" && params[3] != "circles";
-	if (nextParamsNotBoxes)
-		styleSvg += 'top:1px;';
-
 	var result = '';
-	result += '<div class="card-element" style="' + align + (nextParamsNotBoxes ? 'display:flex;flex-direction:row;min-height:' + size + 'em;' : '') + '">';
+	result += '<div class="card-element">';
+	result += '<div class="card-boxes" style="' + align + '">';
 	if (double) {
 		for (var i = 0; i < count; ++i) {
 			result += '<svg class="card-box" viewbox="-4 -4 108 108" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
@@ -576,6 +572,7 @@ function card_element_boxes(params, card_data, options) {
 	if (params[3]) {
 		result += card_generate_element(params.splice(3), card_data, options);
 	}
+	result += '</div>';
 	result += '</div>';
 	return result;
 }
@@ -596,20 +593,18 @@ function card_element_circles(params, card_data, options) {
 			align = 'text-align:right;';
 	}
 
-	var nextParamsNotBoxes = params[3] && params[3] != "boxes" && params[3] != "circles";
-	if (nextParamsNotBoxes)
-		styleSvg += 'top:1px;';
-
 	var result = '';
-	result += '<div class="card-element" style="' + align + (nextParamsNotBoxes ? 'display:flex;flex-direction:row;min-height:' + size + 'em;' : '') + '">';
+	result += '<div class="card-element">';
+	result += '<div class="card-circles" style="' + align + '">';
 	for (var i = 0; i < count; ++i) {
-		result += '<svg class="card-box" viewbox="-2 -2 104 104" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
+		result += '<svg class="card-circle" viewbox="-2 -2 104 104" preserveaspectratio="none" style="' + styleSvg + '" xmlns="http://www.w3.org/2000/svg">';
 		result += '<circle cx="50" cy="50" r="50" width="100" height="100" fill="none" style="' + styleDash + ';stroke-width:4;stroke:' + color + '"></circle>';
 		result += '</svg>';
 	}
 	if (params[3]) {
 		result += card_generate_element(params.splice(3), card_data, options);
 	}
+	result += '</div>';
 	result += '</div>';
 	return result;
 }

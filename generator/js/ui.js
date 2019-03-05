@@ -1336,14 +1336,14 @@ $(document).ready(function () {
 
 	$("#card-description").keyup(ui_change_card_element_keyup);
 	$("#card-description").change(ui_change_card_description);
-	$("#card-contents").typeahead({
+	/* $("#card-contents").typeahead({
 		source: Object.keys(card_element_generators),
 		items: 'all',
 		minLength: 0,
 		matcher: typeahead_contents_matcher,
 		updater: typeahead_contents_updater,
 		render: typeahead_render
-	});
+	}); */
 	$("#card-contents").keyup(ui_change_card_element_keyup);
 	$("#card-contents").change(ui_change_card_contents);
 	$("#card-contents").keydown(function (e) {

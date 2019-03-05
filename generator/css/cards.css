@@ -360,25 +360,37 @@ h1, h2, h3, h4, h5, h6 {
 	margin-bottom: 0.0em;
 }
 
-.card-inline-icon span {
+.card-icon {
+	display: flex;
+	flex-direction: row;
+}
+.card-icon .card-element {
+	flex: 1;
+}
+.card-icon span {
 	background-size: auto 100%;
 	background-repeat: no-repeat;
 	background-position: center center;
 	position: relative;
 	border-radius: 1px;
 	vertical-align: middle;
+	align-self: center;
+	display:inline-block;
 }
-.card-inline-icon.align-left {
+.card-icon.align-left {
 	align-self: flex-start;
 	text-align: left;
 }
-.card-inline-icon.align-right {
+.card-icon.align-right {
 	align-self: flex-end;
 	text-align: right;
 }
-.card-inline-icon.align-center {
+.card-icon.align-center {
 	align-self: center;
 	text-align: center;
+}
+.card-icon .card-section {
+	padding-left: 1px;
 }
 
 .card-inlineicon {
@@ -406,17 +418,30 @@ h1, h2, h3, h4, h5, h6 {
 
 .card-fill {flex:1;}
 
+.card-boxes {
+	display: flex;
+	flex-direction: row;
+}
+.card-boxes .card-element {
+	flex: 1;
+}
+
+.card-circles {
+	display: flex;
+	flex-direction: row;
+}
+.card-circles .card-element {
+	flex: 1;
+}
+
 .card-box {
 	display: inline;
 	vertical-align: middle;
 	margin-right: 0.3em;
 	stroke-width: 10;
 	position: relative;
-	top: -1px;
-	/* align-self: center; */
-}
-.card-element .card-box {
-    top: 0px;
+	top: 0px;
+	align-self: center;
 }
 
 .card-property-line {
@@ -477,8 +502,8 @@ p.card-element {
 .card-section .card-element {
 	flex: 1;
 }
-.card-section .card-box {
-    top: -1px;
+.card-section .card-boxes, .card-section .card-circles, .card-section .card-icon {
+    display: block;
 }
 .card-section .card-box:last-child {
     margin-right: 0;
