@@ -177,7 +177,6 @@ function clone(originalCard) {
 	return card;
 }
 
-// Remove this function when format is sure
 function card_update(card) {
 	if (card.cardType == CardType.CREATURE) {
 		var pxByCR = [
@@ -483,16 +482,25 @@ function card_spell_element_footer(card_data, options) {
 	return result;
 }
 
-function card_element_inline_icon(params, card_data, options) {
-	var icon = params[0] || "";
+/**
+ * @description name | size | align background
+ * align: is center, left, right
+ * background: show a square back of the card color
+ */
+function card_element_icon(params, card_data, options) {
+	var name = params[0] || "";
 	var size = params[1] || "40";
+	var background = "";
+	if (params[2] && params[2].includes("background")) {
+		background = 'background-color:' + card_data_color_front(card_data, options) + ';border-radius: 1px;';
+		params[2] = params[2].replace("background", "");
+	}
 	var align = params[2] || "center";
-	var color = card_data_color_front(card_data, options);
 	var result = '';
 
 	result += '<div class="card-element">';
 	result += '<div class="card-icon align-' + align + '">';
-	result += '<span class="icon-' + icon + '" style="height:' + size + 'px;min-height:' + size + 'px;width:' + size + 'px;background-color:' + color + ';"></span>';
+	result += '<span class="icon-' + name + '" style="height:' + size + 'px;width:' + size + 'px;' + background + '"></span>';
 	if (params[3]) {
 		result += card_generate_element(params.splice(3), card_data, options);
 	}
@@ -785,7 +793,7 @@ function card_element_attack(params, card_data, options) {
 }
 
 var card_element_generators = {
-	icon: card_element_inline_icon,
+	icon: card_element_icon,
 	picture: card_element_picture,
 	rule: card_element_ruler,
 	ruler: card_element_ruler,
