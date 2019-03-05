@@ -304,7 +304,7 @@ function card_element_title(card_data, options) {
 	return '<div class="card-title card-title-' + title_size + '">' + title + '</div>';
 }
 
-function card_element_icon(card_data, options) {
+function card_element_title_icon(card_data, options) {
 	var icon = card_data_icon_front(card_data, options);
 	var classname = "icon";
 	if (options.icon_inline) {
@@ -876,7 +876,7 @@ function card_generate_front(card_data, options) {
 			result += 	card_element_property([I18N.IMMUNITIES, card_data.immunities], card_data, options);
 	} 
 	else if (card_data.cardType == CardType.ITEM) {
-		result += 	card_element_icon(card_data, options);
+		result += 	card_element_title_icon(card_data, options);
 		result += 	'<div class="card-content-container">';
 		result += 		card_element_subtitle(card_data, options);
 	} 
@@ -886,12 +886,12 @@ function card_generate_front(card_data, options) {
 		result += 		card_spell_element_base(card_data, options);
 	} 
 	else if (card_data.cardType == CardType.POWER) {
-		result += 	card_element_icon(card_data, options);
+		result += 	card_element_title_icon(card_data, options);
 		result += 	'<div class="card-content-container">';
 		result += 		card_element_subtitle(card_data, options);
 	}
 	 else {
-		result += 	card_element_icon(card_data, options);
+		result += 	card_element_title_icon(card_data, options);
 		result += 	'<div class="card-content-container">';
 		result += 		card_element_subtitle(card_data, options);
 	}
