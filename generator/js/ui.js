@@ -384,7 +384,7 @@ function ui_update_selected_card() {
 		$("#card-type").val(card.cardType);
 
 		$("#card-title").val(card.title);
-		$("#card-title-size").val(card.title_size);
+		$("#card-title-multiline").prop("checked", card.title_multiline);
 		$("#card-subtitle").val(card.subtitle);
 		$("#card-color").val(card.color).change();
 		$("#card-icon").val(card.icon);
@@ -496,7 +496,7 @@ function ui_update_selected_card() {
 		$("#card-type").val("");
 
 		$("#card-title").val("");
-		$("#card-title-size").val("");
+		$("#card-title-multiline").prop("checked", card.title_multiline);
 		$("#card-subtitle").val("");
 		$("#card-color").val("").change();
 		$("#card-icon").val("");
@@ -736,7 +736,6 @@ function ui_change_default_icon() {
 
 function ui_change_default_title_size() {
 	g_card_options.default.title_size = $(this).val();
-	$("#card-title-size")[0].options[0].innerText = "default (" + g_card_options.default.title_size + "pt)";
 	ui_render_selected_card();
 }
 
@@ -1323,8 +1322,7 @@ $(document).ready(function () {
 
 	$("#card-title").keyup(ui_change_card_element_keyup);
 	$("#card-title").change(ui_change_card_title);
-	$("#card-title-size")[0].options[0].innerText = "default (" + g_card_options.default.title_size + "pt)";
-	$("#card-title-size").change(ui_change_card_property);
+	$("#card-title-multiline").change(ui_change_card_property);
 	$("#card-subtitle").change(ui_change_card_property);
 	$("#card-icon").change(ui_change_card_property);
 	$("#card-icon-back").change(ui_change_card_property);

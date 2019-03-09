@@ -10,7 +10,7 @@ var CardType = {
 class Card {
 	cardType;
 	title = "";
-	title_size;
+	title_multiline = false;
 	subtitle = "";
 	color = "#A9A9A9";
 	icon = "";
@@ -283,9 +283,9 @@ function card_data_parse_icons_params(value) {
 	if (!value)
 		return value;
 	for (var i = 0; i < I18N.DAMAGE_TYPES.length; i++)
-		value = value.replace(I18N.DAMAGE_TYPES[i].regex, '$1<span class="card-inlineicon icon-type-' + I18N.DAMAGE_TYPES[i].file + '"></span>');
+		value = value.replace(I18N.DAMAGE_TYPES[i].regex, '$1<span class="card-inlineicon icon-type-' + I18N.DAMAGE_TYPES[i].file + '"></span>$2');
 	for (var i = 0; i < I18N.CONDITION.length; i++)
-		value = value.replace(I18N.CONDITION[i].regex, '$1<span class="card-inlineicon icon-condition-' + I18N.CONDITION[i].file + '"></span>');
+		value = value.replace(I18N.CONDITION[i].regex, '$1<span class="card-inlineicon icon-condition-' + I18N.CONDITION[i].file + '"></span>$2');
 	for (var i = 0; i < I18N.CUSTOM.length; i++)
 		value = value.replace(I18N.CUSTOM[i].regex, '$1<span class="card-inlineicon icon-custom-' + I18N.CUSTOM[i].file + '"></span>$2');
 	return value
@@ -298,13 +298,13 @@ function card_data_parse_icons_params(value) {
 // Card element generating functions
 // ============================================================================
 
-function card_element_title(card_data, options) {
+function card_title(card_data, options) {
 	var title = card_data.title || "";
-	var title_size = card_data.title_size || options.default.title_size || 'normal';
+	var title_size = card_data.title_multiline ? 'multiline' : (options.default.title_size || 'normal');
 	return '<div class="card-title card-title-' + title_size + '">' + title + '</div>';
 }
 
-function card_element_title_icon(card_data, options) {
+function card_title_icon(card_data, options) {
 	var icon = card_data_icon_front(card_data, options);
 	var classname = "icon";
 	if (options.icon_inline) {
@@ -318,14 +318,14 @@ function card_element_title_icon(card_data, options) {
 	return result;
 }
 
-function card_element_subtitle(card_data, options) {
+function card_subtitle(card_data, options) {
 	var result = "";
 	if (card_data.subtitle)
 		result += '<div class="card-element card-subtitle">' + card_data.subtitle + '</div>';
 	return result;
 }
 
-function card_creature_element_header(card_data, options) {
+function card_creature_header(card_data, options) {
 	var result = "";
 	result += '<div class="card-title-cr-container">';
 	result += 	'<p class="card-title-cr">' + card_data.cr + '</p>';
@@ -351,7 +351,7 @@ function card_creature_element_header(card_data, options) {
 	return result;
 }
 
-function card_creature_element_base(card_data, options) {
+function card_creature_base(card_data, options) {
 	var result = "";
 	result += '<div class="card-creature-base">';
 	result += '<div class="card-creature-base-element">';
@@ -423,17 +423,20 @@ function card_creature_element_base(card_data, options) {
 	return result;
 }
 
-function card_spell_element_header(card_data, options) {
+function card_spell_header(card_data, options) {
 	var result = "";
 	result += '<div class="card-title-inlineicon-container">';
 	if (card_data.level)
 		result += '<div class="card-title-spellicon icon-spell-level_' + card_data.level + '"></div>';
 	result += '</div>';
-	result += '<div class="card-subtitle card-spell-subtitle">' + card_data.type + '</div>';
+	if (card_data.ritual)
+		result += '<div class="card-subtitle card-spell-subtitle">' + card_data.type + ' (' + I18N.RITUAL + ')</div>';
+	else
+		result += '<div class="card-subtitle card-spell-subtitle">' + card_data.type + '</div>';
 	return result;
 }
 
-function card_spell_element_base(card_data, options) {
+function card_spell_base(card_data, options) {
 	var color = card_data_color_front(card_data, options);
 	var result = "";
 	result += '<div class="card-spell-base">';
@@ -451,8 +454,6 @@ function card_spell_element_base(card_data, options) {
 	result += 			'<p>' + card_data.duration + '</p>';
 	result +=		'</div>';
 	result +=	'</div>';
-	if (card_data.ritual)
-		result += 	'<p class="card-spell-ritual">' + I18N.RITUAL + '</p>';
 	result += 	'<div class="card-spell-components">';
 	// var colorStyle = 'filter:sepia(1) hue-rotate(86deg) saturate(10) brightness(0.7);';
 	if (card_data.materials) {
@@ -470,7 +471,7 @@ function card_spell_element_base(card_data, options) {
 	return result;
 }
 
-function card_spell_element_footer(card_data, options) {
+function card_spell_footer(card_data, options) {
 	var result = "";
 	result += '<div class="card-spell-classes">';
 	var classesKeys = Object.keys(I18N.CLASSES);
@@ -484,8 +485,8 @@ function card_spell_element_footer(card_data, options) {
 
 /**
  * @description name | size | align background
- * align: is center, left, right
- * background: show a square back of the card color
+ * @var align: is center, left, right 
+ * @var background: show a square back of the card color
  */
 function card_element_icon(params, card_data, options) {
 	var name = params[0] || "";
@@ -517,13 +518,35 @@ function card_element_picture(params, card_data, options) {
 	return '<div class="card-element card-picture" style ="background-image: url(&quot;' + url + '&quot;); background-size: contain; background-position: center;background-repeat: no-repeat;height:' + height + 'px;width:' + width + 'px;background-color: ' + color + '"></div>';
 }
 
+/**
+ * @description height | dash
+ * @var height in pixel
+ * @var dash
+ */
+function card_element_line(params, card_data, options) {
+	var color = card_data_color_front(card_data, options);
+	var styleDash = '';
+	var height = params[0] || "1";
+	if (params[1] && params[1].indexOf("dash") > -1) {
+		styleDash = 'opacity:0.5;stroke-dasharray:1,1';
+	}
+
+	var result = "";
+	result += '<svg class="card-line" height="' + height + 'px" width="100px" viewbox="0 0 100 1" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">';
+	result += '<line x1="0" y1="0" x2="100" y2="0" stroke-width="' + height + '" style="stroke:' + color + ';' + styleDash + '"	></line>';
+	result += '</svg>';
+	return result;
+}
+
+/**
+ * 
+ */
 function card_element_ruler(params, card_data, options) {
 	var color = card_data_color_front(card_data, options);
 	var fill = 'fill="' + color + '"';
-	var stroke = 'stroke="' + color + '"';
 
 	var result = "";
-	result += '<svg class="card-ruler" height="1" width="100" viewbox="0 0 100 1" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">';
+	result += '<svg class="card-ruler" height="1px" width="100px" viewbox="0 0 100 1" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">';
 	result += 	'<polyline points="0,0 100,0.5 0,1" ' + fill + '></polyline>';
 	result += '</svg>';
 	return result;
@@ -795,7 +818,7 @@ function card_element_attack(params, card_data, options) {
 var card_element_generators = {
 	icon: card_element_icon,
 	picture: card_element_picture,
-	rule: card_element_ruler,
+	line: card_element_line,
 	ruler: card_element_ruler,
 	fill: card_element_fill,
 	space: card_element_space,
@@ -862,12 +885,12 @@ function card_generate_front(card_data, options) {
 		+ (card_data.cardType ? ' card-type-' + card_data.cardType : '')
 		+ '">';
 	result += 	'<div class="card-border" ' + style_color + '>';
-	result += 		card_element_title(card_data, options);
+	result += 		card_title(card_data, options);
 
 	if (card_data.cardType == CardType.CREATURE) {
-		result += 	card_creature_element_header(card_data, options);
+		result += 	card_creature_header(card_data, options);
 		result += 	'<div class="card-content-container">';
-		result += 		card_creature_element_base(card_data, options);
+		result += 		card_creature_base(card_data, options);
 		if (card_data.vulnerabilities)
 			result += 	card_element_property([I18N.VULNERABILITIES, card_data.vulnerabilities], card_data, options);
 		if (card_data.resistances)
@@ -876,24 +899,24 @@ function card_generate_front(card_data, options) {
 			result += 	card_element_property([I18N.IMMUNITIES, card_data.immunities], card_data, options);
 	} 
 	else if (card_data.cardType == CardType.ITEM) {
-		result += 	card_element_title_icon(card_data, options);
+		result += 	card_title_icon(card_data, options);
 		result += 	'<div class="card-content-container">';
-		result += 		card_element_subtitle(card_data, options);
+		result += 		card_subtitle(card_data, options);
 	} 
 	else if (card_data.cardType == CardType.SPELL) {
-		result += 	card_spell_element_header(card_data, options);
+		result += 	card_spell_header(card_data, options);
 		result += 	'<div class="card-content-container">';
-		result += 		card_spell_element_base(card_data, options);
+		result += 		card_spell_base(card_data, options);
 	} 
 	else if (card_data.cardType == CardType.POWER) {
-		result += 	card_element_title_icon(card_data, options);
+		result += 	card_title_icon(card_data, options);
 		result += 	'<div class="card-content-container">';
-		result += 		card_element_subtitle(card_data, options);
+		result += 		card_subtitle(card_data, options);
 	}
 	 else {
-		result += 	card_element_title_icon(card_data, options);
+		result += 	card_title_icon(card_data, options);
 		result += 	'<div class="card-content-container">';
-		result += 		card_element_subtitle(card_data, options);
+		result += 		card_subtitle(card_data, options);
 	}
 
 	result += 			card_generate_contents(card_data.contents, card_data, options);
@@ -901,7 +924,7 @@ function card_generate_front(card_data, options) {
 	result += 	'</div>';
 
 	if (card_data.cardType == CardType.SPELL) {
-		result += card_spell_element_footer(card_data, options);
+		result += card_spell_footer(card_data, options);
 	}
 
 	if (card_data.reference)
@@ -933,7 +956,7 @@ function card_generate_back(card_data, options) {
 		result += 	'<div class="card-back-inner card-back-inner-description" style="background: radial-gradient(ellipse at center, #fff 85%, #ddd 94%, ' + back_color + ' 98%);">';
 		result += 		'<div class="card-back-description" style="background-image: -webkit-linear-gradient(top, ' + back_color + ', transparent), -webkit-linear-gradient(right, ' + back_color + ', transparent), -webkit-linear-gradient(bottom, ' + back_color + ', transparent), -webkit-linear-gradient(left, ' + back_color + ', transparent);';
 		result += 		'background-size: 100% 1mm, 1mm 100%, 100% 1mm, 1mm 100%; background-position: 0 0, 100% 0, 0 100%, 0 0; background-repeat: no-repeat;">';
-		result +=			card_element_title(card_data, options);
+		result +=			card_title(card_data, options);
 		result += 			'<p class="card-back-description-text">' + description + '</p>';
 		result += 		'</div>';
 		result += 	'</div>';

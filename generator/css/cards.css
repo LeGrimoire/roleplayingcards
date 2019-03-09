@@ -151,6 +151,7 @@ h1, h2, h3, h4, h5, h6 {
 .card-title {
 	height: 7mm;
 	padding-left: 1mm;
+	padding-right: 8mm;
 	margin-top: 0.3mm;
 	margin-bottom: 0.1mm;
 	font-family: Lora, 'Calisto MT', 'Bookman Old Style', Bookman, 'Goudy Old Style', Garamond, 'Hoefler Text', 'Bitstream Charter', Georgia, serif;
@@ -158,6 +159,10 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: bold;
 	background-color: inherit;
 	color: white;
+}
+.card-title-multiline {
+	font-size: 10pt;
+	line-height: 3.3mm;
 }
 .card-title-16 {
 	font-size: 16pt;
@@ -408,11 +413,24 @@ h1, h2, h3, h4, h5, h6 {
 	margin-bottom: -3px;
 }
 
+.card-line {
+	display: block;
+	width: 100%;
+	margin: 1px 0px 1px 0px;
+}
+.card-element .card-line {
+	align-self: flex-end;
+}
+
 .card-ruler {
 	display: block;
 	width: 102%;
-	height: 1px;
 	margin: 1px 0px 1px -2px;
+}
+.card-element .card-ruler {
+	align-self: flex-end;
+	width: 100%;
+	margin-left: 0px;
 }
 
 .card-fill {flex:1;}
