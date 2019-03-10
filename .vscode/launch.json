@@ -16,7 +16,8 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch Generate",
-            "file": "${workspaceFolder}/generator/generate.html"
+            "file": "${workspaceFolder}/generator/generate.html",
+            "userDataDir": false
         },
         {
             "type": "chrome",
