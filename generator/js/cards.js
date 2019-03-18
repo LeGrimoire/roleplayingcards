@@ -75,6 +75,7 @@ class SpellCard extends Card {
 		this.cardType = CardType.SPELL;
 		this.color = "#800000";
 		this.icon_back = "magic-swirl";
+		this.title_multiline = true;
 	}
 }
 
@@ -125,7 +126,7 @@ function card_create_lexicals() {
 		}
 		card.contents.push(line);
 	}
-	card.contents.push("ruler");
+	card.contents.push("line");
 	for (var i = 0; i < I18N.CONDITION.length; i++) {
 		var line = "property | " + I18N.CONDITION[i].name + " | " + I18N.CONDITION[i].name;
 		if (i < I18N.CONDITION.length - 1) {
@@ -134,12 +135,12 @@ function card_create_lexicals() {
 		}
 		card.contents.push(line);
 	}
-	card.contents.push("ruler");
-	for (var i = 0; i < I18N.CUSTOM.length; i++) {
-		var line = "property | " + I18N.CUSTOM[i].name + " | " + I18N.CUSTOM[i].name;
-		if (i < I18N.CUSTOM.length - 1) {
+	card.contents.push("line");
+	for (var i = 0; i < I18N.CUSTOM_ICONS.length; i++) {
+		var line = "property | " + I18N.CUSTOM_ICONS[i].name + " | " + I18N.CUSTOM_ICONS[i].name;
+		if (i < I18N.CUSTOM_ICONS.length - 1) {
 			i++;
-			line += " | property | " + I18N.CUSTOM[i].name + " | " + I18N.CUSTOM[i].name;
+			line += " | property | " + I18N.CUSTOM_ICONS[i].name + " | " + I18N.CUSTOM_ICONS[i].name;
 		}
 		card.contents.push(line);
 	}
@@ -147,9 +148,18 @@ function card_create_lexicals() {
 
 	// Lexical
 	card = new Card();
-	card.title = I18N.LEXICAL;
+	card.title = I18N.ABREVIATIONS_TITLE;
 	for (var i = 0; i < I18N.ABREVIATIONS.length; i++) {
 		var line = "property | " + I18N.ABREVIATIONS[i].name + " | " + I18N.ABREVIATIONS[i].meaning;
+		card.contents.push(line);
+	}
+	cards.push(card);
+
+	// Common rules
+	card = new Card();
+	card.title = I18N.COMMON_RULES_TITLE;
+	for (var i = 0; i < I18N.COMMON_RULES.length; i++) {
+		var line = "property | " + I18N.COMMON_RULES[i].name + " | " + I18N.COMMON_RULES[i].meaning;
 		card.contents.push(line);
 	}
 	cards.push(card);
@@ -283,11 +293,15 @@ function card_data_parse_icons_params(value) {
 	if (!value)
 		return value;
 	for (var i = 0; i < I18N.DAMAGE_TYPES.length; i++)
-		value = value.replace(I18N.DAMAGE_TYPES[i].regex, '$1<span class="card-inlineicon icon-type-' + I18N.DAMAGE_TYPES[i].file + '"></span>$2');
+		value = value.replace(I18N.DAMAGE_TYPES[i].regex, '$1<span class="card-inlineicon-tooltip"><span class="card-inlineicon icon-type-' + I18N.DAMAGE_TYPES[i].file + '"></span><span class="tooltiptext">' + I18N.DAMAGE_TYPES[i].name + '</span></span>$2');
 	for (var i = 0; i < I18N.CONDITION.length; i++)
-		value = value.replace(I18N.CONDITION[i].regex, '$1<span class="card-inlineicon icon-condition-' + I18N.CONDITION[i].file + '"></span>$2');
-	for (var i = 0; i < I18N.CUSTOM.length; i++)
-		value = value.replace(I18N.CUSTOM[i].regex, '$1<span class="card-inlineicon icon-custom-' + I18N.CUSTOM[i].file + '"></span>$2');
+		value = value.replace(I18N.CONDITION[i].regex, '$1<span class="card-inlineicon-tooltip"><span class="card-inlineicon icon-condition-' + I18N.CONDITION[i].file + '"></span><span class="tooltiptext">' + I18N.CONDITION[i].name + '</span></span>$2');
+	for (var i = 0; i < I18N.CUSTOM_ICONS.length; i++)
+		value = value.replace(I18N.CUSTOM_ICONS[i].regex, '$1<span class="card-inlineicon-tooltip"><span class="card-inlineicon icon-custom-' + I18N.CUSTOM_ICONS[i].file + '"></span><span class="tooltiptext">' + I18N.CUSTOM_ICONS[i].name + '</span></span>$2');
+	for (var i = 0; i < I18N.ABREVIATIONS.length; i++)
+		value = value.replace(I18N.ABREVIATIONS[i].regex, '$1<span class="abreviation">$2<span class="tooltiptext">' + I18N.ABREVIATIONS[i].meaning + '</span></span>$3');
+	for (var i = 0; i < I18N.COMMON_RULES.length; i++)
+		value = value.replace(I18N.COMMON_RULES[i].regex, '$1<span class="commonrules">$2<span class="tooltiptext">' + I18N.COMMON_RULES[i].meaning + '</span></span>$3');
 	return value
 		.replace(/\\/gi, '')
 		// .replace(/ comme /g,       							' ĉ ')
@@ -429,10 +443,10 @@ function card_spell_header(card_data, options) {
 	if (card_data.level)
 		result += '<div class="card-title-spellicon icon-spell-level_' + card_data.level + '"></div>';
 	result += '</div>';
+	result += '<div class="card-subtitle card-spell-subtitle">' + card_data.type;
 	if (card_data.ritual)
-		result += '<div class="card-subtitle card-spell-subtitle">' + card_data.type + ' (' + I18N.RITUAL + ')</div>';
-	else
-		result += '<div class="card-subtitle card-spell-subtitle">' + card_data.type + '</div>';
+		result += ' (' + I18N.RITUAL + ')';
+	result += '</div>';
 	return result;
 }
 
