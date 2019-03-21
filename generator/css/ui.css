@@ -252,6 +252,9 @@ label, p {
 	right: -1px;
 	top: 0px;
 }
+#cards-list .card-error {
+	text-decoration: #f00 underline dotted;
+}
 
 .card-count-more, .card-count-less {
 	padding: 0px;
@@ -281,9 +284,8 @@ label, p {
 /**** CARD FORM CONTAINER ***/
 /****************************/
 
-#card-form-container {
-	/* Don't set margin, it's done in js and would break the folding of menu and preview. */
-}
+/* Don't set margin, it's done in js and would break the folding of menu and preview. 
+#card-form-container {}*/
 
 @media (max-width : 1199px) {
 	#card-form-container-wrapper {

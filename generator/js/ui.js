@@ -115,11 +115,15 @@ function ui_add_cards(data) {
 function ui_load_files(evt) {
 	g_card_data = [];
 
-	var files = evt.target.files;
-
 	g_ui.filename = [];
 	g_ui.saveTime = '-';
 	g_ui.selectedCardIdx = 0;
+
+	ui_import_files(evt);
+}
+
+function ui_import_files(evt) {
+	var files = evt.target.files;
 
 	for (var i = 0, f; f = files[i]; i++) {
 		g_ui.filename.push(f.name);
@@ -142,39 +146,16 @@ function ui_load_files(evt) {
 				Object.assign(card, data[i]);
 				data[i] = card;
 			}
+
 			ui_add_cards(data);
-		};
-		reader.readAsText(f);
-	}
 
-	// Reset file input
-	$("#file-load-form")[0].reset();
-	$("#file-name").html('<b>File:</b> ' + g_ui.filename.join(", ") + '<br/><b>Last save:</b> ' + g_ui.saveTime);
-	local_store_ui_save();
-}
-
-function ui_import_files(evt) {
-	var files = evt.target.files;
-
-	for (var i = 0, f; f = files[i]; i++) {
-		g_ui.filename.push(f.name);
-
-		var reader = new FileReader();
-		reader.onload = function (reader) {
-			var data = JSON.parse(this.result);
-			for (var i in g_card_data) {
-				if (g_card_data[i].cardType == CardType.CREATURE)
-					g_card_data[i].__proto__ = CreatureCard.prototype;
-				else if (g_card_data[i].cardType == CardType.ITEM)
-					g_card_data[i].__proto__ = ItemCard.prototype;
-				else if (g_card_data[i].cardType == CardType.SPELL)
-					g_card_data[i].__proto__ = SpellCard.prototype;
-				else if (g_card_data[i].cardType == CardType.POWER)
-					g_card_data[i].__proto__ = PowerCard.prototype;
-				else
-					g_card_data[i].__proto__ = Card.prototype;
+			var previouslySelectedIdx = g_ui.selectedCardIdx;
+			g_previousCardIdx = g_ui.selectedCardIdx;
+			for (g_ui.selectedCardIdx = 0; g_ui.selectedCardIdx < g_card_data.length; g_ui.selectedCardIdx++) {
+				ui_update_selected_card();
+				g_previousCardIdx = g_ui.selectedCardIdx;
 			}
-			ui_add_cards(data);
+			ui_select_card_by_index(previouslySelectedIdx);
 		};
 		reader.readAsText(f);
 	}
@@ -201,27 +182,27 @@ function ui_save_file() {
 
 		if (card.cardType === CardType.CREATURE) {
 			str = JSON.stringify(card, function (key, value) {
-				if (key == "cardType" || value !== defaultCreature[key])
+				if ((key == "cardType" || value !== defaultCreature[key]) && key !== "error")
 					return value;
 			}, "\t");
 		} else if (card.cardType === CardType.ITEM) {
 			str = JSON.stringify(card, function (key, value) {
-				if (key == "cardType" || value !== defaultItem[key])
+				if ((key == "cardType" || value !== defaultItem[key]) && key !== "error")
 					return value;
 			}, "\t");
 		} else if (card.cardType === CardType.SPELL) {
 			str = JSON.stringify(card, function (key, value) {
-				if (key == "cardType" || value !== defaultSpell[key])
+				if ((key == "cardType" || value !== defaultSpell[key]) && key !== "error")
 					return value;
 			}, "\t");
 		} else if (card.cardType === CardType.POWER) {
 			str = JSON.stringify(card, function (key, value) {
-				if (key == "cardType" || value !== defaultPower[key])
+				if ((key == "cardType" || value !== defaultPower[key]) && key !== "error")
 					return value;
 			}, "\t");
 		} else {
 			str = JSON.stringify(card, function (key, value) {
-				if (key == "cardType" || value !== defaultCard[key])
+				if ((key == "cardType" || value !== defaultCard[key]) && key !== "error")
 					return value;
 			}, "\t");
 		}
@@ -368,7 +349,11 @@ function ui_update_card_list(doNotUpdateSelectedCard) {
 		countBlock.append($('<button type="button" class="btn btn-default card-count-more">+</button>').click(ui_change_card_count_increase));
 		newCardInList.append(countBlock);
 		if (card.color)
-			newCardInList.css("background-color", card.color + "33");
+			newCardInList.css("background-color", card.color + "29");
+		if (card.error)
+			newCardInList.addClass("card-error");
+		else
+			newCardInList.removeClass("card-error");
 		cardsList.append(newCardInList);
 	}
 
@@ -518,7 +503,7 @@ function ui_update_selected_card() {
 		var cardsList = $("#cards-list");
 		if ((g_previousCardIdx || g_previousCardIdx == 0) && g_previousCardIdx < g_card_data.length) {
 			var oldCard = g_card_data[g_previousCardIdx];
-			cardsList[0].children[g_previousCardIdx].style.backgroundColor = oldCard.color ? oldCard.color + "33" : "";
+			cardsList[0].children[g_previousCardIdx].style.backgroundColor = oldCard.color ? oldCard.color + "29" : "";
 			cardsList[0].children[g_previousCardIdx].classList.remove("selected");
 		}
 		var cardScrollHeight = cardsList[0].children[g_ui.selectedCardIdx].scrollHeight;
@@ -545,6 +530,15 @@ function ui_render_selected_card() {
 		var front = card_generate_front(card, g_card_options);
 		var back = card_generate_back(card, g_card_options);
 		$('#preview-container').html(front + "\n" + back);
+		var cardContainer = $('.card-content-container');
+		if (cardContainer) {
+			var cardsList = $("#cards-list");
+			card.error = cardContainer[0].clientHeight < cardContainer[0].scrollHeight;
+			if (card.error)
+				cardsList[0].children[g_ui.selectedCardIdx].classList.add("card-error");
+			else
+				cardsList[0].children[g_ui.selectedCardIdx].classList.remove("card-error");
+		}
 	}
 	local_store_cards_save();
 }
@@ -581,7 +575,7 @@ function ui_set_card_color(value) {
 		else
 			card.color = g_card_options.default.color;
 		if (g_ui.selectedCardIdx || g_ui.selectedCardIdx == 0)
-			$("#cards-list")[0].children[g_ui.selectedCardIdx].style.backgroundColor = card.color + "33";
+			$("#cards-list")[0].children[g_ui.selectedCardIdx].style.backgroundColor = card.color + "29";
 		ui_render_selected_card();
 	}
 }
@@ -624,7 +618,7 @@ function ui_change_card_count_increase() {
 	var idx = $(this)[0].parentElement.parentElement.attributes.index.value;
 	var card = g_card_data[idx];
 	if (!card.count)
-		card.count = 2;
+		card.count = 1;
 	else
 		card.count++;
 	$(this)[0].parentElement.children[0].disabled = false;
