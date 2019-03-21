@@ -168,9 +168,6 @@ var I18N = {
 			file: "creature", name: "créature",
 			regex: new RegExp("(?:([\(\[>])|^| ){1}cr[ée]ature[s]?[ ]?([^a-zA-Z]?|$)", 'gi')
 		}, {
-			file: "timer", name: "prochain tour",
-			regex: new RegExp("([ \(\[>]|^){1}prochain[s]? tour[s]?([^a-zA-Z]|$)", 'gi')
-		}, {
 			file: "ac", name: "ca",
 			regex: new RegExp("(?:([ \(\[>0-9])|^){1}CA([^a-zA-Z]|$)", 'gi')
 		}, {
@@ -232,6 +229,9 @@ var I18N = {
 		{
 			name: "Obstacles", meaning: "Le sort est capable de pénétrer la plupart des \\obstacles, mais 90 cm de bois ou de terre, 30 cm de pierre, 2,5 cm de la plupart des métaux ou une mince feuille de plomb le bloquent. Les frontières éthérées (cf. chapitre « Utiliser la magie ») peuvent mettre le sort en échec.",
 			regex: new RegExp("((?:[\(\[>'])|^| ){1}(obstacles)[ ]?([^a-zA-Z]{1}|$)", 'gi')
+		}, {
+			name: "Arrêt", meaning: "Par défaut, un sort ayant une durée de plus d'un round peut être interrompu par le lanceur au prix d'une action.",
+			regex: null
 		}
 	],
 
