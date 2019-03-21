@@ -22,7 +22,7 @@
 	height: 100%;
 }
 
-.card.rounded-corners {
+.card.rounded-corners, .card.rounded-corners .card-border {
 	border-radius: 4px;
 }
 
@@ -464,25 +464,30 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 	align-self: center;
 }
 
-.card-property-line {
+.card .card-property-line {
 	margin-right: -1px;
 	font-size: inherit;
 	color: black;
 }
-.card-property-line .card-element {
+.card .card-property-line .card-element {
 	flex: 1;
 	line-height: 100%;
 }
-.card-property-line .card-property-line {
+.card .card-property-line .card-property-line {
 	text-align: right;
 }
-.card-property-name {
-	margin: 0px 1px 0px 0px;
+.card .card-property-name {
+	margin-right: 1px;
 	display: inline;
-	font-size: inherit;
-	line-height: inherit;
+	font-size: 9pt;
+	line-height: 0;
+	text-transform: uppercase;
+	font-family: 'Yu Gothic UI Regular';
+    font-variant: all-small-caps;
+    font-weight: bold;
+    text-decoration: solid black underline;
 }
-.card-property-text {
+.card .card-property-text {
 	display: inline;
 	margin-left: 1px;
 	line-height: inherit;

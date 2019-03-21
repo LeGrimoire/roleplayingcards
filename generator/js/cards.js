@@ -9,6 +9,7 @@ var CardType = {
 
 class Card {
 	cardType;
+	count = 0;
 	title = "";
 	title_multiline = false;
 	subtitle = "";
@@ -660,7 +661,7 @@ function card_element_property(params, card_data, options) {
 		result += '<div class="card-element card-property-line" style="display:flex;flex-direction:row;">';
 	else
 		result += '<div class="card-element card-property-line">';
-	result += 	'<h4 class="card-property-name">' + params[0] + '.</h4>';
+	result += 	'<p class="card-property-name">' + params[0] + '.</p>';
 	result += 	'<p class="card-property-text">' + (params[1] ? card_data_parse_icons_params(params[1]) : '') + '</p>';
 	if (params[2]) {
 		result += card_generate_element(params.splice(2), card_data, options);
