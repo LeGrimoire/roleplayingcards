@@ -56,52 +56,52 @@ var I18N = {
 	DAMAGE_TYPES: [
 		{
 			file: "physical_not_magical", name: "physique non magique",
-			regex: new RegExp("([ \(\[0-9]|^){1}physique[s]? non magique[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}physique[s]? non magique[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "bludgeoning", name: "contondant",
-			regex: new RegExp("([ \(\[0-9]|^){1}contondant[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}contondant[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "piercing", name: "perforant",
-			regex: new RegExp("([ \(\[0-9]|^){1}perforant[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}perforant[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "slashing", name: "tranchant",
-			regex: new RegExp("([ \(\[0-9]|^){1}tranchant[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}tranchant[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "fire", name: "feu",
-			regex: new RegExp("([ \(\[0-9]|^){1}feu[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}feu[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "ice", name: "froid",
-			regex: new RegExp("([ \(\[0-9]|^){1}froid[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}froid[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "lightning", name: "foudre",
-			regex: new RegExp("([ \(\[0-9]|^){1}foudre[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}foudre[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "acid", name: "acide",
-			regex: new RegExp("([ \(\[0-9'’]|^){1}acide[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |('’)|^()){1}acide[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "poison", name: "poison",
-			regex: new RegExp("([ \(\[0-9]|^){1}poison[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}poison[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "necrotic", name: "nécrotique",
-			regex: new RegExp("([ \(\[0-9]|^){1}nécrotique[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}nécrotique[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "thunder", name: "tonnerre",
-			regex: new RegExp("([ \(\[0-9]|^){1}tonnerre[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}tonnerre[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "force", name: "force",
-			regex: new RegExp("([ \(\[0-9]|^){1}force[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}force[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "psychic", name: "psychique",
-			regex: new RegExp("([ \(\[0-9]|^){1}psychique[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}psychique[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "radiant", name: "radiant",
-			regex: new RegExp("([ \(\[0-9]|^){1}radiant[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("(?:([ \(\[0-9]) |^()){1}radiant[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}
 	],
 	CONDITION: [
 		{
 			file: "blinded", name: "aveuglé",
-			regex: new RegExp("([ \(\['>]|^){1}aveuglé[e]?[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("([ \(\[>']|^){1}aveuglé[e]?[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "charmed", name: "charmé",
 			regex: new RegExp("([ \(\[>]|^){1}charmé[e]?[s]?([^a-zA-Z]{1}|$)", 'gi')
@@ -110,13 +110,13 @@ var I18N = {
 			regex: new RegExp("([ \(\[>']|^){1}assourdi[e]?[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "exhaustion", name: "épuisé",
-			regex: new RegExp("([ \(\[>]|^){1}épuisé[e]?[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("([ \(\[>']|^){1}épuisé[e]?[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "frightened", name: "effrayé",
 			regex: new RegExp("([ \(\[>']|^){1}effrayé[e]?[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "grappled", name: "agrippé",
-			regex: new RegExp("([ \(\[>]|^){1}agrippé[e]?[s]?([^a-zA-Z]{1}|$)", 'gi')
+			regex: new RegExp("([ \(\[>']|^){1}agrippé[e]?[s]?([^a-zA-Z]{1}|$)", 'gi')
 		}, {
 			file: "incapacitated", name: "neutralisé",
 			regex: new RegExp("([ \(\[>]|^){1}neutralisé[e]?[s]?([^a-zA-Z]{1}|$)", 'gi')
