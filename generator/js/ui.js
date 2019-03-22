@@ -533,7 +533,7 @@ function ui_render_selected_card() {
 		var cardContainer = $('.card-content-container');
 		if (cardContainer) {
 			var cardsList = $("#cards-list");
-			card.error = cardContainer[0].clientHeight < cardContainer[0].scrollHeight;
+			card.error = (cardContainer[0].scrollHeight - cardContainer[0].clientHeight) > 3;
 			if (card.error)
 				cardsList[0].children[g_ui.selectedCardIdx].classList.add("card-error");
 			else
