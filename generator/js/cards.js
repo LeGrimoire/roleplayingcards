@@ -657,15 +657,14 @@ function card_element_circles(params, card_data, options) {
 
 function card_element_property(params, card_data, options) {
 	var result = "";
+	var style = "";
 	if (params[2])
-		result += '<div class="card-element card-property-line" style="display:flex;flex-direction:row;">';
-	else
-		result += '<div class="card-element card-property-line">';
+		style = 'style="display:flex;flex-direction:row;"';
+	result += '<div class="card-element card-property-line" ' + style + '>';
 	result += 	'<p class="card-property-name">' + params[0] + '.</p>';
 	result += 	'<p class="card-property-text">' + (params[1] ? card_data_parse_icons_params(params[1]) : '') + '</p>';
-	if (params[2]) {
+	if (params[2])
 		result += card_generate_element(params.splice(2), card_data, options);
-	}
 	result += '</div>';
 	return result;
 }
@@ -830,6 +829,36 @@ function card_element_attack(params, card_data, options) {
 	return result;
 }
 
+function card_element_fail(params, card_data, options) {
+	var result = "";
+	var style = "";
+	if (params[1])
+		style = 'style="display:flex;flex-direction:row;"';
+	result += '<div class="card-element card-property-line card-property-fail" ' + style + '>';
+	result += '<p class="card-property-name">' + I18N.FAIL + '.</p>';
+	result += '<p class="card-property-text">' + (params[0] ? card_data_parse_icons_params(params[0]) : '') + '</p>';
+	if (params[1]) {
+		result += card_generate_element(params.splice(1), card_data, options);
+	}
+	result += '</div>';
+	return result;
+}
+
+function card_element_success(params, card_data, options) {
+	var result = "";
+	var style = "";
+	if (params[1])
+		style = 'style="display:flex;flex-direction:row;"';
+	result += '<div class="card-element card-property-line card-property-success" ' + style + '>';
+	result += '<p class="card-property-name">' + I18N.SUCCESS + '.</p>';
+	result += '<p class="card-property-text">' + (params[0] ? card_data_parse_icons_params(params[0]) : '') + '</p>';
+	if (params[1]) {
+		result += card_generate_element(params.splice(2), card_data, options);
+	}
+	result += '</div>';
+	return result;
+}
+
 var card_element_generators = {
 	icon: card_element_icon,
 	picture: card_element_picture,
@@ -854,6 +883,8 @@ var card_element_generators = {
 	comment: card_element_empty,
 	spells: card_element_spells,
 	attack: card_element_attack,
+	fail: card_element_fail,
+	success: card_element_success,
 };
 
 // ============================================================================

@@ -464,6 +464,14 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 	align-self: center;
 }
 
+.card .card-property-fail {
+	background-color: rgba(255, 0, 0, 0.15);
+}
+
+.card .card-property-success {
+	background-color: rgba(0, 255, 0, 0.15);
+}
+
 .card .card-property-line {
 	margin-right: -1px;
 	font-size: inherit;
@@ -485,7 +493,6 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 	font-family: 'Yu Gothic UI Regular';
     font-variant: all-small-caps;
     font-weight: bold;
-    text-decoration: solid black underline;
 }
 .card .card-property-text {
 	display: inline;
