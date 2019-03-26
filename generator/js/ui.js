@@ -974,16 +974,30 @@ function ui_setup_shortcut() {
 			if (idx < g_card_data.length - 1)
 				ui_select_card_by_index(idx + 1);
 			e.returnValue = false;
-		} else if (e.ctrlKey && e.key == "s") {
-			if (e.preventDefault)
-				e.preventDefault();
-			ui_save_file();
-			e.returnValue = false;
-		} else if (e.ctrlKey && e.key == "g") {
-			if (e.preventDefault)
-				e.preventDefault();
-			ui_generate();
-			e.returnValue = false;
+		} else if (e.ctrlKey) {
+			if (e.key == "s") {
+				if (e.preventDefault)
+					e.preventDefault();
+				ui_save_file();
+				e.returnValue = false;
+			} else if (e.key == "g") {
+				if (e.preventDefault)
+					e.preventDefault();
+				ui_generate();
+				e.returnValue = false;
+			} else if (e.key == "+") {
+				if (e.preventDefault)
+					e.preventDefault();
+				var cardsMoreButtonList = $("#cards-list .card-count-more");
+				cardsMoreButtonList[g_ui.selectedCardIdx].click();
+				e.returnValue = false;
+			} else if (e.key == "-") {
+				if (e.preventDefault)
+					e.preventDefault();
+				var cardsLessButtonList = $("#cards-list .card-count-less");
+				cardsLessButtonList[g_ui.selectedCardIdx].click();
+				e.returnValue = false;
+			}
 		} else if (e.currentTarget.activeElement.nodeName != "INPUT" && e.currentTarget.activeElement.nodeName != "TEXTAREA") {
 			if (e.key == "+") {
 				if (e.preventDefault)

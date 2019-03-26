@@ -171,16 +171,16 @@ var I18N = {
 			file: "creature", name: "créature",
 			regex: new RegExp("(?:([\(\[>])|^| ){1}cr[ée]ature[s]?[ ]?([^a-zA-Z]?|$)", 'gi')
 		}, {
-			file: "ac", name: "ca",
+			file: "ac", name: "CA",
 			regex: new RegExp("(?:([ \(\[>0-9])|^){1}CA([^a-zA-Z]|$)", 'gi')
 		}, {
-			file: "hp", name: "pv temporaire",
+			file: "hp", name: "PV temporaire",
 			regex: new RegExp("(?:([ \(\[>0-9])|^){1}PV[s]? temporaire[s]?([^a-zA-Z]|$)", 'gi')
 		}, {
-			file: "hp", name: "pv",
+			file: "hp", name: "PV",
 			regex: new RegExp("(?:([ \(\[>0-9])|^){1}PV[s]?([^a-zA-Z]|$)", 'gi')
 		}, {
-			file: "gp", name: "po",
+			file: "gp", name: "PO",
 			regex: new RegExp("(?:([\(\[>])|^| ){1}po[s]?([^a-zA-Z]|$)", 'gi')
 		}, {
 			file: "action_bonus", name: "action bonus",
