@@ -960,14 +960,14 @@ function typeahead_icon_render(items) {
 
 function ui_setup_shortcut() {
 	$(document).keydown(function (e) {
-		if (e.which == 33) { // Pg up
+		if (e.key == "PageUp") {
 			if (e.preventDefault)
 				e.preventDefault();
 			var idx = g_ui.selectedCardIdx;
 			if (idx > 0)
 				ui_select_card_by_index(idx - 1);
 			e.returnValue = false;
-		} else if (e.which == 34) { // Pg down
+		} else if (e.key == "PageDown") {
 			if (e.preventDefault)
 				e.preventDefault();
 			var idx = g_ui.selectedCardIdx;
@@ -984,6 +984,24 @@ function ui_setup_shortcut() {
 				e.preventDefault();
 			ui_generate();
 			e.returnValue = false;
+		} else if (e.currentTarget.activeElement.nodeName != "INPUT" && e.currentTarget.activeElement.nodeName != "TEXTAREA") {
+			if (e.key == "+") {
+				if (e.preventDefault)
+					e.preventDefault();
+				var cardsMoreButtonList = $("#cards-list .card-count-more");
+				cardsMoreButtonList[g_ui.selectedCardIdx].click();
+				e.returnValue = false;
+			} else if (e.key == "-") {
+				if (e.preventDefault)
+					e.preventDefault();
+				var cardsLessButtonList = $("#cards-list .card-count-less");
+				cardsLessButtonList[g_ui.selectedCardIdx].click();
+				e.returnValue = false;
+			}
+		} else {
+			if (e.key == "Escape") {
+				e.currentTarget.activeElement.blur();
+			}
 		}
 	});
 }
@@ -1176,7 +1194,7 @@ var g_isSmallLayout;
 $(document).ready(function () {
 
 	var preventPageDownOrUp = function (e) {
-		if (e.which == 33 || e.which == 34) { // Pg up or down
+		if (e.key == "PageUp" || e.key == "PageDown") { // Pg up or down
 			if (e.preventDefault)
 				e.preventDefault();
 			e.returnValue = false;
