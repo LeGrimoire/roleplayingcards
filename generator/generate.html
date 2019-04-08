@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-theme.min.css" />
     <!-- Library: Bootstrap typeahead -->
-    <script type="text/javascript" src="lib/typeahead/bootstrap3-typeahead.js" charset="utf-8"></script>
+    <script type="text/javascript" src="lib/typeahead/bootstrap3-typeahead.min.js" charset="utf-8"></script>
     <!-- Library: Color picker -->
     <script type="text/javascript" src="lib/colorpicker/js/bootstrap-colorselector.js" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="lib/colorpicker/css/bootstrap-colorselector.css" />
@@ -18,9 +18,9 @@
     <script type="text/javascript" src="data/card_data_example.js"></script>
     <!-- Javascript -->
     <script type="text/javascript" src="js/i18n_french.js"></script>
-    <script type="text/javascript" src="js/cards.js"></script>
     <script type="text/javascript" src="js/colors.js"></script>
     <script type="text/javascript" src="js/icons.js"></script>
+    <script type="text/javascript" src="js/cards.js"></script>
     <script type="text/javascript" defer src="js/ui.js"></script>
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="css/ui.css" />
@@ -258,10 +258,10 @@
                                 <div class="col-sm-3">
                                     <select class="form-control" id="card-type" data-property="type">
                                         <option value="" selected></option>
-                                        <option value="creature">Creature</option>
-                                        <option value="item">Item</option>
-                                        <option value="spell">Spell</option>
-                                        <option value="power">Power</option>
+                                        <option value="CreatureCard">Creature</option>
+                                        <option value="ItemCard">Item</option>
+                                        <option value="SpellCard">Spell</option>
+                                        <option value="PowerCard">Power</option>
                                     </select>
                                 </div>
                             </div>
@@ -283,7 +283,7 @@
                             <div class="col-sm-7">
                                 <input type="text" id="card-title" class="form-control" placeholder="Title">
                             </div>
-                            <div class="col-sm-2 checkbox">
+                            <div class="col-sm-3 checkbox">
                                 <label>
                                     <input type="checkbox" id="card-title-multiline" data-property="title_multiline">sur 2 lignes
                                 </label>

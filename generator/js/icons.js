@@ -1,4 +1,6 @@
-var icon_names = [
+'use strict'
+
+const icon_names = [
     "3d-hammer",
     "3d-meeple",
     "3d-stairs",
@@ -2748,7 +2750,7 @@ var icon_names = [
     "spell-level_7",
     "spell-level_8",
     "spell-level_9",
-    "spell-material",
+    "spell-materials",
     "spell-somatic",
     "spell-verbal",
     "spell-book",
@@ -3382,5 +3384,5 @@ var icon_names = [
     "zigzag-hieroglyph",
     "zigzag-leaf",
     "zigzag-tune",
-    "zipper",
+    "zipper"
 ];

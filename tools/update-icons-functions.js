@@ -128,7 +128,7 @@ async function generateJS(src, dest) {
 		if (err) {
 			throw err;
 		} else {
-			var content = "var icon_names = [\n";
+			var content = "const icon_names = [\n";
 			files.map(function (name) {
 				if (fse.lstatSync(src + "/" + name).isDirectory()) {
 					var subDirFiles = fse.readdirSync(src + "/" + name);

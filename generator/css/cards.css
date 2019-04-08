@@ -229,6 +229,10 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 }
 .card-element .card-element {
 	display: inline-block;
+	flex: 1;
+}
+.card .card-property-line .card-element {
+	line-height: 100%;
 }
 
 .card-compact .card-element {
@@ -294,7 +298,7 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 
 /***** SPELL BASE *****/
 
-.card-type-spell .card-content-container {
+.card-type-spellcard .card-content-container {
 	padding-bottom: 12px;
 }
 
@@ -304,7 +308,8 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 
 .card-spell-base-texts {
 	color: black;
-	width: 100%;
+	padding: 1px 2px;
+	margin: -1px -2px;
 }
 .card-spell-base-texts h4 {
 	display: inline;
@@ -362,6 +367,10 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 
 /***** CONTENT *****/
 
+.card-element .card-element .card-boxes, .card-element .card-element .card-circles, .card-element .card-element .card-icon {
+	display: block;
+}
+
 .card-picture {
 	height: 80px;
 	line-height: 18px;
@@ -371,9 +380,6 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 .card-icon {
 	display: flex;
 	flex-direction: row;
-}
-.card-icon .card-element {
-	flex: 1;
 }
 .card-icon span {
 	background-size: auto 100%;
@@ -442,16 +448,10 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 	display: flex;
 	flex-direction: row;
 }
-.card-boxes .card-element {
-	flex: 1;
-}
 
 .card-circles {
 	display: flex;
 	flex-direction: row;
-}
-.card-circles .card-element {
-	flex: 1;
 }
 
 .card-box {
@@ -465,21 +465,17 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 }
 
 .card .card-property-fail {
-	background-color: rgba(255, 0, 0, 0.15);
+	background-color: rgba(255, 0, 0, 0.1);
 }
 
 .card .card-property-success {
-	background-color: rgba(0, 255, 0, 0.15);
+	background-color: rgba(0, 255, 0, 0.1);
 }
 
 .card .card-property-line {
 	margin-right: -1px;
 	font-size: inherit;
 	color: black;
-}
-.card .card-property-line .card-element {
-	flex: 1;
-	line-height: 100%;
 }
 .card .card-property-line .card-property-line {
 	text-align: right;
@@ -488,7 +484,7 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 	margin-right: 1px;
 	display: inline;
 	font-size: 9pt;
-	line-height: 0;
+	line-height: 0.8em;
 	text-transform: uppercase;
 	font-family: 'Yu Gothic UI Regular';
     font-variant: all-small-caps;
@@ -530,12 +526,6 @@ p.card-element {
 	letter-spacing: 1px;
 	margin: 0;
 	display: inline-block;
-}
-.card-section .card-element {
-	flex: 1;
-}
-.card-section .card-boxes, .card-section .card-circles, .card-section .card-icon {
-	display: block;
 }
 .card-section .card-box:last-child {
 	margin-right: 0;
@@ -793,7 +783,7 @@ p.card-element {
 .abreviation, .commonrules {
 	position: relative;
 	display: inline-block;
-	border-bottom: 0.5px dotted black; /* If you want dots under the hoverable text */
+	/*border-bottom: 0.5px dotted black;*/ /* If you want dots under the hoverable text */
 }
 .commonrules {
 	font-style: italic;

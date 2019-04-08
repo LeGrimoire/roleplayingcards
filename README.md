@@ -1,3 +1,6 @@
+npm i @types/jquery
+npm i @types/bootstrap
+
 rpg-cards
 =========
 
