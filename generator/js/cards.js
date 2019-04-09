@@ -12,10 +12,10 @@ class Card {
 	icon = "";
 	icon_back;
 	background_image;
-	description;
+	description = "";
 	contents = [];
-	tags;
-	reference;
+	tags = [];
+	reference = "";
 	compact = false;
 
 	constructor() {
@@ -55,14 +55,15 @@ class ItemCard extends Card {
 
 class SpellCard extends Card {
 	level = 1;
+	type = "";
 	ritual = false;
-	casting_time = "1 action";
 	range = "18 m";
+	casting_time = "1 action";
+	duration = "1 round";
+	materials = "";
 	verbal = false;
 	somatic = false;
-	materials = "";
-	duration = "1 round";
-	type = "";
+	higherLevels = "";
 	classes = "";
 
 	constructor() {
@@ -1114,12 +1115,13 @@ function card_spell_footer(card, options) {
 	var classesKeys = Object.keys(I18N.CLASSES);
 	for (var i = 0; i < classesKeys.length; i++) {
 		var isForClass = card.classes.search(new RegExp(I18N.CLASSES[classesKeys[i]], 'gi')) != -1;
-		result += '<span class="card-class-inlineicon icon-class-' + classesKeys[i].toLowerCase() + (isForClass ? '' : ' card-class-hidden') + '""></span>';
+		result += '<span class="card-class-inlineicon icon-class-' + classesKeys[i].toLowerCase() + (isForClass ? '' : ' card-class-hidden') + '"></span>';
 	}
 	result += '</div>';
 	return result;
 }
 
+var card_element_counts = {};
 /**
  * @param {string[]} parts
  * @param {Card} card
@@ -1131,6 +1133,7 @@ function card_generate_element(parts, card, options) {
 	var element_params = parts.splice(1);
 	var element_generator = card_element_generators[element_name];
 	if (element_generator) {
+		card_element_counts[element_name]++;
 		return element_generator(element_params, card, options);
 	} else if (element_name.length > 0) {
 		return card_element_text(parts, card, options);
@@ -1145,6 +1148,10 @@ function card_generate_element(parts, card, options) {
  */
 function card_generate_contents(contents, card, options) {
 	card_table_previous_line_colored = true;
+	var card_element_names = Object.keys(card_element_generators);
+	for (let i = 0; i < card_element_names.length; i++)
+		card_element_counts[card_element_names[i]] = 0;
+
 	var result = "";
 	result += contents.map(function (content_line) {
 		var parts = card_data_split_params(content_line);
@@ -1230,13 +1237,25 @@ function card_generate_front(card, options) {
 	}
 
 	result += 			card_generate_contents(card.contents, card, options);
-	result += 		'</div>';
-	result += 	'</div>';
 
 	if (card.constructor === SpellCard) {
 		let spellCard = new SpellCard();
 		Object.assign(spellCard, card);
-		result += card_spell_footer(spellCard, options);
+		if (spellCard.higherLevels && spellCard.higherLevels.length > 0) {
+			if (card_element_counts["fill"] == 0)
+				result += 	card_element_fill(["1"], spellCard, options);
+			result += 		'<div class="card-spell-higher-levels" style="background-color:' + color + '33;">';
+			result += 			'<h3 style="color:' + color + '">' + I18N.AT_HIGHER_LEVELS + '</h3>';
+			result += 			'<p class="card-element">' + spellCard.higherLevels + '</p>';
+			result += 		'</div>';
+		}
+		result += 		'</div>';
+		result += 	'</div>';
+		result += 	card_spell_footer(spellCard, options);
+	}
+	else {
+		result += 		'</div>';
+		result += 	'</div>';
 	}
 
 	if (card.reference)

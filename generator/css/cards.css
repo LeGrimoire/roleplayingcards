@@ -298,10 +298,6 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 
 /***** SPELL BASE *****/
 
-.card-type-spellcard .card-content-container {
-	padding-bottom: 12px;
-}
-
 .card-spell-base {
 	position: relative;
 }
@@ -668,6 +664,24 @@ p.card-element {
 }
 .card-attack-damages {
 	display: inline;
+}
+
+.card-type-spellcard .card-content-container {
+	padding-bottom: 12px;
+}
+
+.card-spell-higher-levels {
+	padding: 0px 2px 12px;
+	margin: 0px -2px -12px;
+}
+
+.card-spell-higher-levels h3 {
+	font-size: 9pt;
+	font-variant: small-caps;
+	font-weight: normal;
+	letter-spacing: 1px;
+	margin: 0;
+	display: inline-block;
 }
 
 /***** FOOTER *****/

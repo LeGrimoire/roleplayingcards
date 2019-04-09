@@ -15,10 +15,10 @@ export function card_data_example() {
         "comment | picture | url | height",
         "picture | ./img/3d-hammer.png | 15",
         "rule",
-        "space | 1",
+        "fill | 1",
         "comment | boxes | (count) | (size) | (dashed) | (center)",
         "boxes | 5 | 1.5 | true | true",
-        "space | 2",
+        "fill | 2",
         "property | property | Texte sans indentation",
         "description | Texte d'appoint",
         "Texte à gauche; feu",
@@ -96,7 +96,7 @@ export function card_data_example() {
         "Stealth +6",
         "rule",
         "property | Nimble escape | Disengage or Hide as bonus action",
-        "space | 1",
+        "fill | 1",
         "section | Actions",
         "attack | Scimitar | +4 (5 ft.) | one target. 5 (1d6 + 2) slashing damage"
     ];
@@ -111,10 +111,10 @@ export function card_data_example() {
         "property | Strength required | 15",
         "property | Stealth | Disadvantage",
         "rule",
-        "space | 2",
+        "fill | 2",
         "property | Heavy | Unless you have the required strength, your speed is reduced by 10 feet.",
         "property | Stealth | You have disadvantage on Dexterity (Stealth) checks.",
-        "space | 3"
+        "fill | 3"
     ];
     cards.push(fullPlate);
 
@@ -127,11 +127,11 @@ export function card_data_example() {
         "property | Modifier | Strength or Dexterity",
         "property | Properties | Light, Finesse, Thrown (20/60)",
         "rule",
-        "space | 2",
+        "fill | 2",
         "property | Finesse | Use your choice of Strength or Dexterity modifier for attack and damage.",
         "property | Light | When you attack while dual wielding light weapons, you may use a bonus action to attack with your off hand.",
         "property | Thrown | You can throw the weapon to make a ranged attack with the given range.",
-        "space | 3"
+        "fill | 3"
     ];
     cards.push(dagger);
 
@@ -144,12 +144,12 @@ export function card_data_example() {
         "property | Recharge | 1d6+1 each day",
         "property | Depletion | If you expend the last charge, roll a d20. On a 1, the item is destroyed.",
         "rule",
-        "space | 2",
+        "fill | 2",
         "property | Spells | You can use your action to cast the following spells:",
         "bullet | magic missile, 1st level (1 charge)",
         "bullet | magic missile, 2nd level (2 charges)",
         "bullet | magic missile, 3rd level (3 charges)",
-        "space | 3",
+        "fill | 3",
         "boxes | 7 | 2 | true | true"
     ];
     cards.push(wand);
@@ -162,10 +162,10 @@ export function card_data_example() {
         "property | Use time | 1 action",
         "property | Hit points restored | 2d4+2",
         "rule",
-        "space | 2",
+        "fill | 2",
         "When you drink this potion, you regain 2d4+2 hitpoints.",
         "Drinking or administering a potion takes 1 action.",
-        "space | 3"
+        "fill | 3"
     ];
     cards.push(potion);
 
@@ -185,13 +185,13 @@ export function card_data_example() {
     burningHand.duration = "1 round";
     burningHand.classes = "";
     burningHand.contents = [
-        "space | 4",
+        "fill | 4",
         "Each creature in a 15-foot cone must make a Dexterity saving throw. A creature takes <b>3d6 fire</b> on a failed save, or half as much damage on a successful one.",
         "The fire ignites any flammable objects in the area that aren't being worn or carried.",
-        "space | 5",
+        "fill | 5",
         "section | At higher levels",
         "+1d6 damage for each slot above 1st",
-        "space | 1"
+        "fill | 1"
     ];
     cards.push(burningHand);
 
@@ -201,9 +201,9 @@ export function card_data_example() {
     cunningAction.color = "indigo";
     cunningAction.icon_back = "cloak-dagger";
     cunningAction.contents = [
-        "space | 2",
+        "fill | 2",
         "You can take a <b>bonus action on each of your turns</b> in combat. This action can be used only to take the <b>Dash, Disengage, or Hide</b> action.",
-        "space | 2",
+        "fill | 2",
         "section | Fast hands (Thief 3rd)",
         "You can also use the bonus action to make a Dexterity (<b>Sleight of Hand</b>) check, use your thieves' tools to <b>disarm a trap</b> or <b>open a lock</b>, or take the <b>Use an Object</b> action."
     ];

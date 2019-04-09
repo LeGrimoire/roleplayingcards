@@ -143,8 +143,12 @@ function ui_import_files(evt) {
 					card = new PowerCard();
 				else
 					card = new Card();
+
 				Object.assign(card, data[i]);
 				data[i] = card;
+
+				// @ts-ignore
+				delete data[i].cardType;
 			}
 
 			ui_add_cards(data);
@@ -215,11 +219,13 @@ function ui_stringify_cards(readable) {
 			}, readable ? "\t" : undefined);
 		}
 
-		strCard = strCard.slice(0, strCard.length - 1);
-		if (readable)
+		if (readable) {
+			strCard = strCard.slice(0, strCard.length - 2);
 			strCard = strCard.concat(',\n\t"cardType": "' + card.constructor.name + '"\n}');
-		else
+		} else {
+			strCard = strCard.slice(0, strCard.length - 1);
 			strCard = strCard.concat(',"cardType":"' + card.constructor.name + '"}');
+		}
 
 		if (i < g_card_data.length - 1)
 			strCard = strCard.concat(readable ? ',\n' : ',');
@@ -469,6 +475,7 @@ function ui_update_selected_card() {
 			$("#card-spell-duration").val(card.duration);
 			$("#card-spell-type").val(card.type);
 			$("#card-spell-classes").val(card.classes);
+			$("#card-spell-higher-levels").val(card.higherLevels);
 
 			$('#card-contents').attr("rows", 21);
 		} else if (card.constructor === PowerCard) {
@@ -1514,6 +1521,8 @@ $(document).ready(function () {
 	});
 	$("#card-spell-type").on("keydown", preventPageDownOrUp);
 	$("#card-spell-type").change(ui_change_card_property);
+	$("#card-spell-higher-levels").on("keyup", ui_change_card_element_keyup);
+	$("#card-spell-higher-levels").change(ui_change_card_property);
 	$("#card-spell-classes").typeahead({
 		source: Object.values(I18N.CLASSES),
 		items: 'all',

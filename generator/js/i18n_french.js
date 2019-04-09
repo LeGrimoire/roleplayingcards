@@ -165,6 +165,8 @@ const I18N = {
 
 	FAIL: "Échec",
 	SUCCESS: "Réussite",
+	
+	AT_HIGHER_LEVELS: "Aux niveaux supérieurs",
 
 	CUSTOM_ICONS: [
 		{
