@@ -3,7 +3,7 @@
 /**
  * @returns {Card[]}
  */
-export function card_data_example() {
+function card_data_example() {
     var cards = [];
 
     var card = new Card();

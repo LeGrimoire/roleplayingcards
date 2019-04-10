@@ -184,35 +184,35 @@ function ui_stringify_cards(readable) {
 
 		if (card.constructor === CreatureCard) {
 			strCard = JSON.stringify(card, function (key, value) {
-				if (key == "error")
+				if (key == "error" || (Array.isArray(value) && value.length == 0))
 					return;
 				if (value !== defaultCreature[key])
 					return value;
 			}, readable ? "\t" : undefined);
 		} else if (card.constructor === ItemCard) {
 			strCard = JSON.stringify(card, function (key, value) {
-				if (key == "error")
+				if (key == "error" || (Array.isArray(value) && value.length == 0))
 					return;
 				if (value !== defaultItem[key])
 					return value;
 			}, readable ? "\t" : undefined);
 		} else if (card.constructor === SpellCard) {
 			strCard = JSON.stringify(card, function (key, value) {
-				if (key == "error")
+				if (key == "error" || (Array.isArray(value) && value.length == 0))
 					return;
 				if (value !== defaultSpell[key])
 					return value;
 			}, readable ? "\t" : undefined);
 		} else if (card.constructor === PowerCard) {
 			strCard = JSON.stringify(card, function (key, value) {
-				if (key == "error")
+				if (key == "error" || (Array.isArray(value) && value.length == 0))
 					return;
 				if (value !== defaultPower[key])
 					return value;
 			}, readable ? "\t" : undefined);
 		} else {
 			strCard = JSON.stringify(card, function (key, value) {
-				if (key == "error")
+				if (key == "error" || (Array.isArray(value) && value.length == 0))
 					return;
 				if (value !== defaultCard[key])
 					return value;
@@ -477,7 +477,7 @@ function ui_update_selected_card() {
 			$("#card-spell-classes").val(card.classes);
 			$("#card-spell-higher-levels").val(card.higherLevels);
 
-			$('#card-contents').attr("rows", 21);
+			$('#card-contents').attr("rows", 19);
 		} else if (card.constructor === PowerCard) {
 			$(".creature-hide").show();
 			$(".item-hide").show();
@@ -897,8 +897,12 @@ function local_store_cards_load() {
 					card = new PowerCard();
 				else
 					card = new Card();
+
 				Object.assign(card, g_card_data[i]);
 				g_card_data[i] = card;
+
+				// @ts-ignore
+				delete g_card_data[i].cardType;
 			}
 		} catch (e) {
 			//if the local store load failed should we notify the user that the data load failed?
