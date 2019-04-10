@@ -971,7 +971,7 @@ function typeahead_render(items) {
 		let li = $(that.options.item).data('value', item);
 		// Highlight matching text in the line
 		li.find('a').html(that.highlighter(item));
-		return i[0];
+		return li[0];
 	});
 
 	if (this.autoSelect) {
@@ -992,7 +992,7 @@ function typeahead_icon_render(items) {
 		// Add icons with the span
 		var classname = 'icon-' + item.split(' ').join('-').toLowerCase();
 		li.find('a').append('<span class="' + classname + '"></span>');
-		return i[0];
+		return li[0];
 	});
 
 	if (this.autoSelect) {
