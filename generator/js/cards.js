@@ -1244,9 +1244,9 @@ function card_generate_front(card, options) {
 		if (spellCard.higherLevels && spellCard.higherLevels.length > 0) {
 			if (card_element_counts["fill"] == 0)
 				result += 	card_element_fill(["1"], spellCard, options);
-			result += 		'<div class="card-spell-higher-levels" style="background-color:' + color + '33;">';
-			result += 			'<h3 style="color:' + color + '">' + I18N.AT_HIGHER_LEVELS + '</h3>';
-			result += 			'<p class="card-element">' + spellCard.higherLevels + '</p>';
+			result += 		'<div class="card-spell-higher-levels">';
+			result += 			'<h3 style="color:' + color + ';background-color:' + color + '33;">' + I18N.AT_HIGHER_LEVELS + '</h3>';
+			result += 			'<p class="card-element" style="background-color:' + color + '11;">' + spellCard.higherLevels + '</p>';
 			result += 		'</div>';
 		}
 		result += 		'</div>';
