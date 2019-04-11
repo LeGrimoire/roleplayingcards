@@ -461,11 +461,11 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understandi
 }
 
 .card .card-property-fail {
-	background-color: rgba(255, 0, 0, 0.1);
+	background-color: rgba(255, 0, 0, 0.05);
 }
 
 .card .card-property-success {
-	background-color: rgba(0, 255, 0, 0.1);
+	background-color: rgba(0, 255, 0, 0.05);
 }
 
 .card .card-property-line {
@@ -563,7 +563,7 @@ p.card-element {
 	width: 100%;
 	line-height: 1.25em;
 }
-.card-content-container .card-table:nth-child(odd).card-table-line {
+.card-content-container .card-table:nth-child(even).card-table-line {
 	background: #ccc3;
 }
 .card-content-container .card-table-header {

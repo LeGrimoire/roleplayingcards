@@ -673,7 +673,7 @@ function card_element_bullet(params, card, options) {
 	return result;
 }
 
-var card_table_previous_line_colored = true;
+var card_table_previous_line_colored = false;
 /**
  * @param {string[]} params
  * @param {Card} card
@@ -705,7 +705,7 @@ function card_element_table_line(params, card, options) {
 	if (card_table_previous_line_colored)
 		result += '<table class="card-element card-table card-table-line">';
 	else
-		result += '<table class="card-element card-table card-table-line" style="background-color:' + card_data_color_front(card, options) + '33;">';
+		result += '<table class="card-element card-table card-table-line" style="background-color:' + card_data_color_front(card, options) + '22;">';
 	card_table_previous_line_colored = !card_table_previous_line_colored;
 	result += '<tr>';
 	var width = 100 / params.length;
@@ -728,7 +728,7 @@ function card_element_table_line_center(params, card, options) {
 	if (card_table_previous_line_colored)
 		result += '<table class="card-element card-table card-table-line" style="text-align:center;">';
 	else
-		result += '<table class="card-element card-table card-table-line" style="background-color:' + card_data_color_front(card, options) + '33;text-align:center;">';
+		result += '<table class="card-element card-table card-table-line" style="background-color:' + card_data_color_front(card, options) + '22;text-align:center;">';
 	card_table_previous_line_colored = !card_table_previous_line_colored;
 	result += '<tr>';
 	var width = 100 / params.length;
@@ -1147,7 +1147,7 @@ function card_generate_element(parts, card, options) {
  * @returns {string}
  */
 function card_generate_contents(contents, card, options) {
-	card_table_previous_line_colored = true;
+	card_table_previous_line_colored = false;
 	var card_element_names = Object.keys(card_element_generators);
 	for (let i = 0; i < card_element_names.length; i++)
 		card_element_counts[card_element_names[i]] = 0;
@@ -1246,7 +1246,7 @@ function card_generate_front(card, options) {
 				result += 	card_element_fill(["1"], spellCard, options);
 			result += 		'<div class="card-spell-higher-levels">';
 			result += 			'<h3 style="color:' + color + ';background-color:' + color + '33;">' + I18N.AT_HIGHER_LEVELS + '</h3>';
-			result += 			'<p class="card-element" style="background-color:' + color + '11;">' + spellCard.higherLevels + '</p>';
+			result += 			'<p class="card-element" style="background-color:' + color + '11;">' + card_data_parse_icons_params(spellCard.higherLevels) + '</p>';
 			result += 		'</div>';
 		}
 		result += 		'</div>';
