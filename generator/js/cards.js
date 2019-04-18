@@ -6,8 +6,8 @@ class Card {
 	title = "";
 	title_multiline = false;
 	subtitle = "";
-	color_front;
-	color_back;
+	color_front = "";
+	color_back = "";
 	color = "#A9A9A9";
 	icon = "";
 	icon_back;
@@ -237,8 +237,10 @@ function card_update(card) {
 		} else if (card.cr === "1/2") {
 			cr = 1 / 2;
 			card.xp = 100;
-		} else
+		} else {
+			cr = parseInt(card.cr);
 			card.xp = pxByCR[card.cr];
+		}
 		card.proficiency = Math.floor(cr / 4) + 2;
 	}
 }
@@ -293,7 +295,7 @@ function card_remove_tag(card, tag) {
  * @returns {string}
  */
 function card_data_color_front(card, options) {
-	return card.color_front || card.color || options.card_default.color || "black";
+	return card.color_front || card.color || options.card_default.color || "#000000";
 }
 
 /**
@@ -563,7 +565,7 @@ function card_element_property(params, card, options) {
 	if (params[2])
 		style = 'style="display:flex;flex-direction:row;"';
 	result += '<div class="card-element card-property-line" ' + style + '>';
-	result += 	'<p class="card-property-name">' + params[0] + '.</p>';
+	result += 	'<p class="card-property-name">' + card_data_parse_icons_params(params[0]) + '.</p>';
 	result += 	'<p class="card-property-text">' + (params[1] ? card_data_parse_icons_params(params[1]) : '') + '</p>';
 	if (params[2])
 		result += card_generate_element(params.splice(2), card, options);
@@ -683,7 +685,7 @@ var card_table_previous_line_colored = false;
 function card_element_table_header(params, card, options) {
 	card_table_previous_line_colored = true;
 	var result = "";
-	result += '<table class="card-element card-table card-table-header" style="background-color:' + card_data_color_front(card, options) + '88;">';
+	result += '<table class="card-element card-table card-table-header" style="background-color:' + card_data_color_front(card, options) + '66;">';
 	result += '<tr>';
 	var width = 100 / params.length;
 	for (var i = 0; i < params.length; i++) {
@@ -702,10 +704,12 @@ function card_element_table_header(params, card, options) {
  */
 function card_element_table_line(params, card, options) {
 	var result = "";
+	var style = "";
 	if (card_table_previous_line_colored)
-		result += '<table class="card-element card-table card-table-line">';
+		style = 'background-color:' + card_data_color_front(card, options) + '0d;';
 	else
-		result += '<table class="card-element card-table card-table-line" style="background-color:' + card_data_color_front(card, options) + '22;">';
+		style = 'background-color:' + card_data_color_front(card, options) + '22;';
+	result += '<table class="card-element card-table card-table-line" style="' + style + '">';
 	card_table_previous_line_colored = !card_table_previous_line_colored;
 	result += '<tr>';
 	var width = 100 / params.length;
@@ -725,10 +729,12 @@ function card_element_table_line(params, card, options) {
  */
 function card_element_table_line_center(params, card, options) {
 	var result = "";
+	var style = "";
 	if (card_table_previous_line_colored)
-		result += '<table class="card-element card-table card-table-line" style="text-align:center;">';
+		style = 'background-color:' + card_data_color_front(card, options) + '0d;';
 	else
-		result += '<table class="card-element card-table card-table-line" style="background-color:' + card_data_color_front(card, options) + '22;text-align:center;">';
+		style = 'background-color:' + card_data_color_front(card, options) + '22;';
+	result += '<table class="card-element card-table card-table-line" style="text-align:center;' + style + '">';
 	card_table_previous_line_colored = !card_table_previous_line_colored;
 	result += '<tr>';
 	var width = 100 / params.length;
