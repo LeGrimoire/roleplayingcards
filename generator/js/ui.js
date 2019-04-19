@@ -549,18 +549,25 @@ function ui_update_selected_card() {
 function ui_render_selected_card() {
 	if (g_dontRenderSelectedCard)
 		return;
-	var card = ui_selected_card();
+	let card = ui_selected_card();
 	$('#preview-container').empty();
 	if (card) {
 		card_update(card);
 
-		var front = card_generate_front(card, g_card_options);
-		var back = card_generate_back(card, g_card_options);
+		let front = card_generate_front(card, g_card_options);
+		let back = card_generate_back(card, g_card_options);
 		$('#preview-container').html(front + '\n' + back);
-		var cardContainer = $('.card-content-container');
+		let cardContainer = $('.card-content-container');
 		if (cardContainer) {
-			var cardsList = $('#cards-list');
-			card.error = (cardContainer[0].scrollHeight - cardContainer[0].clientHeight) > 3;
+			card.error = false;
+
+			let cardsList = $('#cards-list');
+			let lastCardElement = cardContainer.children().last();
+			if (lastCardElement) {
+				let lastCardElementBottom = lastCardElement.offset().top + lastCardElement.height();
+				let containerBottom = cardContainer.offset().top + cardContainer.height();
+				card.error = lastCardElement && (lastCardElementBottom - containerBottom) > 3;
+			}
 			if (card.error)
 				cardsList[0].children[g_ui.selectedCardIdx].classList.add('card-error');
 			else
