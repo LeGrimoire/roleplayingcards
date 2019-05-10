@@ -5,45 +5,46 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Attach to Generate",
             "type": "chrome",
             "request": "attach",
-            "name": "Attach to Generate",
             "port": 9222,
-            "url": "file:///${workspaceFolder}/generator/generate.html",
-            "webRoot": "${workspaceFolder}/generator"
+            "url": "http://127.0.0.1:5500/generator/generate.html",
+            "webRoot": "${workspaceFolder}/generator/"
         },
         {
+            "name": "Launch Generate",
             "type": "chrome",
             "request": "launch",
-            "name": "Launch Generate",
             "port": 9222,
-            "file": "${workspaceFolder}/generator/generate.html",
+            "url": "http://127.0.0.1:5500/generator/generate.html",
+            "webRoot": "${workspaceFolder}/generator/",
             "userDataDir": false
         },
         {
+            "name": "Attach to Output",
             "type": "chrome",
             "request": "attach",
-            "name": "Attach to Output",
             "port": 9222,
-            "url": "file:///${workspaceFolder}/generator/output.html",
+            "url": "http://127.0.0.1:5500/generator/output.html",
             "webRoot": "${workspaceFolder}/generator"
         },
         {
+            "name": "Update icons no dl no transform",
             "type": "node",
             "request": "launch",
-            "name": "Update icons no dl no transform",
             "program": "${workspaceFolder}/tools/update-icons-no-dl-no-transform.js"
         },
         {
+            "name": "Update icons no dl",
             "type": "node",
             "request": "launch",
-            "name": "Update icons no dl",
             "program": "${workspaceFolder}/tools/update-icons-no-dl.js"
         },
         {
+            "name": "Update icons",
             "type": "node",
             "request": "launch",
-            "name": "Update icons",
             "program": "${workspaceFolder}/tools/update-icons.js"
         }
     ]

@@ -1,119 +1,150 @@
-'use strict'
-
+import { CardExamples } from '../data/card_examples.js';
+import { CardLexicals } from '../data/card_lexicals.js';
+import { CreatureCard } from './card_creature.js';
+import { ItemCard } from './card_item.js';
+import { PowerCard } from './card_power.js';
+import { SpellCard } from './card_spell.js';
+import { card_colors } from './colors.js';
+import { Deck } from './deck.js';
+import { I18N } from './i18n_french.js';
+import { icon_names } from './icons.js';
 
 // Ugly global variable holding the current card deck
-var g_card_data = [];
-var g_card_options = new DocumentOptions();
+var g_deck = new Deck();
 
 var g_ui = {
 	foldedSections: {},
 	foldedBlocks: {},
 	selectedCardIdx: 0,
 	filename: [],
-	saveTime: '-'
+	saveTime: '-',
+	generateModalShown: false
 };
 var g_previousCardIdx;
+var g_dontRenderSelectedCard = false;
+var g_isSmallLayout;
 
 
-function ui_open_help() {
-	$("#help-modal").modal('show');
+
+// ============================================================================
+// Data save/load
+// ============================================================================
+
+// Adding support for local store
+function is_storage_available(type) {
+	try {
+		var storage = window[type],
+			x = '__storage_test__';
+		storage.setItem(x, x);
+		storage.removeItem(x);
+		return true;
+	}
+	catch (e) {
+		return e instanceof DOMException && (
+			// Everything except Firefox
+			e.code === 22 ||
+			// Firefox
+			e.code === 1014 ||
+			// Test name field too, because code might not be present
+			// Everything except Firefox
+			e.name === 'QuotaExceededError' ||
+			// Firefox
+			e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+			// Acknowledge QuotaExceededError only if there's something already stored
+			storage.length !== 0;
+	}
 }
 
-function ui_load_sample() {
-	g_card_data = card_data_example();
-	ui_init_cards(g_card_data);
-	ui_update_card_list();
-}
-
-
-function merge(left, right, compare) {
-	var result = [];
-
-	while (left.length && right.length) {
-		if (compare(left[0], right[0]) <= 0) {
-			result.push(left.shift());
-		} else {
-			result.push(right.shift());
+function local_store_cards_save() {
+	if (is_storage_available('localStorage') && window.localStorage) {
+		try {
+			localStorage.setItem('card_data', g_deck.stringify(false));
+		} catch (e) {
+			// TODO GREGOIRE: If the local store save failed notify the user that the data has not been saved
+			console.error(e.stack);
 		}
 	}
-
-	while (left.length)
-		result.push(left.shift());
-
-	while (right.length)
-		result.push(right.shift());
-
-	return result;
 }
 
-function mergeSort(arr, compare) {
-	if (arr.length < 2)
-		return arr;
+function local_store_cards_load() {
+	if (is_storage_available('localStorage') && window.localStorage) {
+		try {
+			g_deck.clear();
+			g_deck.load(JSON.parse(localStorage.getItem('card_data')));
+			ui_card_list_update();
+		} catch (e) {
+			// TODO GREGOIRE: If the local store load failed notify the user that the loading failed
+			console.error(e.stack);
+		}
+	}
+}
 
-	var middle = arr.length / 2;
-	var left = arr.slice(0, middle);
-	var right = arr.slice(middle, arr.length);
+function local_store_ui_save() {
+	if (is_storage_available('localStorage') && window.localStorage) {
+		try {
+			localStorage.setItem('ui', JSON.stringify(g_ui));
+		} catch (e) {
+			// TODO GREGOIRE: If the local store save failed notify the user that the data has not been saved
+			console.error(e.stack);
+		}
+	}
+}
 
-	return merge(mergeSort(left, compare), mergeSort(right, compare), compare);
+function local_store_ui_load() {
+	if (is_storage_available('localStorage') && window.localStorage) {
+		try {
+			g_ui = JSON.parse(localStorage.getItem('ui')) || g_ui;
+		} catch (e) {
+			// TODO GREGOIRE: If the local store load failed notify the user that the loading failed
+			console.error(e.stack);
+		}
+	}
 }
 
 
-function ui_sort() {
-	$("#sort-modal").modal('show');
-}
 
 function ui_sort_execute() {
-	$("#sort-modal").modal('hide');
+	$('#sort-modal').modal('hide');
 
-	var fn_code = $("#sort-function").val().toString();
-	var fn = new Function("card_a", "card_b", fn_code);
+	let fn_code = $('#sort-function').val().toString();
 
-	g_card_data = g_card_data.sort(function (card_a, card_b) {
-		var result = fn(card_a, card_b);
-		return result;
-	});
+	g_deck.sort(fn_code);
 
-	ui_update_card_list();
-}
-
-function ui_filter() {
-	$("#filter-modal").modal('show');
+	ui_card_list_update();
 }
 
 function ui_filter_execute() {
-	$("#filter-modal").modal('hide');
+	$('#filter-modal').modal('hide');
 
-	var fn_code = $("#filter-function").val().toString();
-	var fn = new Function("card", fn_code);
+	let fn_code = $('#filter-function').val().toString();
 
-	g_card_data = g_card_data.filter(function (card) {
-		var result = fn(card);
-		if (result === undefined) return true;
-		else return result;
-	});
+	g_deck.filter(fn_code);
 
-	ui_update_card_list();
+	ui_card_list_update();
+}
+
+function ui_load_sample() {
+	g_deck.addCards(g_deck.cards.length, CardExamples());
+	ui_card_list_update();
+}
+
+function ui_insert_lexical() {
+	let cardIdx = g_ui.selectedCardIdx;
+	let deckLength = g_deck.cards.length;
+
+	g_deck.addCards(0, CardLexicals());
+
+	ui_card_list_update(true);
+	ui_select_card_by_index(cardIdx + deckLength - g_deck.cards.length);
 }
 
 function ui_clear_all() {
-	g_card_data = [];
-	ui_update_card_list();
-}
-
-function ui_init_cards(data) {
-	data.forEach(function (card) {
-		card_update(card);
-	});
-}
-
-function ui_add_cards(data) {
-	ui_init_cards(data);
-	g_card_data = g_card_data.concat(data);
-	ui_update_card_list();
+	g_deck.clear();
+	ui_card_list_update();
 }
 
 function ui_load_files(evt) {
-	g_card_data = [];
+	g_deck.clear();
 
 	g_ui.filename = [];
 	g_ui.saveTime = '-';
@@ -125,37 +156,18 @@ function ui_load_files(evt) {
 function ui_import_files(evt) {
 	let files = evt.target.files;
 
-	for (let i = 0, f; f = files[i]; i++) {
+	for (let i = 0; i < files.length; i++) {
+		let f = files[i];
 		g_ui.filename.push(f.name);
 
 		let reader = new FileReader();
-		reader.onload = function (reader) {
-			let data = JSON.parse(this.result ? this.result.toString() : "");
-			for (let i in data) {
-				let card;
-				if (data[i].cardType === CreatureCard.name)
-					card = new CreatureCard();
-				else if (data[i].cardType === ItemCard.name)
-					card = new ItemCard();
-				else if (data[i].cardType === SpellCard.name)
-					card = new SpellCard();
-				else if (data[i].cardType === PowerCard.name)
-					card = new PowerCard();
-				else
-					card = new Card();
+		reader.onload = function () {
+			g_deck.load(JSON.parse(this.result ? this.result.toString() : ''));
+			ui_card_list_update();
 
-				Object.assign(card, data[i]);
-				data[i] = card;
-
-				// @ts-ignore
-				delete data[i].cardType;
-			}
-
-			ui_add_cards(data);
-
-			var previouslySelectedIdx = g_ui.selectedCardIdx;
+			let previouslySelectedIdx = g_ui.selectedCardIdx;
 			g_previousCardIdx = g_ui.selectedCardIdx;
-			for (g_ui.selectedCardIdx = 0; g_ui.selectedCardIdx < g_card_data.length; g_ui.selectedCardIdx++) {
+			for (g_ui.selectedCardIdx = 0; g_ui.selectedCardIdx < g_deck.cards.length; g_ui.selectedCardIdx++) {
 				ui_update_selected_card();
 				g_previousCardIdx = g_ui.selectedCardIdx;
 			}
@@ -165,119 +177,51 @@ function ui_import_files(evt) {
 	}
 
 	// Reset file input
-	$("#file-load-form")[0].reset();
-	$("#file-name").html('<b>File:</b> ' + g_ui.filename.join(", ") + '<br/><b>Last save:</b> ' + g_ui.saveTime);
+	$('#file-load-form')[0].reset();
+	$('#file-name').html('<b>File:</b> ' + g_ui.filename.join(', ') + '<br/><b>Last save:</b> ' + g_ui.saveTime);
 	local_store_ui_save();
 }
 
-function ui_stringify_cards(readable) {
-	let defaultCard = new Card();
-	let defaultCreature = new CreatureCard();
-	let defaultItem = new ItemCard();
-	let defaultSpell = new SpellCard();
-	let defaultPower = new PowerCard();
-
-	let strCards = readable ? '[\n' : '[';
-	for (let i = 0; i < g_card_data.length; ++i) {
-		let card = g_card_data[i];
-		let strCard = '';
-
-		if (card.constructor === CreatureCard) {
-			strCard = JSON.stringify(card, function (key, value) {
-				if (key == "error" || (Array.isArray(value) && value.length == 0))
-					return;
-				if (value !== defaultCreature[key])
-					return value;
-			}, readable ? "\t" : undefined);
-		} else if (card.constructor === ItemCard) {
-			strCard = JSON.stringify(card, function (key, value) {
-				if (key == "error" || (Array.isArray(value) && value.length == 0))
-					return;
-				if (value !== defaultItem[key])
-					return value;
-			}, readable ? "\t" : undefined);
-		} else if (card.constructor === SpellCard) {
-			strCard = JSON.stringify(card, function (key, value) {
-				if (key == "error" || (Array.isArray(value) && value.length == 0))
-					return;
-				if (value !== defaultSpell[key])
-					return value;
-			}, readable ? "\t" : undefined);
-		} else if (card.constructor === PowerCard) {
-			strCard = JSON.stringify(card, function (key, value) {
-				if (key == "error" || (Array.isArray(value) && value.length == 0))
-					return;
-				if (value !== defaultPower[key])
-					return value;
-			}, readable ? "\t" : undefined);
-		} else {
-			strCard = JSON.stringify(card, function (key, value) {
-				if (key == "error" || (Array.isArray(value) && value.length == 0))
-					return;
-				if (value !== defaultCard[key])
-					return value;
-			}, readable ? "\t" : undefined);
-		}
-
-		if (readable) {
-			strCard = strCard.slice(0, strCard.length - 2);
-			strCard = strCard.concat(',\n\t"cardType": "' + card.constructor.name + '"\n}');
-		} else {
-			strCard = strCard.slice(0, strCard.length - 1);
-			strCard = strCard.concat(',"cardType":"' + card.constructor.name + '"}');
-		}
-
-		if (i < g_card_data.length - 1)
-			strCard = strCard.concat(readable ? ',\n' : ',');
-		strCards = strCards.concat(strCard);
-	}
-	strCards = strCards.concat(readable ? '\n]' : ']');
-	return strCards;
-}
-
 function ui_save_file() {
-	let parts = [ui_stringify_cards(true)];
+	let parts = [g_deck.stringify(true)];
 	let blob = new Blob(parts, { type: 'application/json' });
 	let url = URL.createObjectURL(blob);
 
-	let a = $("#file-save-link")[0];
+	let a = $('#file-save-link')[0];
 	a.href = url;
-	ui_save_file.filename = g_ui.filename[0] || ui_save_file.filename;
-	a.download = prompt("Filename:", ui_save_file.filename);
-	if (a.download && a.download != "null") {
+	g_ui.filename = g_ui.filename[0] || 'Cards.json';
+	a.download = prompt('Filename:', g_ui.filename);
+	if (a.download && a.download !== 'null') {
 		g_ui.filename = [a.download];
 
 		let d = new Date();
 		g_ui.saveTime = d.getDate() + '/' + d.getMonth() + '/' + (d.getFullYear() % 100) + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
 
-		$("#file-name").html('<b>File:</b> ' + g_ui.filename.join(", ") + '<br/><b>Last save:</b> ' + g_ui.saveTime);
+		$('#file-name').html('<b>File:</b> ' + g_ui.filename.join(', ') + '<br/><b>Last save:</b> ' + g_ui.saveTime);
 		local_store_ui_save();
-		ui_save_file.filename = a.download;
 		a.click();
 	}
 
 	setTimeout(function () { URL.revokeObjectURL(url); }, 500);
 }
-ui_save_file.filename = 'Cards.json';
 
-var g_ui_generate_modal_shown = false;
 function ui_generate() {
-	if (g_card_data.length === 0) {
-		alert("Your deck is empty. Please define some cards first, or load the sample deck.");
+	if (g_deck.cards.length === 0) {
+		alert('Your deck is empty. Please define some cards first, or load the sample deck.');
 		return;
 	}
 
-	if (g_ui_generate_modal_shown === false) {
-		$("#print-modal").modal('show');
-		g_ui_generate_modal_shown = true;
+	if (g_ui.generateModalShown === false) {
+		$('#print-modal').modal('show');
+		g_ui.generateModalShown = true;
 	}
 
 	// Generate output HTML
-	var card_html = card_pages_generate_html(g_card_data, g_card_options);
+	let card_html = g_deck.generatePagesHtml();
 
 	// Open a new window for the output
 	// Use a separate window to avoid CSS conflicts
-	var tab = window.open("output.html", 'rpg-cards-output');
+	let tab = window.open('output.html', 'rpg-cards-output');
 
 	// Send the generated HTML to the new window
 	// Use a delay to give the new window time to set up a message listener
@@ -285,100 +229,147 @@ function ui_generate() {
 }
 
 
+// ============================================================================
+// Cards helpers
+// ============================================================================
+
 function ui_select_card_by_index(index) {
+	if (index >= 0 && index < g_deck.cards.length) {
+		let card = g_deck.cards[index];
+		if (!card.title || card.title.length === 0) {
+			if (index < g_ui.selectedCardIdx) {
+				index--;
+			} else {
+				index++;
+			}
+		}
+	}
+	index = Math.min(index, g_deck.cards.length - 1);
 	g_previousCardIdx = g_ui.selectedCardIdx;
 	g_ui.selectedCardIdx = index;
 	local_store_ui_save();
 	ui_update_selected_card();
 }
 
-function ui_selected_card() {
-	return g_card_data[g_ui.selectedCardIdx];
-}
-
-function ui_add_new_card() {
-	var cardIdx = g_ui.selectedCardIdx;
-	var cardType = $("#card-type").val();
-	var new_card;
-	if (cardType == CreatureCard.name)
-		new_card = new CreatureCard();
-	else if (cardType == ItemCard.name)
-		new_card = new ItemCard();
-	else if (cardType == SpellCard.name)
-		new_card = new SpellCard();
-	else if (cardType == PowerCard.name)
-		new_card = new PowerCard();
-	else
-		new_card = new Card();
-
-	new_card.title = "New " + new_card.constructor.name;
-	if (cardIdx + 1 != g_card_data.length) {
-		var cards_after = g_card_data.splice(cardIdx + 1, g_card_data.length - cardIdx - 1, new_card);
-		g_card_data = g_card_data.concat(cards_after);
-	} else
-		g_card_data.push(new_card);
-	ui_update_card_list(true);
+function ui_card_add_new() {
+	let cardIdx = g_ui.selectedCardIdx;
+	let cardType = $('#card-type').val();
+	g_deck.addCard(cardIdx, cardType);
+	ui_card_list_update(true);
 	ui_select_card_by_index(cardIdx + 1);
 
 	$('#card-title').select();
 }
 
-function ui_duplicate_card() {
-	if (g_card_data.length > 0) {
-		var cardIdx = g_ui.selectedCardIdx;
-		var old_card = ui_selected_card();
-		var new_card = clone(old_card);
-		new_card.title = new_card.title + " (Copy)";
-		if (cardIdx + 1 != g_card_data.length) {
-			var cards_after = g_card_data.splice(cardIdx + 1, g_card_data.length - cardIdx - 1, new_card);
-			g_card_data = g_card_data.concat(cards_after);
-		} else
-			g_card_data.push(new_card);
-		ui_update_card_list(true);
-		ui_select_card_by_index(cardIdx + 1);
+function ui_card_duplicate() {
+	let cardIdx = g_ui.selectedCardIdx;
+	g_deck.duplicateCard(cardIdx);
+	ui_card_list_update(true);
+	ui_select_card_by_index(cardIdx + 1);
 
-		$('#card-title').select();
-	}
+	$('#card-title').select();
 }
 
-function ui_delete_card() {
-	if (g_card_data.length > 0) {
-		var index = g_ui.selectedCardIdx;
-		g_card_data.splice(index, 1);
-		ui_update_card_list(true);
-		ui_select_card_by_index(Math.min(index, g_card_data.length - 1));
-	}
+function ui_card_delete() {
+	let cardIdx = g_ui.selectedCardIdx;
+	g_deck.deleteCard(cardIdx);
+	ui_card_list_update(true);
+	ui_select_card_by_index(cardIdx);
 }
 
+function ui_card_list_up() {
+	let cardIdx = g_ui.selectedCardIdx;
+	g_deck.moveCardUp(cardIdx);
+	ui_card_list_update(true);
+	ui_select_card_by_index(cardIdx - 1);
+}
 
-function ui_update_card_list(doNotUpdateSelectedCard) {
-	$("#total_card_count").text("(" + g_card_data.length + " unique)");
+function ui_card_list_down() {
+	let cardIdx = g_ui.selectedCardIdx;
+	g_deck.moveCardDown(cardIdx);
+	ui_card_list_update(true);
+	ui_select_card_by_index(cardIdx + 1);
+}
 
-	var cardsList = $("#cards-list");
+function ui_card_count_decrease() {
+	let idx = $(this)[0].parentElement.parentElement.attributes.index.value;
+	let card = g_deck.cards[idx];
+	if (!card.count || card.count === 0)
+		card.count = 0;
+	else
+		card.count--;
+
+	// Disable this minus button
+	if (card.count === 0)
+		$(this)[0].disabled = true;
+
+	// Update card count
+	let cardCount = $(this)[0].parentElement.children[1];
+	cardCount.innerText = card.count;
+	local_store_cards_save();
+}
+
+function ui_card_count_increase() {
+	let idx = $(this)[0].parentElement.parentElement.attributes.index.value;
+	let card = g_deck.cards[idx];
+	if (!card.count)
+		card.count = 1;
+	else
+		card.count++;
+
+	// Enable minus button
+	$(this)[0].parentElement.children[0].disabled = false;
+
+	// Update card count
+	let cardCount = $(this)[0].parentElement.children[1];
+	cardCount.innerText = card.count;
+	local_store_cards_save();
+}
+
+function ui_card_list_select_card() {
+	let idx = $(this).parent().attr('index');
+	ui_select_card_by_index(parseInt(idx));
+}
+
+function ui_card_list_update(doNotUpdateSelectedCard) {
+	$('#total_card_count').text('(' + g_deck.cards.length + ' unique)');
+
+	if (g_ui.selectedCardIdx < 0 || g_ui.selectedCardIdx >= g_deck.cards.length)
+		g_ui.selectedCardIdx = 0;
+
+	let cardsList = $('#cards-list');
 	cardsList.empty();
-	for (var i in g_card_data) {
-		var card = g_card_data[i];
+	for (let i in g_deck.cards) {
+		let card = g_deck.cards[i];
 
-		var newCardInList = $('<div class="card-name"></div>').attr('index', i);
-		newCardInList.append($('<h4></h4>').text(card.title).click(ui_card_list_select_card));
-		var countBlock = $('<div class="card-count"></div>');
-		var buttonDecrease = $('<button type="button" class="btn btn-default card-count-less">-</button>').click(ui_change_card_count_decrease);
-		var count;
-		if (card.count == 0) {
-			buttonDecrease[0].disabled = true;
-			count = $('<span></span>').text(0);
-		} else
-			count = $('<span></span>').text(card.count || 1);
-		countBlock.append(buttonDecrease);
-		countBlock.append(count);
-		countBlock.append($('<button type="button" class="btn btn-default card-count-more">+</button>').click(ui_change_card_count_increase));
-		newCardInList.append(countBlock);
-		if (card.color)
-			newCardInList.css("background-color", card.color + "29");
-		if (card.error)
-			newCardInList.addClass("card-error");
-		else
-			newCardInList.removeClass("card-error");
+		let newCardInList = $('<div class="card-name"></div>').attr('index', i);
+		let cardElt = $('<h4></h4>');
+		cardElt.text(card.title);
+		newCardInList.append(cardElt);
+
+		if (card.title && card.title.length > 0) {
+			cardElt.click(ui_card_list_select_card);
+
+			let countBlock = $('<div class="card-count"></div>');
+			let buttonDecrease = $('<button type="button" class="btn btn-default card-count-less">-</button>').click(ui_card_count_decrease);
+			let count;
+			if (card.count === 0) {
+				buttonDecrease[0].disabled = true;
+				count = $('<span></span>').text(0);
+			} else {
+				count = $('<span></span>').text(card.count || 1);
+			}
+			countBlock.append(buttonDecrease);
+			countBlock.append(count);
+			countBlock.append($('<button type="button" class="btn btn-default card-count-more">+</button>').click(ui_card_count_increase));
+			newCardInList.append(countBlock);
+			if (card.color)
+				newCardInList.css('background-color', card.color + '29');
+			if (card.error)
+				newCardInList.addClass('card-error');
+			else
+				newCardInList.removeClass('card-error');
+		}
 		cardsList.append(newCardInList);
 	}
 
@@ -386,160 +377,159 @@ function ui_update_card_list(doNotUpdateSelectedCard) {
 		ui_update_selected_card();
 }
 
-var g_dontRenderSelectedCard = false;
 function ui_update_selected_card() {
 	g_dontRenderSelectedCard = true;
-	var card = ui_selected_card();
+	let card = g_deck.cards[g_ui.selectedCardIdx];
 	if (card) {
-		$("#card-type").val(card.constructor.name);
+		$('#card-type').val(card.constructor.name);
 
-		$("#card-title").val(card.title);
-		$("#card-title-multiline").prop("checked", card.title_multiline);
-		$("#card-subtitle").val(card.subtitle);
-		$("#card-color").val(card.color).change();
-		$("#card-icon").val(card.icon);
-		$("#card-icon-back").val(card.icon_back);
-		$("#card-background").val(card.background_image);
-		$("#card-description").val(card.description);
-		$("#card-contents").val(card.contents.join("\n"));
+		$('#card-title').val(card.title);
+		$('#card-title-multiline').prop('checked', card.title_multiline);
+		$('#card-subtitle').val(card.subtitle);
+		$('#card-color').val(card.color).change();
+		$('#card-icon').val(card.icon);
+		$('#card-icon-back').val(card.icon_back);
+		$('#card-background').val(card.background_image);
+		$('#card-description').val(card.description);
+		$('#card-contents').val(card.contents.join('\n'));
 		if (card.tags)
-			$("#card-tags").val(card.tags.join(", "));
+			$('#card-tags').val(card.tags.join(', '));
 		else
-			$("#card-tags").val("");
-		$("#card-reference").val(card.reference);
-		$("#card-compact").prop("checked", card.compact);
+			$('#card-tags').val('');
+		$('#card-reference').val(card.reference);
+		$('#card-compact').prop('checked', card.compact);
 
 		if (card.constructor === CreatureCard) {
-			$(".creature-hide").hide();
-			$(".item-hide").show();
-			$(".spell-hide").show();
-			$(".power-hide").show();
+			$('.creature-hide').hide();
+			$('.item-hide').show();
+			$('.spell-hide').show();
+			$('.power-hide').show();
 
-			$(".creature-only").show();
-			$(".item-only").hide();
-			$(".spell-only").hide();
-			$(".power-only").hide();
+			$('.creature-only').show();
+			$('.item-only').hide();
+			$('.spell-only').hide();
+			$('.power-only').hide();
 
-			$("#card-creature-cr").val(card.cr);
-			$("#card-creature-size").val(card.size);
-			$("#card-creature-alignment").val(card.alignment);
-			$("#card-creature-type").val(card.type);
+			$('#card-creature-cr').val(card.cr);
+			$('#card-creature-size').val(card.size);
+			$('#card-creature-alignment').val(card.alignment);
+			$('#card-creature-type').val(card.type);
 
-			$("#card-creature-ac").val(card.ac);
-			$("#card-creature-hp").val(card.hp);
-			$("#card-creature-perception").val(card.perception);
-			$("#card-creature-speed").val(card.speed);
+			$('#card-creature-ac').val(card.ac);
+			$('#card-creature-hp').val(card.hp);
+			$('#card-creature-perception').val(card.perception);
+			$('#card-creature-speed').val(card.speed);
 
-			$("#card-creature-strength").val(card.stats[0]);
-			$("#card-creature-dexterity").val(card.stats[1]);
-			$("#card-creature-constitution").val(card.stats[2]);
-			$("#card-creature-intelligence").val(card.stats[3]);
-			$("#card-creature-wisdom").val(card.stats[4]);
-			$("#card-creature-charisma").val(card.stats[5]);
+			$('#card-creature-strength').val(card.stats[0]);
+			$('#card-creature-dexterity').val(card.stats[1]);
+			$('#card-creature-constitution').val(card.stats[2]);
+			$('#card-creature-intelligence').val(card.stats[3]);
+			$('#card-creature-wisdom').val(card.stats[4]);
+			$('#card-creature-charisma').val(card.stats[5]);
 
-			$("#card-creature-resistances").val(card.resistances);
-			$("#card-creature-vulnerabilities").val(card.vulnerabilities);
-			$("#card-creature-immunities").val(card.immunities);
+			$('#card-creature-resistances').val(card.resistances);
+			$('#card-creature-vulnerabilities').val(card.vulnerabilities);
+			$('#card-creature-immunities').val(card.immunities);
 
-			$('#card-contents').attr("rows", 17);
+			$('#card-contents').attr('rows', 17);
 		} else if (card.constructor === ItemCard) {
-			$(".creature-hide").show();
-			$(".item-hide").hide();
-			$(".spell-hide").show();
-			$(".power-hide").show();
+			$('.creature-hide').show();
+			$('.item-hide').hide();
+			$('.spell-hide').show();
+			$('.power-hide').show();
 
-			$(".creature-only").hide();
-			$(".item-only").show();
-			$(".spell-only").hide();
-			$(".power-only").hide();
+			$('.creature-only').hide();
+			$('.item-only').show();
+			$('.spell-only').hide();
+			$('.power-only').hide();
 
-			$('#card-contents').attr("rows", 27);
+			$('#card-contents').attr('rows', 27);
 		} else if (card.constructor === SpellCard) {
-			$(".creature-hide").show();
-			$(".item-hide").show();
-			$(".spell-hide").hide();
-			$(".power-hide").show();
+			$('.creature-hide').show();
+			$('.item-hide').show();
+			$('.spell-hide').hide();
+			$('.power-hide').show();
 
-			$(".creature-only").hide();
-			$(".item-only").hide();
-			$(".spell-only").show();
-			$(".power-only").hide();
+			$('.creature-only').hide();
+			$('.item-only').hide();
+			$('.spell-only').show();
+			$('.power-only').hide();
 
-			$("#card-spell-level").val(card.level);
-			$("#card-spell-ritual").prop("checked", card.ritual);
-			$("#card-spell-casting-time").val(card.casting_time);
-			$("#card-spell-range").val(card.range);
-			$("#card-spell-verbal").prop("checked", card.verbal);
-			$("#card-spell-somatic").prop("checked", card.somatic);
-			$("#card-spell-materials").val(card.materials);
-			$("#card-spell-duration").val(card.duration);
-			$("#card-spell-type").val(card.type);
-			$("#card-spell-classes").val(card.classes);
-			$("#card-spell-higher-levels").val(card.higherLevels);
+			$('#card-spell-level').val(card.level);
+			$('#card-spell-ritual').prop('checked', card.ritual);
+			$('#card-spell-casting-time').val(card.casting_time);
+			$('#card-spell-range').val(card.range);
+			$('#card-spell-verbal').prop('checked', card.verbal);
+			$('#card-spell-somatic').prop('checked', card.somatic);
+			$('#card-spell-materials').val(card.materials);
+			$('#card-spell-duration').val(card.duration);
+			$('#card-spell-type').val(card.type);
+			$('#card-spell-classes').val(card.classes);
+			$('#card-spell-higher-levels').val(card.higherLevels);
 
-			$('#card-contents').attr("rows", 19);
+			$('#card-contents').attr('rows', 19);
 		} else if (card.constructor === PowerCard) {
-			$(".creature-hide").show();
-			$(".item-hide").show();
-			$(".spell-hide").show();
-			$(".power-hide").hide();
+			$('.creature-hide').show();
+			$('.item-hide').show();
+			$('.spell-hide').show();
+			$('.power-hide').hide();
 
-			$(".creature-only").hide();
-			$(".item-only").hide();
-			$(".spell-only").hide();
-			$(".power-only").show();
+			$('.creature-only').hide();
+			$('.item-only').hide();
+			$('.spell-only').hide();
+			$('.power-only').show();
 
-			$('#card-contents').attr("rows", 27);
+			$('#card-contents').attr('rows', 27);
 		} else {
-			$(".creature-hide").show();
-			$(".item-hide").show();
-			$(".spell-hide").show();
-			$(".power-hide").show();
+			$('.creature-hide').show();
+			$('.item-hide').show();
+			$('.spell-hide').show();
+			$('.power-hide').show();
 
-			$(".creature-only").hide();
-			$(".item-only").hide();
-			$(".spell-only").hide();
-			$(".power-only").hide();
+			$('.creature-only').hide();
+			$('.item-only').hide();
+			$('.spell-only').hide();
+			$('.power-only').hide();
 
-			$('#card-contents').attr("rows", 27);
+			$('#card-contents').attr('rows', 27);
 		}
 	} else {
-		$("#card-type").val("");
+		$('#card-type').val('');
 
-		$("#card-title").val("");
-		$("#card-title-multiline").prop("checked", card.title_multiline);
-		$("#card-subtitle").val("");
-		$("#card-color").val("").change();
-		$("#card-icon").val("");
-		$("#card-icon-back").val("");
-		$("#card-background").val("");
-		$("#card-description").val("");
-		$("#card-contents").val("");
-		$("#card-tags").val("");
-		$("#card-reference").val("");
-		$("#card-compact").prop("checked", false);
+		$('#card-title').val('');
+		$('#card-title-multiline').prop('checked', false);
+		$('#card-subtitle').val('');
+		$('#card-color').val('').change();
+		$('#card-icon').val('');
+		$('#card-icon-back').val('');
+		$('#card-background').val('');
+		$('#card-description').val('');
+		$('#card-contents').val('');
+		$('#card-tags').val('');
+		$('#card-reference').val('');
+		$('#card-compact').prop('checked', false);
 
-		$(".creature-only").hide();
-		$(".item-only").hide();
-		$(".spell-only").hide();
-		$(".power-only").hide();
+		$('.creature-only').hide();
+		$('.item-only').hide();
+		$('.spell-only').hide();
+		$('.power-only').hide();
 	}
 
-	if (g_card_data.length > 0) {
-		var cardsList = $("#cards-list");
-		if ((g_previousCardIdx || g_previousCardIdx == 0) && g_previousCardIdx < g_card_data.length) {
-			var oldCard = g_card_data[g_previousCardIdx];
+	if (g_deck.cards.length > 0) {
+		let cardsList = $('#cards-list');
+		if ((g_previousCardIdx || g_previousCardIdx === 0) && g_previousCardIdx < g_deck.cards.length) {
+			let oldCard = g_deck.cards[g_previousCardIdx];
 			let oldCardElt = cardsList[0].children[g_previousCardIdx];
-			oldCardElt.style.backgroundColor = oldCard.color ? oldCard.color + "29" : "";
-			oldCardElt.classList.remove("selected");
+			oldCardElt.style.backgroundColor = oldCard.color ? oldCard.color + '29' : '';
+			oldCardElt.classList.remove('selected');
 		}
-		var cardScrollHeight = cardsList[0].children[g_ui.selectedCardIdx].scrollHeight;
-		var scrollPos = g_ui.selectedCardIdx * cardScrollHeight;
+		let cardScrollHeight = cardsList[0].children[g_ui.selectedCardIdx].scrollHeight;
+		let scrollPos = g_ui.selectedCardIdx * cardScrollHeight;
 		if (scrollPos < cardsList[0].scrollTop + cardScrollHeight)
 			cardsList[0].scrollTop = scrollPos - cardScrollHeight;
 		else if (scrollPos >= cardsList[0].scrollTop + cardsList[0].offsetHeight - 2 * cardScrollHeight)
 			cardsList[0].scrollTop = scrollPos - cardsList[0].offsetHeight + 2 * cardScrollHeight;
-		cardsList[0].children[g_ui.selectedCardIdx].classList.add("selected");
+		cardsList[0].children[g_ui.selectedCardIdx].classList.add('selected');
 	}
 
 	g_dontRenderSelectedCard = false;
@@ -549,21 +539,21 @@ function ui_update_selected_card() {
 function ui_render_selected_card() {
 	if (g_dontRenderSelectedCard)
 		return;
-	let card = ui_selected_card();
+	let card = g_deck.cards[g_ui.selectedCardIdx];
 	$('#preview-container').empty();
 	if (card) {
-		card_update(card);
+		card.update();
 
-		let front = card_generate_front(card, g_card_options);
-		let back = card_generate_back(card, g_card_options);
+		let front = card.generateFront(g_deck.options);
+		let back = card.generateBack(g_deck.options);
 		$('#preview-container').html(front + '\n' + back);
 		let cardContainer = $('.card-content-container');
-		if (cardContainer) {
+		if (cardContainer && cardContainer.length > 0) {
 			card.error = false;
 
 			let cardsList = $('#cards-list');
 			let lastCardElement = cardContainer.children().last();
-			if (lastCardElement) {
+			if (lastCardElement && lastCardElement.length > 0) {
 				let lastCardElementBottom = lastCardElement.offset().top + lastCardElement.height();
 				let containerBottom = cardContainer.offset().top + cardContainer.height();
 				card.error = lastCardElement && (lastCardElementBottom - containerBottom) > 3;
@@ -578,154 +568,114 @@ function ui_render_selected_card() {
 }
 
 
-function ui_update_card_color_selector(color, input, selector) {
-	if ($(selector + " option[value='" + color + "']").length > 0) {
-		// Update the color selector to the entered value
-		$(selector).colorselector('setColor', color);
-	} else {
-		ui_set_card_color(color);
-		input.val(color);
-	}
-}
+// ============================================================================
+// UI options
+// ============================================================================
 
-function ui_set_default_color(color) {
-	g_card_options.card_default.color = color;
+function ui_change_option() {
+	let property = $(this).attr('data-property');
+	let value;
+	if ($(this).attr('type') === 'checkbox')
+		value = $(this).is(':checked');
+	else
+		value = $(this).val();
+	g_deck.options[property] = value;
 	ui_render_selected_card();
 }
 
-function ui_set_foreground_color(color) {
-	g_card_options.foreground_color = color;
+function ui_change_default_property() {
+	let property = $(this).attr('data-property');
+	let value;
+	if ($(this).attr('type') === 'checkbox')
+		value = $(this).is(':checked');
+	else
+		value = $(this).val();
+	g_deck.options.cardDefault[property] = value;
+	ui_render_selected_card();
 }
 
-function ui_set_background_color(color) {
-	g_card_options.background_color = color;
-}
 
-function ui_set_card_color(value) {
-	var card = ui_selected_card();
+// ============================================================================
+// UI card forms
+// ============================================================================
+
+function ui_card_change_property() {
+	let card = g_deck.cards[g_ui.selectedCardIdx];
 	if (card) {
-		if (value)
-			card.color = value;
-		else
-			card.color = g_card_options.card_default.color;
-		if (g_ui.selectedCardIdx || g_ui.selectedCardIdx == 0) {
-			$("#cards-list")[0].children[g_ui.selectedCardIdx].style.backgroundColor = card.color + "29";
+		let property = $(this).attr('data-property');
+		if ($(this).attr('type') === 'checkbox') {
+			card[property] = $(this).is(':checked');
+		} else {
+			card[property] = $(this).val();
 		}
 		ui_render_selected_card();
 	}
 }
 
-function ui_change_card_color() {
-	var input = $(this);
-	var color = input.val();
-
-	ui_update_card_color_selector(color, input, "#card_color_selector");
-}
-
-function ui_change_option() {
-	var property = $(this).attr("data-option");
-	var value;
-	if ($(this).attr('type') === 'checkbox') {
-		value = $(this).is(':checked');
-	}
-	else {
-		value = $(this).val();
-	}
-	g_card_options[property] = value;
-	ui_render_selected_card();
-}
-
-function ui_change_card_count_decrease() {
-	var idx = $(this)[0].parentElement.parentElement.attributes.index.value;
-	var card = g_card_data[idx];
-	if (!card.count || card.count == 0)
-		card.count = 0;
-	else
-		card.count--;
-	if (card.count == 0)
-		$(this)[0].disabled = true;
-	var cardCount = $(this)[0].parentElement.children[1];
-	cardCount.innerText = card.count;
-	local_store_cards_save();
-}
-
-function ui_change_card_count_increase() {
-	var idx = $(this)[0].parentElement.parentElement.attributes.index.value;
-	var card = g_card_data[idx];
-	if (!card.count)
-		card.count = 1;
-	else
-		card.count++;
-	$(this)[0].parentElement.children[0].disabled = false;
-	var cardCount = $(this)[0].parentElement.children[1];
-	cardCount.innerText = card.count;
-	local_store_cards_save();
-}
-
-function ui_change_card_title() {
-	var title = $("#card-title").val();
-	var card = ui_selected_card();
+function ui_card_change_title() {
+	let card = g_deck.cards[g_ui.selectedCardIdx];
 	if (card) {
-		card.title = title;
-		if (g_ui.selectedCardIdx || g_ui.selectedCardIdx == 0)
-			$("#cards-list")[0].children[g_ui.selectedCardIdx].children[0].innerText = title;
+		card.title = $('#card-title').val();
+		if (g_ui.selectedCardIdx || g_ui.selectedCardIdx === 0) {
+			$('#cards-list')[0].children[g_ui.selectedCardIdx].children[0].innerText = card.title;
+		}
 		ui_render_selected_card();
 	}
 }
 
-function ui_change_card_property() {
-	var property = $(this).attr("data-property");
-	var value;
-	if ($(this).attr('type') === 'checkbox')
-		value = $(this).is(':checked');
-	else
-		value = $(this).val();
-	var card = ui_selected_card();
+function ui_card_change_color() {
+	let color = $(this).val();
+
+	if ($('#card-color-selector option[value=\'' + color + '\']').length > 0) {
+		// Update the color selector to the entered value
+		$('#card-color-selector').colorselector('setColor', color);
+	} else {
+		ui_card_set_color(color);
+	}
+}
+
+function ui_card_set_color(value) {
+	let card = g_deck.cards[g_ui.selectedCardIdx];
 	if (card) {
-		card[property] = value;
+		if (value) {
+			card.color = value;
+		} else {
+			card.color = g_deck.options.cardDefault.color;
+		}
+
+		if (g_ui.selectedCardIdx || g_ui.selectedCardIdx === 0)
+			$('#cards-list')[0].children[g_ui.selectedCardIdx].style.backgroundColor = card.color + '29';
+
 		ui_render_selected_card();
 	}
 }
 
-function ui_change_creature_stats() {
-	var property = $(this).attr("data-property");
-	var value = $(this).val();
-	var card = ui_selected_card();
+function ui_creature_change_stats() {
+	let card = g_deck.cards[g_ui.selectedCardIdx];
 	if (card) {
-		card.stats[property] = value;
+		let property = $(this).attr('data-index');
+		card.stats[property] = $(this).val();
 		ui_render_selected_card();
 	}
 }
 
-function ui_change_card_description() {
-	var value = $(this).val();
-
-	var card = ui_selected_card();
+function ui_card_change_contents() {
+	let card = g_deck.cards[g_ui.selectedCardIdx];
 	if (card) {
-		card.description = value;
+		let value = $(this).val().toString();
+		card.contents = value.replace(/[\u202F\u00A0 ]+/g, ' ').split('\n');
 		ui_render_selected_card();
 	}
 }
 
-function ui_change_card_contents() {
-	var value = $(this).val().toString();
-
-	var card = ui_selected_card();
+function ui_card_change_tags() {
+	let card = g_deck.cards[g_ui.selectedCardIdx];
 	if (card) {
-		card.contents = value.replace(/ /g, " ").replace(/ +/g, " ").split("\n");
-		ui_render_selected_card();
-	}
-}
-
-function ui_change_card_tags() {
-	var value = $(this).val().toString();
-
-	var card = ui_selected_card();
-	if (card) {
-		if (value.trim().length === 0) {
+		let value = $(this).val().toString().trim();
+		if (value.length === 0) {
 			card.tags = [];
 		} else {
-			card.tags = value.split(",").map(function (val) {
+			card.tags = value.split(',').map(function (val) {
 				return val.trim().toLowerCase();
 			});
 		}
@@ -733,244 +683,45 @@ function ui_change_card_tags() {
 	}
 }
 
-function ui_change_card_compact() {
-	var card = ui_selected_card();
-	if (card) {
-		card.compact = $(this).is(':checked');
-		ui_render_selected_card();
-	}
-}
 
-function ui_change_card_element_keyup() {
-	clearTimeout(ui_change_card_element_keyup.timeout);
-	ui_change_card_element_keyup.timeout = setTimeout(function (element) {
-		$(element).trigger('change');
-	}, 200, this);
-}
-ui_change_card_element_keyup.timeout = null;
-
-
-function ui_change_default_color() {
-	var input = $(this);
-	var color = input.val();
-
-	ui_update_card_color_selector(color, input, "#default_color_selector");
-}
-
-function ui_change_default_icon() {
-	g_card_options.card_default.icon = $(this).val().toString();
-	ui_render_selected_card();
-}
-
-function ui_change_default_title_size() {
-	g_card_options.title_size = $(this).val().toString();
-	ui_render_selected_card();
-}
-
-function ui_change_default_icon_size() {
-	g_card_options.icon_inline = $(this).is(':checked');
-	ui_render_selected_card();
-}
-
-function ui_apply_default_color() {
-	let defaultCard = new Card();
-	let defaultCreature = new CreatureCard();
-	let defaultItem = new ItemCard();
-	let defaultSpell = new SpellCard();
-	let defaultPower = new PowerCard();
-	for (var i = 0; i < g_card_data.length; ++i) {
-		if (g_card_data[i].cardType === CreatureCard.name) {
-			if (g_card_data[i].color === defaultCreature.color)
-				g_card_data[i].color = g_card_options.card_default.color;
-		} else if (g_card_data[i].cardType === ItemCard.name) {
-			if (g_card_data[i].color === defaultItem.color)
-				g_card_data[i].color = g_card_options.card_default.color;
-		} else if (g_card_data[i].cardType === SpellCard.name) {
-			if (g_card_data[i].color === defaultSpell.color)
-				g_card_data[i].color = g_card_options.card_default.color;
-		} else if (g_card_data[i].cardType === PowerCard.name) {
-			if (g_card_data[i].color === defaultPower.color)
-				g_card_data[i].color = g_card_options.card_default.color;
-		} else {
-			if (g_card_data[i].color === defaultCard.color)
-				g_card_data[i].color = g_card_options.card_default.color;
-		}
-	}
-	ui_render_selected_card();
-}
-
-function ui_apply_default_icon() {
-	for (var i = 0; i < g_card_data.length; ++i) {
-		g_card_data[i].icon = g_card_options.card_default.icon;
-	}
-	ui_render_selected_card();
-}
-
-function ui_apply_default_icon_back() {
-	for (var i = 0; i < g_card_data.length; ++i) {
-		g_card_data[i].icon_back = g_card_options.card_default.icon;
-	}
-	ui_render_selected_card();
-}
-
-
-function ui_card_list_select_card() {
-	var idx = $(this).parent().attr("index");
-	ui_select_card_by_index(parseInt(idx));
-}
-
-function ui_card_list_up() {
-	var cardIdx = g_ui.selectedCardIdx;
-	if (cardIdx > 0) {
-		var old_card = ui_selected_card();
-		g_card_data[cardIdx] = g_card_data[cardIdx - 1];
-		g_card_data[cardIdx - 1] = old_card;
-		ui_update_card_list(true);
-		ui_select_card_by_index(cardIdx - 1);
-	}
-}
-
-function ui_card_list_down() {
-	var cardIdx = g_ui.selectedCardIdx;
-	if (cardIdx < g_card_data.length - 1) {
-		var old_card = ui_selected_card();
-		g_card_data[cardIdx] = g_card_data[cardIdx + 1];
-		g_card_data[cardIdx + 1] = old_card;
-		ui_update_card_list(true);
-		ui_select_card_by_index(cardIdx + 1);
-	}
-}
-
-function ui_card_list_insert_lexical() {
-	var cardIdx = g_ui.selectedCardIdx;
-	if (cardIdx >= g_card_data.length - 1 || cardIdx < 0)
-		cardIdx = 0;
-
-	var cardLexicals = card_create_lexicals();
-	g_card_data = cardLexicals.concat(g_card_data);
-
-	ui_update_card_list(true);
-	ui_select_card_by_index(cardIdx + cardLexicals.length);
-}
-
-
-//Adding support for local store
-function storageAvailable(type) {
-	try {
-		var storage = window[type],
-			x = '__storage_test__';
-		storage.setItem(x, x);
-		storage.removeItem(x);
-		return true;
-	}
-	catch (e) {
-		return e instanceof DOMException && (
-			// everything except Firefox
-			e.code === 22 ||
-			// Firefox
-			e.code === 1014 ||
-			// test name field too, because code might not be present
-			// everything except Firefox
-			e.name === 'QuotaExceededError' ||
-			// Firefox
-			e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-			// acknowledge QuotaExceededError only if there's something already stored
-			storage.length !== 0;
-	}
-}
-function local_store_cards_save() {
-	if (storageAvailable('localStorage') && window.localStorage) {
-		try {
-			localStorage.setItem("card_data", ui_stringify_cards(false));
-		} catch (e) {
-			//if the local store save failed should we notify the user that the data is not being saved?
-			console.log(e);
-		}
-	}
-}
-function local_store_cards_load() {
-	if (storageAvailable('localStorage') && window.localStorage) {
-		try {
-			g_card_data = JSON.parse(localStorage.getItem("card_data")) || g_card_data;
-			for (let i in g_card_data) {
-				let card;
-				if (g_card_data[i].cardType === CreatureCard.name)
-					card = new CreatureCard();
-				else if (g_card_data[i].cardType === ItemCard.name)
-					card = new ItemCard();
-				else if (g_card_data[i].cardType === SpellCard.name)
-					card = new SpellCard();
-				else if (g_card_data[i].cardType === PowerCard.name)
-					card = new PowerCard();
-				else
-					card = new Card();
-
-				Object.assign(card, g_card_data[i]);
-				g_card_data[i] = card;
-
-				// @ts-ignore
-				delete g_card_data[i].cardType;
-			}
-		} catch (e) {
-			//if the local store load failed should we notify the user that the data load failed?
-			console.log(e);
-		}
-	}
-}
-function local_store_ui_save() {
-	if (storageAvailable('localStorage') && window.localStorage) {
-		try {
-			localStorage.setItem("ui", JSON.stringify(g_ui));
-		} catch (e) {
-			//if the local store save failed should we notify the user that the data is not being saved?
-			console.log(e);
-		}
-	}
-}
-function local_store_ui_load() {
-	if (storageAvailable('localStorage') && window.localStorage) {
-		try {
-			g_ui = JSON.parse(localStorage.getItem("ui")) || g_ui;
-		} catch (e) {
-			//if the local store load failed should we notify the user that the data load failed?
-			console.log(e);
-		}
-	}
-}
-
+// ============================================================================
+// Typeahead
+// ============================================================================
 
 function typeahead_matcher(item) {
-	var words = this.query.toLowerCase().split(" ");
+	let words = this.query.toLowerCase().split(' ');
 	return ~item.toLowerCase().indexOf(words[words.length - 1]);
 }
 
-function typeahead_contents_matcher(item) {
-	var selectionStart = this.$element[0].selectionStart;
-	var textBefore = this.query.substring(0, selectionStart);
-	var lastSpaceIdx = textBefore.search(/\n[^\W]*$/);
-	var newWord = textBefore.substring(lastSpaceIdx + 1);
-	if (newWord == "")
+// eslint-disable-next-line no-unused-vars
+function typeahead_matcher_contents(item) {
+	let selectionStart = this.$element[0].selectionStart;
+	let textBefore = this.query.substring(0, selectionStart);
+	let lastSpaceIdx = textBefore.search(/\n[^\W]*$/);
+	let newWord = textBefore.substring(lastSpaceIdx + 1);
+	if (newWord === '')
 		return false;
 	return item.startsWith(newWord);
 }
 
 function typeahead_updater(item) {
-	var lastSpaceIdx = this.query.lastIndexOf(" ");
+	let lastSpaceIdx = this.query.lastIndexOf(' ');
 	if (lastSpaceIdx > 0)
-		return this.query.substring(0, lastSpaceIdx) + " " + item;
+		return this.query.substring(0, lastSpaceIdx) + ' ' + item;
 	return item;
 }
 
-function typeahead_contents_updater(item) {
-	var selectionStart = this.$element[0].selectionStart;
-	var textBefore = this.query.substring(0, selectionStart);
-	var lastSpaceIdx = textBefore.search(/\W[^\W]*$/);
+// eslint-disable-next-line no-unused-vars
+function typeahead_updater_contents(item) {
+	let selectionStart = this.$element[0].selectionStart;
+	let textBefore = this.query.substring(0, selectionStart);
+	let lastSpaceIdx = textBefore.search(/\W[^\W]*$/);
 	textBefore = textBefore.substring(0, lastSpaceIdx + 1);
 
 	this.$element[0].selectionStart = (textBefore + item).length;
 	this.$element[0].selectionEnd = this.$element[0].selectionStart;
 
-	var textAfter = this.query.slice(selectionStart);
+	let textAfter = this.query.slice(selectionStart);
 	return textBefore + item + ' | ' + textAfter;
 }
 
@@ -992,7 +743,7 @@ function typeahead_render(items) {
 	return this;
 }
 
-function typeahead_icon_render(items) {
+function typeahead_render_icon(items) {
 	var that = this;
 
 	items = $(items).map(function (i, item) {
@@ -1001,7 +752,7 @@ function typeahead_icon_render(items) {
 		// Highlight matching text in the line
 		li.find('a').html(that.highlighter(item));
 		// Add icons with the span
-		var classname = 'icon-' + item.split(' ').join('-').toLowerCase();
+		let classname = 'icon-' + item.split(' ').join('-').toLowerCase();
 		li.find('a').append('<span class="' + classname + '"></span>');
 		return li[0];
 	});
@@ -1015,108 +766,18 @@ function typeahead_icon_render(items) {
 }
 
 
-function ui_setup_shortcut() {
-	$(document).on("keydown", function (e) {
-		if (e.key == "PageUp") {
-			if (e.preventDefault)
-				e.preventDefault();
-			var idx = g_ui.selectedCardIdx;
-			if (idx > 0)
-				ui_select_card_by_index(idx - 1);
-		} else if (e.key == "PageDown") {
-			if (e.preventDefault)
-				e.preventDefault();
-			var idx = g_ui.selectedCardIdx;
-			if (idx < g_card_data.length - 1)
-				ui_select_card_by_index(idx + 1);
-		} else if (e.ctrlKey) {
-			if (e.key == "s") {
-				if (e.preventDefault)
-					e.preventDefault();
-				ui_save_file();
-			} else if (e.key == "g") {
-				if (e.preventDefault)
-					e.preventDefault();
-				ui_generate();
-			} else if (e.key == "+") {
-				if (e.preventDefault)
-					e.preventDefault();
-				var cardsMoreButtonList = $("#cards-list .card-count-more");
-				cardsMoreButtonList[g_ui.selectedCardIdx].click();
-			} else if (e.key == "-") {
-				if (e.preventDefault)
-					e.preventDefault();
-				var cardsLessButtonList = $("#cards-list .card-count-less");
-				cardsLessButtonList[g_ui.selectedCardIdx].click();
-			}
-		} else if (e.currentTarget.activeElement.nodeName != "INPUT" && e.currentTarget.activeElement.nodeName != "TEXTAREA") {
-			if (e.key == "+") {
-				if (e.preventDefault)
-					e.preventDefault();
-				var cardsMoreButtonList = $("#cards-list .card-count-more");
-				cardsMoreButtonList[g_ui.selectedCardIdx].click();
-			} else if (e.key == "-") {
-				if (e.preventDefault)
-					e.preventDefault();
-				var cardsLessButtonList = $("#cards-list .card-count-less");
-				cardsLessButtonList[g_ui.selectedCardIdx].click();
-			}
-		} else {
-			if (e.key == "Escape") {
-				e.currentTarget.activeElement.blur();
-			}
-		}
-	});
-}
+// ============================================================================
+// UI setup and change
+// ============================================================================
 
-function ui_setup_color_selector() {
-	// Insert colors
-	$.each(card_colors, function (name, val) {//TODO: Change to a wheel or a line (save as #RRGGBB)
-		$(".colorselector-data")
-			.append($("<option></option>")
-				.attr("value", name)
-				.attr("data-color", val)
-				.text(name));
-	});
+function ui_cards_list_update_height() {
+	let cardsListParents = $('#cards-list').parents();
+	let top = $('#cards-list').position().top;
 
-	// Callbacks for when the user picks a color
-	$('#default_color_selector').colorselector({
-		callback: function (value, color, title) {
-			$("#default-color").val(title);
-			ui_set_default_color(title);
-		}
-	});
-	$('#card_color_selector').colorselector({
-		callback: function (value, color, title) {
-			$("#card-color").val(title);
-			ui_set_card_color(value);
-		}
-	});
-	$('#foreground_color_selector').colorselector({
-		callback: function (value, color, title) {
-			$("#foreground-color").val(title);
-			ui_set_foreground_color(value);
-		}
-	});
-	$('#background_color_selector').colorselector({
-		callback: function (value, color, title) {
-			$("#background-color").val(title);
-			ui_set_background_color(value);
-		}
-	});
-
-	// Styling
-	$(".dropdown-colorselector").addClass("input-group-addon color-input-addon");
-}
-
-function ui_update_cards_list_height() {
-	var cardsListParents = $('#cards-list').parents();
-	var top = $('#cards-list').position().top;
-
-	for (var i = 0; i < cardsListParents.length; i++)
+	for (let i = 0; i < cardsListParents.length; i++)
 		top += $(cardsListParents[i]).position().top;
 
-	$('#cards-list').css("height", ($(window).height() - top) + 'px');
+	$('#cards-list').css('height', ($(window).height() - top) + 'px');
 }
 
 function ui_fold_section() {
@@ -1241,39 +902,144 @@ function ui_fold_block() {
 	if (shouldSave)
 		local_store_ui_save();
 
-	ui_update_cards_list_height();
+	ui_cards_list_update_height();
 }
 
-function clean_style(styleObj) {
-	for (var i = styleObj.length; i--;) {
-		var nameString = styleObj[i];
-		styleObj.removeProperty(nameString);
+function ui_change_keyup() {
+	clearTimeout(ui_change_keyup.timeout);
+	ui_change_keyup.timeout = setTimeout(function (element) {
+		$(element).trigger('change');
+	}, 200, this);
+}
+ui_change_keyup.timeout = null;
+
+function ui_document_shortcut(e) {
+	if (e.key === 'PageUp') {
+		if (e.preventDefault)
+			e.preventDefault();
+		let idx = g_ui.selectedCardIdx;
+		if (idx > 0)
+			ui_select_card_by_index(idx - 1);
+	} else if (e.key === 'PageDown') {
+		if (e.preventDefault)
+			e.preventDefault();
+		let idx = g_ui.selectedCardIdx;
+		if (idx < g_deck.cards.length - 1)
+			ui_select_card_by_index(idx + 1);
+	} else if (e.ctrlKey) {
+		if (e.key === 's') {
+			if (e.preventDefault)
+				e.preventDefault();
+			ui_save_file();
+		} else if (e.key === 'g') {
+			if (e.preventDefault)
+				e.preventDefault();
+			ui_generate();
+		} else if (e.key === '+') {
+			if (e.preventDefault)
+				e.preventDefault();
+			let cardsMoreButtonList = $('#cards-list .card-count-more');
+			cardsMoreButtonList[g_ui.selectedCardIdx].click();
+		} else if (e.key === '-') {
+			if (e.preventDefault)
+				e.preventDefault();
+			let cardsLessButtonList = $('#cards-list .card-count-less');
+			cardsLessButtonList[g_ui.selectedCardIdx].click();
+		}
+	} else if (e.currentTarget.activeElement.nodeName !== 'INPUT' && e.currentTarget.activeElement.nodeName !== 'TEXTAREA') {
+		if (e.key === '+') {
+			if (e.preventDefault)
+				e.preventDefault();
+			let cardsMoreButtonList = $('#cards-list .card-count-more');
+			cardsMoreButtonList[g_ui.selectedCardIdx].click();
+		} else if (e.key === '-') {
+			if (e.preventDefault)
+				e.preventDefault();
+			let cardsLessButtonList = $('#cards-list .card-count-less');
+			cardsLessButtonList[g_ui.selectedCardIdx].click();
+		}
+	} else {
+		if (e.key === 'Escape') {
+			e.currentTarget.activeElement.blur();
+		}
 	}
 }
 
-var g_isSmallLayout;
-$(document).ready(function () {
+function ui_contents_shortcut(e) {
+	if (e.shiftKey && e.key === 'Delete') {
+		let value = $(this)[0].value;
 
-	var preventPageDownOrUp = function (e) {
-		if (e.key == "PageUp" || e.key == "PageDown") { // Pg up or down
+		let textBefore = value.slice(0, $(this)[0].selectionStart);
+		let idxLineFirstChar = textBefore.lastIndexOf('\n');
+		if (idxLineFirstChar === -1) {
+			idxLineFirstChar = 0;
+			textBefore = '';
+		} else
+			textBefore = textBefore.slice(0, idxLineFirstChar);
+
+		let textAfter = value.slice($(this)[0].selectionEnd);
+		let idxLineLastChar = textAfter.indexOf('\n');
+		if (idxLineLastChar === -1)
+			textAfter = '';
+		else
+			textAfter = textAfter.slice(idxLineLastChar);
+
+		$(this)[0].value = textBefore + textAfter;
+		$(this)[0].selectionStart = idxLineFirstChar;
+		$(this)[0].selectionEnd = $(this)[0].selectionStart;
+		if (e.preventDefault)
+			e.preventDefault();
+	}
+	if (e.altKey) {
+		if (e.key === 'i') {
+			let value = $(this)[0].value;
+			let selectionStart = $(this)[0].selectionStart;
+			let selectionEnd = $(this)[0].selectionEnd;
+			let textBefore = value.slice(0, selectionStart);
+			let textBetween = value.slice(selectionStart, selectionEnd);
+			let textAfter = value.slice(selectionEnd);
+			$(this)[0].value = textBefore + '<i>' + textBetween + '</i>' + textAfter;
+			if (textBetween.length === 0)
+				$(this)[0].selectionStart = selectionStart + 3;
+			else
+				$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
+			$(this)[0].selectionEnd = $(this)[0].selectionStart;
 			if (e.preventDefault)
 				e.preventDefault();
 		}
-	};
-	ui_setup_shortcut();
+		if (e.key === 'b') {
+			let value = $(this)[0].value;
+			let selectionStart = $(this)[0].selectionStart;
+			let selectionEnd = $(this)[0].selectionEnd;
+			let textBefore = value.slice(0, selectionStart);
+			let textBetween = value.slice(selectionStart, selectionEnd);
+			let textAfter = value.slice(selectionEnd);
+			$(this)[0].value = textBefore + '<b>' + textBetween + '</b>' + textAfter;
+			if (textBetween.length === 0)
+				$(this)[0].selectionStart = selectionStart + 3;
+			else
+				$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
+			$(this)[0].selectionEnd = $(this)[0].selectionStart;
+			if (e.preventDefault)
+				e.preventDefault();
+		}
+	}
+}
 
+function ui_setup_resize() {
 	g_isSmallLayout = $('html').width() < 1200;
-	$(window).resize(function (e) {
-		var isSmallLayout = $('html').width() < 1200;
+	$(window).resize(function () {
+		let isSmallLayout = $('html').width() < 1200;
 		if (isSmallLayout) {
-			var foldedSectionsKeys = Object.keys(g_ui.foldedSections);
-			if (isSmallLayout != g_isSmallLayout) {
-				for (var i = 0; i < foldedSectionsKeys.length; i++) {
-					if (g_ui.foldedSections[foldedSectionsKeys[i]])
+			let foldedSectionsKeys = Object.keys(g_ui.foldedSections);
+			if (isSmallLayout !== g_isSmallLayout) {
+				for (let i = 0; i < foldedSectionsKeys.length; i++) {
+					if (g_ui.foldedSections[foldedSectionsKeys[i]]) {
 						$(g_ui.foldedSections[foldedSectionsKeys[i]]).click();
+					}
 				}
 			}
-			for (var i = 0; i < foldedSectionsKeys.length; i++) {
+			for (let i = 0; i < foldedSectionsKeys.length; i++) {
 				g_ui.foldedSections[foldedSectionsKeys[i]] = null;
 			}
 
@@ -1292,7 +1058,14 @@ $(document).ready(function () {
 			$('.container-wrapper').click(null);
 		}
 
-		if (g_isSmallLayout != isSmallLayout) {
+		if (g_isSmallLayout !== isSmallLayout) {
+			let clean_style = function(styleObj) {
+				for (let i = styleObj.length; i--;) {
+					let nameString = styleObj[i];
+					styleObj.removeProperty(nameString);
+				}
+			};
+
 			clean_style($('#button-fold-menu')[0].style);
 			clean_style($('#menu-container-wrapper')[0].style);
 			clean_style($('#button-fold-preview')[0].style);
@@ -1300,112 +1073,169 @@ $(document).ready(function () {
 			g_isSmallLayout = isSmallLayout;
 		}
 
-		$('body').children(".container-fluid").children(".row").css('height', $(window).height() + 'px');
+		$('body').children('.container-fluid').children('.row').css('height', $(window).height() + 'px');
 		$('.container-wrapper').css('height', $(window).height() + 'px');
 		$('.btn-fold-section').css('height', $(window).height() + 'px');
-		ui_update_cards_list_height();
+		ui_cards_list_update_height();
+	});
+}
+
+function ui_setup_color_selector() {
+	// Insert colors
+	$.each(card_colors, function (name, val) {// TODO: Change to a wheel or a line (save as #RRGGBB)
+		$('.colorselector-data')
+			.append($('<option></option>')
+				.attr('value', name)
+				.attr('data-color', val)
+				.text(name));
 	});
 
+	// Callbacks for when the user picks a color
+	$('#default-color-front-selector').colorselector({
+		callback: function (value, color, title) {
+			$('#default-color-front').val(title);
+			g_deck.options.cardDefault.color_front = title;
+			ui_render_selected_card();
+		}
+	});
+	$('#default-color-front-selector').colorselector('setColor', g_deck.options.cardDefault.color_front);
+
+	$('#default-color-back-selector').colorselector({
+		callback: function (value, color, title) {
+			$('#default-color-back').val(title);
+			g_deck.options.cardDefault.color_back = title;
+			ui_render_selected_card();
+		}
+	});
+	$('#default-color-back-selector').colorselector('setColor', g_deck.options.cardDefault.color_back);
+
+	$('#card-color-selector').colorselector({
+		callback: function (value, color, title) {
+			$('#card-color').val(title);
+			ui_card_set_color(value);
+		}
+	});
+
+	// Styling
+	$('.dropdown-colorselector').addClass('input-group-addon color-input-addon');
+}
+
+// ============================================================================
+// Page load setup
+// ============================================================================
+
+$(document).ready(function () {
+	let preventPageDownOrUp = function (e) {
+		if (e.key === 'PageUp' || e.key === 'PageDown') { // Pg up or down
+			if (e.preventDefault)
+				e.preventDefault();
+		}
+	};
+	$(document).on('keydown', ui_document_shortcut);
+
+	ui_setup_resize();
 
 	local_store_cards_load();
 	local_store_ui_load();
 
-	if (g_ui.selectedCardIdx >= g_card_data.length)
-		g_ui.selectedCardIdx = g_card_data.length - 1;
+	if (g_ui.selectedCardIdx >= g_deck.cards.length)
+		g_ui.selectedCardIdx = g_deck.cards.length - 1;
 
-	$(".btn-fold-section").click(ui_fold_section);
-	var isSmallLayout = $('html').width() < 1200;
-	var foldedSectionsKeys = Object.keys(g_ui.foldedSections);
+	$('.btn-fold-section').click(ui_fold_section);
+	let isSmallLayout = $('html').width() < 1200;
+	let foldedSectionsKeys = Object.keys(g_ui.foldedSections);
 	if (isSmallLayout) {
-		for (var i = 0; i < foldedSectionsKeys.length; i++) {
+		for (let i = 0; i < foldedSectionsKeys.length; i++) {
 			g_ui.foldedSections[foldedSectionsKeys[i]] = null;
 		}
 	} else {
-		for (var i = 0; i < foldedSectionsKeys.length; i++) {
+		for (let i = 0; i < foldedSectionsKeys.length; i++) {
 			if (g_ui.foldedSections[foldedSectionsKeys[i]])
 				$(g_ui.foldedSections[foldedSectionsKeys[i]]).click();
 		}
 	}
 
-	$(".btn-fold-block").click(ui_fold_block);
-	var foldedBlockKeys = Object.keys(g_ui.foldedBlocks);
-	for (var i = 0; i < foldedBlockKeys.length; i++) {
+	$('.btn-fold-block').click(ui_fold_block);
+	let foldedBlockKeys = Object.keys(g_ui.foldedBlocks);
+	for (let i = 0; i < foldedBlockKeys.length; i++) {
 		if (g_ui.foldedBlocks[foldedBlockKeys[i]])
 			$(g_ui.foldedBlocks[foldedBlockKeys[i]]).click();
 	}
 
 	ui_setup_color_selector();
-	$(".icon-list").typeahead({
+	$('.icon-list').typeahead({
 		source: icon_names,
 		items: 'all',
-		render: typeahead_icon_render
+		render: typeahead_render_icon
 	});
-	$(".icon-list").on("keydown", preventPageDownOrUp);
-	$(".icon-select-button").click(function () { window.open("http://game-icons.net/", "_blank"); });
+	$('.icon-list').on('keydown', preventPageDownOrUp);
+	$('.icon-select-button').click(function () { window.open('http://game-icons.net/', '_blank'); });
 
-	$("#button-generate").click(ui_generate);
-	$("#button-load").click(function () { $("#file-load").click(); });
-	$("#file-load").change(ui_load_files);
-	$("#button-import").click(function () { $("#file-import").click(); });
-	$("#file-import").change(ui_import_files);
-	$("#button-clear").click(ui_clear_all);
-	$("#button-load-sample").click(ui_load_sample);
-	$("#sort-execute").click(ui_sort_execute);
-	$("#button-save").click(ui_save_file);
-	$("#button-sort").click(ui_sort);
-	$("#button-filter").click(ui_filter);
-	$("#filter-execute").click(ui_filter_execute);
-	$("#button-help").click(ui_open_help);
+	$('#button-help').click(function () { $('#help-modal').modal('show'); });
+	$('#button-language').click();// TODO GREGOIRE
+	$('#button-sort').click(function () { $('#sort-modal').modal('show'); });
+	$('#sort-execute').click(ui_sort_execute);
+	$('#button-filter').click(function () { $('#filter-modal').modal('show'); });
+	$('#filter-execute').click(ui_filter_execute);
+
+	$('#button-load-sample').click(ui_load_sample);
+	$('#button-clear').click(ui_clear_all);
+	$('#button-generate').click(ui_generate);
+
+	$('#button-load').click(function () { $('#file-load').click(); });
+	$('#file-load').change(ui_load_files);
+	$('#button-import').click(function () { $('#file-import').click(); });
+	$('#file-import').change(ui_import_files);
+	$('#button-save').click(ui_save_file);
 
 	if (g_ui.filename)
-		$("#file-name").html('<b>File:</b> ' + g_ui.filename.join(", ") + '<br/><b>Last save:</b> ' + g_ui.saveTime);
+		$('#file-name').html('<b>File:</b> ' + g_ui.filename.join(', ') + '<br/><b>Last save:</b> ' + g_ui.saveTime);
 
 	// ----- Page settings
 
-	$("#page-size").change(ui_change_option);
-	$("#page-rows").change(ui_change_option);
-	$("#page-columns").change(ui_change_option);
-	$("#card-arrangement").change(ui_change_option);
-	$("#card-size").change(ui_change_option);
-	$("#background-color").change(ui_change_option);
-	$("#rounded-corners").change(ui_change_option);
+	$('#page-size').val(g_deck.options.pageSize).change(ui_change_option);
+	$('#page-rows').val(g_deck.options.pageRows).change(ui_change_option);
+	$('#page-columns').val(g_deck.options.pageColumns).change(ui_change_option);
+	$('#card-arrangement').val(g_deck.options.cardsArrangement).change(ui_change_option);
+	$('#card-size').val(g_deck.options.cardsSize).change(ui_change_option);
 
 	// ----- Default values
 
-	$("#default-color").change(ui_change_default_color);
-	$("#default-icon").change(ui_change_default_icon);
-	$("#default-title-size").change(ui_change_default_title_size);
-	$("#small-icons").change(ui_change_default_icon_size);
-	$("#button-apply-color").click(ui_apply_default_color);
-	$("#button-apply-icon").click(ui_apply_default_icon);
-	$("#button-apply-icon-back").click(ui_apply_default_icon_back);
+	$('#round-corners').prop('checked', g_deck.options.roundCorners).change(ui_change_option);
+	$('#spell-classes').prop('checked', g_deck.options.showSpellClasses).change(ui_change_option);
+	$('#small-icons').prop('checked', g_deck.options.smallIcons).change(ui_change_option);
+	$('#default-color-front').change(ui_change_default_property);
+	$('#default-icon').val(g_deck.options.cardDefault.icon).change(ui_change_default_property);
+	$('#default-color-back').change(ui_change_default_property);
+	$('#default-icon-back').val(g_deck.options.cardDefault.icon_back).change(ui_change_default_property);
+	$('#title-size').val(g_deck.options.titleSize).change(ui_change_option);
 
 	// ----- Cards list
 
-	$("#button-up").click(ui_card_list_up);
-	$("#button-down").click(ui_card_list_down);
-	$("#button-insert-lexical").click(ui_card_list_insert_lexical);
+	$('#button-up').click(ui_card_list_up);
+	$('#button-down').click(ui_card_list_down);
+	$('#button-insert-lexical').click(ui_insert_lexical);
 
 	// ----- Card
 
-	$("#button-add-card").click(ui_add_new_card);
-	$("#button-duplicate-card").click(ui_duplicate_card);
-	$("#button-delete-card").click(ui_delete_card);
+	$('#button-add-card').click(ui_card_add_new);
+	$('#button-duplicate-card').click(ui_card_duplicate);
+	$('#button-delete-card').click(ui_card_delete);
 
-	$("#card-title").on("keyup", ui_change_card_element_keyup);
-	$("#card-title").change(ui_change_card_title);
-	$("#card-title-multiline").change(ui_change_card_property);
-	$("#card-subtitle").change(ui_change_card_property);
-	$("#card-icon").change(ui_change_card_property);
-	$("#card-icon-back").change(ui_change_card_property);
-	$("#card-background").change(ui_change_card_property);
-	$("#card-color").change(ui_change_card_color);
-	$("#card-tags").change(ui_change_card_tags);
-	$("#card-reference").on("keyup", ui_change_card_element_keyup);
-	$("#card-reference").change(ui_change_card_property);
+	$('#card-title').on('keyup', ui_change_keyup);
+	$('#card-title').change(ui_card_change_title);
+	$('#card-title-multiline').change(ui_card_change_property);
+	$('#card-subtitle').change(ui_card_change_property);
+	$('#card-icon').change(ui_card_change_property);
+	$('#card-icon-back').change(ui_card_change_property);
+	$('#card-background').change(ui_card_change_property);
+	$('#card-color').change(ui_card_change_color);
+	$('#card-tags').change(ui_card_change_tags);
+	$('#card-reference').on('keyup', ui_change_keyup);
+	$('#card-reference').change(ui_card_change_property);
 
-	$("#card-description").on("keyup", ui_change_card_element_keyup);
-	$("#card-description").change(ui_change_card_description);
+	$('#card-description').on('keyup', ui_change_keyup);
+	$('#card-description').change(ui_card_change_property);
 	/* $("#card-contents").typeahead({
 		source: Object.keys(card_element_generators),
 		items: 'all',
@@ -1414,115 +1244,56 @@ $(document).ready(function () {
 		updater: typeahead_contents_updater,
 		render: typeahead_render
 	}); */
-	$("#card-contents").on("keyup", ui_change_card_element_keyup);
-	$("#card-contents").change(ui_change_card_contents);
-	$("#card-contents").on("keydown", function (e) {
-		if (e.shiftKey && e.key == "Delete") {
-			var value = $(this)[0].value;
+	$('#card-contents').on('keyup', ui_change_keyup);
+	$('#card-contents').change(ui_card_change_contents);
+	$('#card-contents').on('keydown', ui_contents_shortcut);
 
-			var textBefore = value.slice(0, $(this)[0].selectionStart);
-			var idxLineFirstChar = textBefore.lastIndexOf('\n');
-			if (idxLineFirstChar == -1) {
-				idxLineFirstChar = 0;
-				textBefore = '';
-			} else
-				textBefore = textBefore.slice(0, idxLineFirstChar);
-
-			var textAfter = value.slice($(this)[0].selectionEnd);
-			var idxLineLastChar = textAfter.indexOf('\n');
-			if (idxLineLastChar == -1)
-				textAfter = '';
-			else
-				textAfter = textAfter.slice(idxLineLastChar);
-
-			$(this)[0].value = textBefore + textAfter;
-			$(this)[0].selectionStart = idxLineFirstChar;
-			$(this)[0].selectionEnd = $(this)[0].selectionStart;
-			if (e.preventDefault)
-				e.preventDefault();
-		}
-		if (e.altKey) {
-			if (e.key == "i") {
-				var value = $(this)[0].value;
-				var selectionStart = $(this)[0].selectionStart;
-				var selectionEnd = $(this)[0].selectionEnd;
-				var textBefore = value.slice(0, selectionStart);
-				var textBetween = value.slice(selectionStart, selectionEnd);
-				var textAfter = value.slice(selectionEnd);
-				$(this)[0].value = textBefore + '<i>' + textBetween + '</i>' + textAfter;
-				if (textBetween.length == 0)
-					$(this)[0].selectionStart = selectionStart + 3;
-				else
-					$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
-				$(this)[0].selectionEnd = $(this)[0].selectionStart;
-				if (e.preventDefault)
-					e.preventDefault();
-			}
-			if (e.key == "b") {
-				var value = $(this)[0].value;
-				var selectionStart = $(this)[0].selectionStart;
-				var selectionEnd = $(this)[0].selectionEnd;
-				var textBefore = value.slice(0, selectionStart);
-				var textBetween = value.slice(selectionStart, selectionEnd);
-				var textAfter = value.slice(selectionEnd);
-				$(this)[0].value = textBefore + '<b>' + textBetween + '</b>' + textAfter;
-				if (textBetween.length == 0)
-					$(this)[0].selectionStart = selectionStart + 3;
-				else
-					$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
-				$(this)[0].selectionEnd = $(this)[0].selectionStart;
-				if (e.preventDefault)
-					e.preventDefault();
-			}
-		}
-	});
-
-	$("#card-compact").change(ui_change_card_compact);
+	$('#card-compact').change(ui_card_change_property);
 
 	// ----- Creature
 
-	$("#card-creature-cr").change(ui_change_card_property);
-	$("#card-creature-size").change(ui_change_card_property);
-	$("#card-creature-alignment").typeahead({
+	$('#card-creature-cr').change(ui_card_change_property);
+	$('#card-creature-size').change(ui_card_change_property);
+	$('#card-creature-alignment').typeahead({
 		source: Object.values(I18N.ALIGNMENTS),
 		items: 'all',
 		minLength: 0,
 		render: typeahead_render
 	});
-	$("#card-creature-alignment").on("keydown", preventPageDownOrUp);
-	$("#card-creature-alignment").change(ui_change_card_property);
-	$("#card-creature-type").change(ui_change_card_property);
+	$('#card-creature-alignment').on('keydown', preventPageDownOrUp);
+	$('#card-creature-alignment').change(ui_card_change_property);
+	$('#card-creature-type').change(ui_card_change_property);
 
-	$("#card-creature-ac").change(ui_change_card_property);
-	$("#card-creature-hp").change(ui_change_card_property);
-	$("#card-creature-perception").change(ui_change_card_property);
-	$("#card-creature-speed").change(ui_change_card_property);
+	$('#card-creature-ac').change(ui_card_change_property);
+	$('#card-creature-hp').change(ui_card_change_property);
+	$('#card-creature-perception').change(ui_card_change_property);
+	$('#card-creature-speed').change(ui_card_change_property);
 
-	$("#card-creature-strength").change(ui_change_creature_stats);
-	$("#card-creature-dexterity").change(ui_change_creature_stats);
-	$("#card-creature-constitution").change(ui_change_creature_stats);
-	$("#card-creature-intelligence").change(ui_change_creature_stats);
-	$("#card-creature-wisdom").change(ui_change_creature_stats);
-	$("#card-creature-charisma").change(ui_change_creature_stats);
+	$('#card-creature-strength').change(ui_creature_change_stats);
+	$('#card-creature-dexterity').change(ui_creature_change_stats);
+	$('#card-creature-constitution').change(ui_creature_change_stats);
+	$('#card-creature-intelligence').change(ui_creature_change_stats);
+	$('#card-creature-wisdom').change(ui_creature_change_stats);
+	$('#card-creature-charisma').change(ui_creature_change_stats);
 
-	$("#card-creature-resistances").change(ui_change_card_property);
-	$("#card-creature-vulnerabilities").change(ui_change_card_property);
-	$("#card-creature-immunities").change(ui_change_card_property);
+	$('#card-creature-resistances').change(ui_card_change_property);
+	$('#card-creature-vulnerabilities').change(ui_card_change_property);
+	$('#card-creature-immunities').change(ui_card_change_property);
 
 	// ----- Spell
 
-	$("#card-spell-level").change(ui_change_card_property);
-	$("#card-spell-ritual").change(ui_change_card_property);
-	$("#card-spell-casting-time").change(ui_change_card_property);
-	$("#card-spell-casting-time").on("keyup", ui_change_card_element_keyup);
-	$("#card-spell-range").change(ui_change_card_property);
-	$("#card-spell-range").on("keyup", ui_change_card_element_keyup);
-	$("#card-spell-verbal").change(ui_change_card_property);
-	$("#card-spell-somatic").change(ui_change_card_property);
-	$("#card-spell-materials").change(ui_change_card_property);
-	$("#card-spell-duration").change(ui_change_card_property);
-	$("#card-spell-duration").on("keyup", ui_change_card_element_keyup);
-	$("#card-spell-type").typeahead({
+	$('#card-spell-level').change(ui_card_change_property);
+	$('#card-spell-ritual').change(ui_card_change_property);
+	$('#card-spell-casting-time').change(ui_card_change_property);
+	$('#card-spell-casting-time').on('keyup', ui_change_keyup);
+	$('#card-spell-range').change(ui_card_change_property);
+	$('#card-spell-range').on('keyup', ui_change_keyup);
+	$('#card-spell-verbal').change(ui_card_change_property);
+	$('#card-spell-somatic').change(ui_card_change_property);
+	$('#card-spell-materials').change(ui_card_change_property);
+	$('#card-spell-duration').change(ui_card_change_property);
+	$('#card-spell-duration').on('keyup', ui_change_keyup);
+	$('#card-spell-type').typeahead({
 		source: Object.values(I18N.SPELL_TYPES),
 		items: 'all',
 		minLength: 0,
@@ -1530,11 +1301,11 @@ $(document).ready(function () {
 		updater: typeahead_updater,
 		render: typeahead_render
 	});
-	$("#card-spell-type").on("keydown", preventPageDownOrUp);
-	$("#card-spell-type").change(ui_change_card_property);
-	$("#card-spell-higher-levels").on("keyup", ui_change_card_element_keyup);
-	$("#card-spell-higher-levels").change(ui_change_card_property);
-	$("#card-spell-classes").typeahead({
+	$('#card-spell-type').on('keydown', preventPageDownOrUp);
+	$('#card-spell-type').change(ui_card_change_property);
+	$('#card-spell-higher-levels').on('keyup', ui_change_keyup);
+	$('#card-spell-higher-levels').change(ui_card_change_property);
+	$('#card-spell-classes').typeahead({
 		source: Object.values(I18N.CLASSES),
 		items: 'all',
 		minLength: 0,
@@ -1542,10 +1313,10 @@ $(document).ready(function () {
 		updater: typeahead_updater,
 		render: typeahead_render
 	});
-	$("#card-spell-classes").on("keydown", preventPageDownOrUp);
-	$("#card-spell-classes").change(ui_change_card_property);
+	$('#card-spell-classes').on('keydown', preventPageDownOrUp);
+	$('#card-spell-classes').change(ui_card_change_property);
 
-	ui_update_card_list();
+	ui_card_list_update();
 
 
 	$(window).resize();

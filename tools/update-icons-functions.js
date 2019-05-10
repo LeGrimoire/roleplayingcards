@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const mv = require('mv');
 const fse = require('fs-extra');
@@ -16,7 +16,7 @@ const imgDir = "./generator/img";
 const imgSrcDir = "./resources";
 const cssPath = "./generator/css/icons.css";
 const jsPath = "./generator/js/icons.js";
-const excludeCfgPath = "./ignore.cfg";
+const excludeCfgPath = "./generator_exclude.cfg";
 // const processIconsCmd = 'mogrify -background white -alpha shape *.png';
 const processIconsCmd = 'mogrify -channel-fx "red=100%, blue=100%, green=100%" *.png';
 
@@ -128,7 +128,7 @@ async function generateJS(src, dest) {
 		if (err) {
 			throw err;
 		} else {
-			var content = "const icon_names = [\n";
+			var content = "export const icon_names = [\n";
 			files.map(function (name) {
 				if (fse.lstatSync(src + "/" + name).isDirectory()) {
 					var subDirFiles = fse.readdirSync(src + "/" + name);

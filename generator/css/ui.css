@@ -31,6 +31,7 @@ body {
 	border-radius: 4px !important;
 	border-top-right-radius: 0 !important;
 	border-bottom-right-radius: 0 !important;
+	padding: 2px;
 }
 
 .form-group {
@@ -99,10 +100,17 @@ select.form-control option {
 	margin-top: -12px;
 }
 
+.dropdown-colorselector>.dropdown-menu {
+    max-width: 178px;
+}
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+	background-image: none;
+}
 
 h3 {
-	margin: 7px 0px;
-	font-size: 22px;
+	margin: 5px 0px;
+	font-size: 18px;
 }
 
 label, p {
@@ -114,6 +122,10 @@ label, p {
   		margin-right: -10px;
 		margin-left: -10px;
 	}
+}
+
+input[id*="color"] {
+	font-family: monospace;
 }
 
 
@@ -146,6 +158,14 @@ label, p {
 	height: 24px;
 	line-height: 24px;
 }
+#default-values-block select,
+#default-values-block input,
+#page-settings-block select,
+#page-settings-block input {
+	height: 24px;
+	font-size: 13px;
+	vertical-align: middle;
+}
 #default-values-block label,
 #default-values-block .checkbox,
 #page-settings-block label,
@@ -156,17 +176,19 @@ label, p {
 	padding-top: 0px;
 	vertical-align: middle;
 }
-#default-values-block .checkbox input[type=checkbox],
-#page-settings-block .checkbox input[type=checkbox] {
-	margin-top: 0px;
+.form-group .checkbox {
+	text-align: right;
+	padding-right: 22px;
 }
-#default-values-block select,
-#default-values-block input,
-#page-settings-block select,
-#page-settings-block input {
-	height: 24px;
-	font-size: 13px;
+.checkbox input[type=checkbox] {
+	margin-top: 2px;
+	margin-left: 3px;
+	height: 18px;
 	vertical-align: middle;
+}
+.checkbox label {
+	font-weight: 700;
+	padding-left: 0;
 }
 #default-values-block .btn-colorselector,
 #page-settings-block .btn-colorselector {
@@ -187,14 +209,14 @@ label, p {
 	width: 322px;
 }
 
-#title-cards-list * {
+#title-cards-list-block * {
 	margin-bottom: 0px;
 }
-#title-cards-list h3 {
+#title-cards-list-block h3 {
 	margin-left: 15px;
-	margin-top: 0px;
+	margin-top: 2px;
 }
-#title-cards-list button {
+#title-cards-list-block button {
 	width: 40px;
 	margin: 0px 2px 0px 0px;
 	padding: 2px;
@@ -218,38 +240,47 @@ label, p {
 }
 
 #cards-list {
-	margin: 0px -39px 0px -15px;
+	margin: 0px -39px 0px -20px;
 	overflow-y: scroll;
+    padding-left: 0px;
 }
 #cards-list .card-name {
 	margin: 0px;
-	padding: 1px 0px 0px 5px;
-	min-height: 19px;
+	padding: 1px 0px 1px 7px;
 	line-height: 1.1;
 	cursor: pointer;
 	position: relative;
 }
 #cards-list .card-name.selected {
-	padding: 0px 0px 0px 4px;
+	margin-right: -4px;
+	padding: 0px 0px 0px 1px;
 	border: solid 1px #33333377;
+	border-left-width: 6px;
 }
 #cards-list .card-name h4 {
 	margin: 0px;
 	padding: 0px;
 	height: 17px;
 	font-size: 16px;
+	overflow: hidden;
+}
+#cards-list .card-name h4:empty {
+	margin: -1px 0 -1px -7px;
+	border: solid 1px #00000099;
+	height: 0;
 }
 #cards-list .card-count {
 	position: absolute;
 	right: 0px;
 	top: 1px;
 	margin-right: 12px;
+    text-shadow: 0 0 3px white;
 }
 #cards-list .card-count * {
 	vertical-align: text-bottom;
 }
 #cards-list .card-name.selected .card-count {
-	right: -1px;
+	right: 3px;
 	top: 0px;
 }
 #cards-list .card-error {
@@ -357,6 +388,10 @@ label, p {
 	vertical-align: middle;	
 	position: relative;
 	top: -1px;
+    width: 10px;
+    height: 10px;
+    margin-left: -15px;
+    margin-right: 5px;
 }
 
 .btn-fold-section {
