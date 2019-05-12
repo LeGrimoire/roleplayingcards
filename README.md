@@ -1,38 +1,39 @@
-npm i @types/jquery
-npm i @types/bootstrap
-
-rpg-cards
+# rpg-cards
 =========
 
-RPG spell/item/monster card generator
+RPG spell/item/monster card generator, based on the [crobi rpg-cards](https://github.com/crobi/rpg-cards). It has been upgraded with D&D 5e in mind.
 
-preview
+## Preview
 =======
 
-Click [here](https://crobi.github.io/rpg-cards/generator/generate.html) for a live preview of this generator.
+[TODO GREGOIRE]
 
-status of the project
+## Status of the project
 =====================
 
-I won't have time to work on this project in the forseeable future.
-PR's are still welcome, so feel free to implement new awesome features!
+In active development. I have a list of stuffs i would like to improve/add, but you can always create an issue or send me a message on twitter [@Grimo_](https://twitter.com/Grimo_).
 
-FAQ
+## FAQ
 =====================
 
 - What browsers are supported?
   - A modern browser (Chrome, Firefox, Edge, Safari). The generator has some issues on IE.
 - Cards are generated without icons and background colors, what's wrong?
   - Enable printing backround images in your browser print dialog
-- I can't find an icon that I've seen on [game-icons.net](http://game-icons.net), where is it?
+- I can't find an icon that I've seen on [game-icons.net](https://game-icons.net), where is it?
   - See the section "updating icons" below.
 - The layout of the cards is broken (e.g., cards are placed outside the page), what's wrong?
   - Check your page size, card size, and cards/page settings. If you ask the generator to place 4x4 poker-sized cards on a A4 paper, they won't fit and they will overflow the page.
 
-updating icons
+## Setup
+=====
+
+[TODO GREGOIRE]
+
+## Updating icons
 ==============
 
-This project includes a copy of icons from the [game-icons](http://game-icons.net) project,
+This project includes a copy of icons from the [game-icons](https://game-icons.net) project,
 which regularly publishes new icons.
 To download these new icons:
 
@@ -42,10 +43,10 @@ To download these new icons:
   - `node ./resources/tools/update-icons.js`
 
 
-license
+## License
 =======
 
-This generator is provided under the terms of the MIT License
+This generator is provided under the terms of the MIT License and is hugely based on the one made by Robert ['crobi'](https://github.com/crobi) Autenrieth at [https://github.com/crobi/rpg-cards](https://github.com/crobi/rpg-cards).
 
-Icons are made by various artists, available at [http://game-icons.net](http://game-icons.net).
+Icons are made by various artists, available at [https://game-icons.net](https://game-icons.net).
 They are provided under the terms of the Creative Commons 3.0 BY license.
