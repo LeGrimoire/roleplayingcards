@@ -108,7 +108,7 @@ export class Card {
 		return card;
 	}
 
-	update() {// TODO GREGOIRE: Find a way to update the id when setting the title
+	update() {
 		this.#id = this.title.replace(new RegExp('[^a-zA-Z0-9]*', 'g'), '');
 	}
 
@@ -722,10 +722,20 @@ export class Card {
 	// eslint-disable-next-line no-unused-vars
 	generateElement_picture(params, options) {
 		let url = params[0] || '';
-		let height = params[1] || '';
-		let width = params[2] || height || '';
+		let sizes = params[1].split('x');
+		let height = '';
+		let width = '';
+		if (sizes[1]) {
+			width = sizes[0];
+			height = sizes[1];
+		} else {
+			height = width = sizes[0];
+		}
+		let invert = '';
+		if (params[2] === 'invert')
+			invert = '-webkit-filter: invert(100%); filter: invert(100%);';
 		let color = this.colorContent(options);
-		return '<div class="card-element card-picture" style ="background-image: url(&quot;' + url + '&quot;); background-size: contain; background-position: center;background-repeat: no-repeat;height:' + height + 'px;width:' + width + 'px;background-color: ' + color + '"></div>';
+		return '<div class="card-element card-picture" style="background:url(&quot;' + url + '&quot;) center no-repeat ' + color + ';background-size:contain; height:' + height + 'px;width:' + width + 'px;' + invert + '"></div>';
 	}
 	
 	/**
