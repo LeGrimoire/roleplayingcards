@@ -84,24 +84,40 @@
                         </form>
                     </div>
                     <p class="col-sm-12" id="file-name"><b>File:</b> ...</p>
-                    <!-- Page settings -->
+                    <!-- Deck settings -->
                     <div class="col-sm-12">
-                        <h3 class="btn-fold-block" id="title-page-settings" for="page-settings-block">
-                            <svg viewbox="0 0 10 10" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
-                                <polygon points="0,0 10,0 5,10" fill="black" style="stroke-width:1"></polygon>
-							</svg>Page settings</h3>
-                        <form id="page-settings-block" role="form" class="form-horizontal">
+                        <h3 class="btn-fold-block" id="title-deck-settings" for="deck-settings-block">Deck settings</h3>
+                        <form id="deck-settings-block" role="form" class="form-horizontal">
                             <div class="form-group">
                                 <label for="page-size" class="col-sm-2 control-label">Page</label>
-                                <div class="col-sm-4">
+                                <div class="col-sm-3">
                                     <select class="form-control" id="page-size" data-property="pageSize">
                                         <option value="A4" selected>A4</option>
                                         <option value="Letter">US letter</option>
                                         <option value="25x35">2.5&quot; x 3.5&quot;</option>
                                     </select>
                                 </div>
+                                <label for="card-size" class="col-sm-4 control-label">Cards/page</label>
+                                <div class="col-sm-1">
+                                    <input type="text" id="page-rows" class="form-control" data-property="pageRows" value="3" placeholder="Row">
+                                </div>
+                                <div class="col-sm-1">
+                                    <p class="form-control-static" style="text-align:center">x</p>
+                                </div>
+                                <div class="col-sm-1">
+                                    <input type="text" id="page-columns" class="form-control" data-property="pageColumns" value="3" placeholder="Col">
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="card-size" class="col-sm-2 control-label">Card</label>
                                 <div class="col-sm-4">
+                                    <select class="form-control" id="card-arrangement" data-property="cardsArrangement">
+                                        <option value="doublesided">Double sided</option>
+                                        <option value="front_only" selected>Front only</option>
+                                        <option value="side_by_side">Side by side</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
                                     <select class="form-control" id="card-size" data-property="cardsSize">
                                         <option value="225x35">2.25&quot; x 3.5&quot; (Bridge)</option>
                                         <option value="25x35" selected>2.5&quot; x 3.5&quot; (Poker)</option>
@@ -111,46 +127,18 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="card-size" class="col-sm-4 control-label">Cards/page</label>
-                                <div class="col-sm-1">
-                                    <input type="text" id="page-rows" class="form-control" data-property="pageRows" value="3">
-                                </div>
-                                <div class="col-sm-1">
-                                    <p class="form-control-static" style="text-align:center">x</p>
-                                </div>
-                                <div class="col-sm-1">
-                                    <input type="text" id="page-columns" class="form-control" data-property="pageColumns" value="3">
-                                </div>
-                                <div class="col-sm-5">
-                                    <select class="form-control" id="card-arrangement" data-property="cardsArrangement">
-                                        <option value="doublesided">Double sided</option>
-                                        <option value="front_only" selected>Front only</option>
-                                        <option value="side_by_side">Side by side</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- Default values -->
-                    <div class="col-sm-12">
-                        <h3 class="btn-fold-block" id="title-default-values" for="default-values-block">
-                            <svg viewbox="0 0 10 10" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
-                                <polygon points="0,0 10,0 5,10" fill="black" style="stroke-width:1"></polygon>
-							</svg>Default values</h3>
-                        <form id="default-values-block" role="form" class="form-horizontal">
-                            <div class="form-group">
                                 <div class="col-sm-6 checkbox">
 									<label for="round-corners">Round corners</label>
 									<input type="checkbox" id="round-corners" data-property="roundCorners">
                                 </div>
                                 <div class="col-sm-6 checkbox">
-									<label for="spell-classes">Spell classes</label>
-									<input type="checkbox" id="spell-classes" data-property="showSpellClasses">
+									<label for="small-icons">Small icons</label>
+                                    <input type="checkbox" id="small-icons" data-property="smallIcons">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="title-size" class="col-sm-2 control-label">Title</label>
-                                <div class="col-sm-4">
+                                <div class="col-sm-3">
                                     <select class="form-control" id="title-size" data-property="titleSize">
                                         <option value="16">16pt</option>
                                         <option value="15">15pt</option>
@@ -162,16 +150,42 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-6 checkbox">
-									<label for="small-icons">Small icons</label>
-                                    <input type="checkbox" id="small-icons" data-property="smallIcons">
+									<label for="spell-classes">Spell classes</label>
+									<input type="checkbox" id="spell-classes" data-property="showSpellClasses">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Default values -->
+                    <div class="col-sm-12">
+                        <form role="form" class="form-horizontal">
+							<div class="form-group" id="title-default-block">
+								<h3 class="btn-fold-block" for="default-values-block">Default values</h3>
+								<select class="form-control" id="default-card-type" data-property="type">
+									<option value="Card" selected>Generic</option>
+									<option value="CreatureCard">Creature</option>
+									<option value="ItemCard">Item</option>
+									<option value="SpellCard">Spell</option>
+									<option value="PowerCard">Power</option>
+								</select>
+							</div>
+                        </form>
+                        <form id="default-values-block" role="form" class="form-horizontal">
+                            <div class="form-group">
+                                <label for="default-color" class="col-sm-3 control-label">Content</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <select id="default-color-selector" class="colorselector-data"></select>
+                                        <input type="text" id="default-color" class="form-control" data-property="color">
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="foreground-color" class="col-sm-2 control-label">Front</label>
-                                <div class="col-sm-5">
+                                <label for="default-color-front" class="col-sm-3 control-label">Front</label>
+                                <div class="col-sm-4">
                                     <div class="input-group">
                                         <select id="default-color-front-selector" class="colorselector-data"></select>
-                                        <input type="text" id="default-color-front" class="form-control" placeholder="Default color" data-property="color_front">
+                                        <input type="text" id="default-color-front" class="form-control" data-property="color_front">
                                     </div>
                                 </div>
                                 <div class="col-sm-5">
@@ -181,11 +195,11 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="background-color" class="col-sm-2 control-label">Back</label>
-                                <div class="col-sm-5">
+                                <label for="default-color-back" class="col-sm-3 control-label">Back</label>
+                                <div class="col-sm-4">
                                     <div class="input-group">
                                         <select id="default-color-back-selector" class="colorselector-data"></select>
-                                        <input type="text" id="default-color-back" class="form-control" placeholder="Default color" data-property="color_back">
+                                        <input type="text" id="default-color-back" class="form-control" data-property="color_back">
                                     </div>
                                 </div>
                                 <div class="col-sm-5">
@@ -200,10 +214,7 @@
                     <div class="col-sm-12">
                         <form role="form" class="form-horizontal">
                             <div class="form-group" id="title-cards-list-block">
-                                <h3 class="btn-fold-block col-sm-6" id="title-cards-list" for="cards-list">
-                                    <svg viewbox="0 0 10 10" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
-										<polygon points="0,0 10,0 5,10" fill="black" style="stroke-width:1"></polygon>
-									</svg>Cards</h3>
+                                <h3 class="btn-fold-block col-sm-6" for="cards-list">Cards</h3>
                                 <p class="form-control-static" id="total_card_count">(0 unique)</p>
                                 <button type="button" class="btn btn-primary btn-block" id="button-up">Up</button>
                                 <button type="button" class="btn btn-primary btn-block" id="button-down">Down</button>
@@ -223,7 +234,7 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <select class="form-control" id="card-type" data-property="type">
-                                        <option value="" selected></option>
+                                        <option value="Card" selected>Generic</option>
                                         <option value="CreatureCard">Creature</option>
                                         <option value="ItemCard">Item</option>
                                         <option value="SpellCard">Spell</option>
@@ -261,7 +272,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="card-icon" class="col-sm-2 control-label">Icon</label>
+                            <label for="card-icon" class="col-sm-2 control-label">Front icon</label>
                             <div class="col-sm-4">
                                 <div class="input-group">
                                     <input type="text" id="card-icon" class="form-control icon-list" placeholder="Default icon" data-property="icon">

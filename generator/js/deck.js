@@ -1,10 +1,10 @@
 import { Card } from './card.js';
-import { ItemCard, } from './card_item.js';
+import { CreatureCard } from './card_creature.js';
+import { ItemCard } from './card_item.js';
 import { PowerCard } from './card_power.js';
 import { SpellCard } from './card_spell.js';
-import { CreatureCard } from './card_creature.js';
 
-export class DocumentOptions {
+export class DeckOptions {
 	pageSize = 'A4';
 	pageRows = 3;
 	pageColumns = 3;
@@ -14,19 +14,85 @@ export class DocumentOptions {
 	roundCorners = true;
 	showSpellClasses = false;
 	titleSize = '13';
-	cardDefault = new Card();
+	cardsDefault = {};
 
 	constructor() {
-		this.cardDefault.color_front = this.cardDefault.color;
-		this.cardDefault.color_back = this.cardDefault.color;
-		this.cardDefault.color = '';
-		this.cardDefault.icon = '';
+		this.cardsDefault['Card'] = new Card();
+		this.cardsDefault['CreatureCard'] = new CreatureCard();
+		this.cardsDefault['ItemCard'] = new ItemCard();
+		this.cardsDefault['SpellCard'] = new SpellCard();
+		this.cardsDefault['PowerCard'] = new PowerCard();
+	}
+
+	stringify(space) {
+		let result = '{';
+		for (const property in this) {
+			if (property === 'cardsDefault')
+				continue;
+			if (space) {
+				result += '\n' + space + '\t"' + property + '":';
+				result += JSON.stringify(this[property], null, '\t');
+				result += ',';
+			} else {
+				result += '"' + property + '":';
+				result += JSON.stringify(this[property]);
+				result += ',';
+			}
+		}
+		if (space) {
+			result += '\n' + space + '\t"cardsDefault":{';
+		} else {
+			result += '"cardsDefault":{';
+		}
+		for (const cardType in this.cardsDefault) {
+			if (space) {
+				result += '\n' + space + '\t\t"' + cardType + '":';
+				result += this.cardsDefault[cardType].stringify(null, space + '\t\t');
+				result += ',';
+			} else {
+				result += '"' + cardType + '":';
+				result += this.cardsDefault[cardType].stringify(null);
+				result += ',';
+			}
+		}
+		if (space) {
+			result = result.slice(0, result.length - 1);// Remove the last ','
+			result += '\n' + space + '\t}\n' + space + '}';
+		} else {
+			result = result.slice(0, result.length - 1);// Remove the last ','
+			result += '}}';
+		}
+		return result;
+	}
+
+	load(options) {
+		for (const property in options) {
+			if (property === 'cardsDefault')
+				continue;
+			if (this.hasOwnProperty(property)) {
+				this[property] = options[property];
+			}
+		}
+		if (options.cardsDefault) {
+			for (const cardType in options.cardsDefault) {
+				if (!this.cardsDefault.hasOwnProperty(cardType))
+					continue;
+	
+				for (const key in this.cardsDefault[cardType]) {
+					if (options.cardsDefault[cardType].hasOwnProperty(key)) {
+						this.cardsDefault[cardType][key] = options.cardsDefault[cardType][key];
+					}
+				}
+	
+				this.cardsDefault[cardType].update();
+			}
+		}
 	}
 }
 
 export class Deck {
 	#cards = [];
-	options = new DocumentOptions();
+	options = new DeckOptions();
 
 	constructor() {
 	}
@@ -62,13 +128,13 @@ export class Deck {
 	 */
 	addCard(cardIdx, cardType) {
 		let new_card;
-		if (cardType === CreatureCard.name)
+		if (cardType === 'CreatureCard')
 			new_card = new CreatureCard();
-		else if (cardType === ItemCard.name)
+		else if (cardType === 'ItemCard')
 			new_card = new ItemCard();
-		else if (cardType === SpellCard.name)
+		else if (cardType === 'SpellCard')
 			new_card = new SpellCard();
-		else if (cardType === PowerCard.name)
+		else if (cardType === 'PowerCard')
 			new_card = new PowerCard();
 		else
 			new_card = new Card();
@@ -135,110 +201,74 @@ export class Deck {
 		this.#cards[cardIdx + 1] = old_card;
 	}
 
+
+	/**
+	 * @param {string} space
+	 */
+	stringifyCards(space) {
+		let strCards = '[';
+		for (let i = 0; i < this.#cards.length; ++i) {
+			let card = this.#cards[i];
+			let strCard = '';
+			strCard += card.stringify(this.options, space ? space + '\t' : null);
+
+			if (i < this.#cards.length - 1)
+				strCard += ',';
+			strCards += strCard;
+		}
+		strCards += space ? '\n' + space + ']' : ']';
+		return strCards;
+	}
+
 	/**
 	 * @param {Object[]} cards
 	 */
-	load(cards) {
-		let data = cards || this.cards;
-		for (let i in data) {
+	loadCards(cards) {
+		for (const i in cards) {
 			let card;
-			if (!data[i].cardType)
-				card = new Card();
-			else if (data[i].cardType === CreatureCard.name)
+			if (cards[i].cardType === 'CreatureCard')
 				card = new CreatureCard();
-			else if (data[i].cardType === ItemCard.name)
+			else if (cards[i].cardType === 'ItemCard')
 				card = new ItemCard();
-			else if (data[i].cardType === SpellCard.name)
+			else if (cards[i].cardType === 'SpellCard')
 				card = new SpellCard();
-			else if (data[i].cardType === PowerCard.name)
+			else if (cards[i].cardType === 'PowerCard')
 				card = new PowerCard();
 			else
 				card = new Card();
 
-			for (const key in card) {
-				if (card.hasOwnProperty(key) && data[i].hasOwnProperty(key)) {
-					card[key] = data[i][key];
+			for (const key in cards[i]) {
+				if (card.hasOwnProperty(key)) {
+					card[key] = cards[i][key];
 				}
 			}
 
-			data[i] = card;
+			card.update();
+			this.#cards.push(card);
 		}
-		this.addCards(this.#cards.length, data);
 	}
 
-	/**
-	 * @param {boolean} readable
-	 */
 	stringify(readable) {
-		let defaultCard = new Card();
-		let defaultCreature = new CreatureCard();
-		let defaultItem = new ItemCard();
-		let defaultSpell = new SpellCard();
-		let defaultPower = new PowerCard();
-
-		let strCards = readable ? '[\n' : '[';
-		for (let i = 0; i < this.#cards.length; ++i) {
-			let card = this.#cards[i];
-			let strCard = '';
-
-			if (card.constructor === CreatureCard) {
-				strCard = JSON.stringify(card, function (key, value) {
-					if ((Array.isArray(value) && value.length === 0))
-						return;
-					if (value !== defaultCreature[key])
-						return value;
-				}, readable ? '\t' : undefined);
-			} else if (card.constructor === ItemCard) {
-				strCard = JSON.stringify(card, function (key, value) {
-					if ((Array.isArray(value) && value.length === 0))
-						return;
-					if (value !== defaultItem[key])
-						return value;
-				}, readable ? '\t' : undefined);
-			} else if (card.constructor === SpellCard) {
-				strCard = JSON.stringify(card, function (key, value) {
-					if ((Array.isArray(value) && value.length === 0))
-						return;
-					if (value !== defaultSpell[key])
-						return value;
-				}, readable ? '\t' : undefined);
-			} else if (card.constructor === PowerCard) {
-				strCard = JSON.stringify(card, function (key, value) {
-					if ((Array.isArray(value) && value.length === 0))
-						return;
-					if (value !== defaultPower[key])
-						return value;
-				}, readable ? '\t' : undefined);
-			} else {
-				strCard = JSON.stringify(card, function (key, value) {
-					if ((Array.isArray(value) && value.length === 0))
-						return;
-					if (value !== defaultCard[key])
-						return value;
-				}, readable ? '\t' : undefined);
-			}
-
-			if (card.constructor !== PowerCard) {
-				if (readable) {
-					strCard = strCard.slice(0, strCard.length - 2);
-					if (strCard.length > 2)
-						strCard = strCard.concat(',');
-					strCard = strCard.concat('\n\t"cardType": "' + card.constructor.name + '"\n}');
-				} else {
-					strCard = strCard.slice(0, strCard.length - 1);
-					if (strCard.length > 1)
-						strCard = strCard.concat(',');
-					strCard = strCard.concat('"cardType":"' + card.constructor.name + '"}');
-				}
-			}
-
-			if (i < this.#cards.length - 1)
-				strCard = strCard.concat(readable ? ',\n' : ',');
-			strCards = strCards.concat(strCard);
+		let result = '{';
+		if (readable) {
+			result += '\n\t"options":'+ this.options.stringify('\t') + ',';
+			result += '\n\t"cards":'+ this.stringifyCards('\t');
+			result += '\n}';
+		} else {
+			result +=  '"options":'+ this.options.stringify() + ',';
+			result +=  '"cards":'+ this.stringifyCards();
+			result += '}';
 		}
-		strCards = strCards.concat(readable ? '\n]' : ']');
-		return strCards;
+		return result;
 	}
+
+	load(deck) {
+		if (deck.options)
+			this.options.load(deck.options);
+		if (deck.cards)
+			this.loadCards(deck.cards);
+	}
+
 
 	/**
 	 * @param {string} fn_code The sorting code to use.
@@ -274,8 +304,8 @@ export class Deck {
 			let count = card.count === 0 ? 0 : (card.count || 1);
 			let front = card.generateFront(this.options);
 			let back = card.generateBack(this.options);
-			front_cards = front_cards.concat(card_repeat(front, count));
-			back_cards = back_cards.concat(card_repeat(back, count));
+			front_cards += card_repeat(front, count);
+			back_cards += card_repeat(back, count);
 		});
 
 		let pages = [];
@@ -369,7 +399,7 @@ export class Deck {
 
 
 /**
- * @param {DocumentOptions} options
+ * @param {DeckOptions} options
  * @returns {string}
  */
 function card_generate_empty(options) {
@@ -396,7 +426,7 @@ function card_repeat(card, count) {
 
 /**
  * @param {string[]} cards  
- * @param {DocumentOptions} options
+ * @param {DeckOptions} options
  * @returns {string[]}
  */
 function cards_add_last_page_padding(cards, options) {
@@ -411,7 +441,7 @@ function cards_add_last_page_padding(cards, options) {
 
 /**
  * @param {string[]} cards
- * @param {DocumentOptions} options
+ * @param {DeckOptions} options
  * @returns {string[][]}
  */
 function cards_split_to_pages(cards, options) {

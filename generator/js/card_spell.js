@@ -17,21 +17,14 @@ export class SpellCard extends Card {
 	constructor() {
 		super();
 		this.color = '#800000';
+		this.color_front = this.color;
+		this.color_back = this.color;
 		this.icon_back = 'magic-swirl';
 		this.title_multiline = true;
 	}
 
 	/**
-	 * @returns {SpellCard}
-	 */
-	clone() {
-		let card = new SpellCard();
-		Object.assign(card, this);
-		return card;
-	}
-
-	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -48,12 +41,12 @@ export class SpellCard extends Card {
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
 	generateBase(options) {
-		let color = this.colorFront(options);
+		let color = this.colorContent(options);
 		let result = '<div class="card-spell-base">';
 
 		result += '<div class="card-spell-base-texts" style="background-color:' + color + '33;">';
@@ -94,12 +87,12 @@ export class SpellCard extends Card {
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
 	generateBottom(options) {
-		let color = this.colorFront(options);
+		let color = this.colorContent(options);
 		let result = '';
 		if (this.higherLevels && this.higherLevels.length > 0) {
 			if (this.elementCounts['fill'] === 0) {
@@ -114,7 +107,7 @@ export class SpellCard extends Card {
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -135,7 +128,7 @@ export class SpellCard extends Card {
 
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -168,22 +161,6 @@ export class SpellCard extends Card {
 			if (last > 2 && params[last])
 				result += '<p class="card-spells-text">' + Card.parse_icons_params(params[last]) + '</p>';
 		}
-		result += '</div>';
-		return result;
-	}
-
-	/**
-	 * @param {string[]} params
-	 * @param {DocumentOptions} options
-	 * @returns {string}
-	 */
-	// eslint-disable-next-line no-unused-vars
-	generateElement_attack(params, options) {
-		let result = '';
-		result += '<div class="card-element card-attack-line">';
-		result += '<h4 class="card-attack-name">' + params[0] + ':</h4>';
-		result += '<p class="card-attack-hit">' + params[1] + ',</p>';
-		result += '<p class="card-attack-damages">' + Card.parse_icons_params(params[2]) + '</p>';
 		result += '</div>';
 		return result;
 	}

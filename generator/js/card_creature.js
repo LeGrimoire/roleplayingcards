@@ -20,22 +20,16 @@ export class CreatureCard extends Card {
 	constructor() {
 		super();
 		this.color = '#000000';
+		this.color_front = this.color;
+		this.color_back = this.color;
 		this.icon = '';
-	}
-
-	/**
-	 * @returns {CreatureCard}
-	 */
-	clone() {
-		let card = new CreatureCard();
-		Object.assign(card, this);
-		return card;
 	}
 
 	/**
 	 * Update xp and proficiency based on the cr
 	 */
 	update() {
+		super.update();
 		let pxByCR = [
 			10,
 			200,
@@ -90,7 +84,7 @@ export class CreatureCard extends Card {
 	}
 
 	/**
-     * @param {DocumentOptions} options
+     * @param {DeckOptions} options
      * @returns {string}
      */
 	// eslint-disable-next-line no-unused-vars
@@ -121,7 +115,7 @@ export class CreatureCard extends Card {
 	}
 
 	/**
-     * @param {DocumentOptions} options
+     * @param {DeckOptions} options
      * @returns {string}
      */
 	// eslint-disable-next-line no-unused-vars
@@ -196,6 +190,22 @@ export class CreatureCard extends Card {
 			result += this.generateElement_property([I18N.RESISTANCES, this.resistances], options);
 		if (this.immunities)
 			result += this.generateElement_property([I18N.IMMUNITIES, this.immunities], options);
+		return result;
+	}
+
+	/**
+	 * @param {string[]} params
+	 * @param {DeckOptions} options
+	 * @returns {string}
+	 */
+	// eslint-disable-next-line no-unused-vars
+	generateElement_attack(params, options) {
+		let result = '';
+		result += '<div class="card-element card-attack-line">';
+		result += '<h4 class="card-attack-name">' + params[0] + ':</h4>';
+		result += '<p class="card-attack-hit">' + params[1] + ',</p>';
+		result += '<p class="card-attack-damages">' + Card.parse_icons_params(params[2]) + '</p>';
+		result += '</div>';
 		return result;
 	}
 }

@@ -23,6 +23,7 @@ var g_ui = {
 var g_previousCardIdx;
 var g_dontRenderSelectedCard = false;
 var g_isSmallLayout;
+var g_canSave;
 
 
 
@@ -56,9 +57,9 @@ function is_storage_available(type) {
 }
 
 function local_store_cards_save() {
-	if (is_storage_available('localStorage') && window.localStorage) {
+	if (g_canSave && is_storage_available('localStorage') && window.localStorage) {
 		try {
-			localStorage.setItem('card_data', g_deck.stringify(false));
+			localStorage.setItem('deck', g_deck.stringify(false));
 		} catch (e) {
 			// TODO GREGOIRE: If the local store save failed notify the user that the data has not been saved
 			console.error(e.stack);
@@ -70,7 +71,7 @@ function local_store_cards_load() {
 	if (is_storage_available('localStorage') && window.localStorage) {
 		try {
 			g_deck.clear();
-			g_deck.load(JSON.parse(localStorage.getItem('card_data')));
+			g_deck.load(JSON.parse(localStorage.getItem('deck')));
 			ui_card_list_update();
 		} catch (e) {
 			// TODO GREGOIRE: If the local store load failed notify the user that the loading failed
@@ -162,7 +163,11 @@ function ui_import_files(evt) {
 
 		let reader = new FileReader();
 		reader.onload = function () {
-			g_deck.load(JSON.parse(this.result ? this.result.toString() : ''));
+			let parsedObj = JSON.parse(this.result ? this.result.toString() : '');
+			if (parsedObj.cards)
+				g_deck.load(parsedObj);
+			else
+				g_deck.loadCards(parsedObj);
 			ui_card_list_update();
 
 			let previouslySelectedIdx = g_ui.selectedCardIdx;
@@ -234,9 +239,11 @@ function ui_generate() {
 // ============================================================================
 
 function ui_select_card_by_index(index) {
+	const couldSave = g_canSave;
+	g_canSave = false;
 	if (index >= 0 && index < g_deck.cards.length) {
 		let card = g_deck.cards[index];
-		if (!card.title || card.title.length === 0) {
+		if (card.title === 'SEPARATOR') {
 			if (index < g_ui.selectedCardIdx) {
 				index--;
 			} else {
@@ -247,8 +254,17 @@ function ui_select_card_by_index(index) {
 	index = Math.min(index, g_deck.cards.length - 1);
 	g_previousCardIdx = g_ui.selectedCardIdx;
 	g_ui.selectedCardIdx = index;
+
 	local_store_ui_save();
+
+	let card = g_deck.cards[g_ui.selectedCardIdx];
+	$('#default-card-type').val(card ? card.constructor.name : 'Card');
+	let previousCard = g_deck.cards[g_previousCardIdx];
+	if (!previousCard || previousCard.constructor !== card.constructor)
+		$('#default-card-type').change();
+
 	ui_update_selected_card();
+	g_canSave = couldSave;
 }
 
 function ui_card_add_new() {
@@ -257,6 +273,8 @@ function ui_card_add_new() {
 	g_deck.addCard(cardIdx, cardType);
 	ui_card_list_update(true);
 	ui_select_card_by_index(cardIdx + 1);
+	
+	local_store_cards_save();
 
 	$('#card-title').select();
 }
@@ -266,6 +284,8 @@ function ui_card_duplicate() {
 	g_deck.duplicateCard(cardIdx);
 	ui_card_list_update(true);
 	ui_select_card_by_index(cardIdx + 1);
+	
+	local_store_cards_save();
 
 	$('#card-title').select();
 }
@@ -275,6 +295,8 @@ function ui_card_delete() {
 	g_deck.deleteCard(cardIdx);
 	ui_card_list_update(true);
 	ui_select_card_by_index(cardIdx);
+	
+	local_store_cards_save();
 }
 
 function ui_card_list_up() {
@@ -282,6 +304,8 @@ function ui_card_list_up() {
 	g_deck.moveCardUp(cardIdx);
 	ui_card_list_update(true);
 	ui_select_card_by_index(cardIdx - 1);
+	
+	local_store_cards_save();
 }
 
 function ui_card_list_down() {
@@ -289,6 +313,8 @@ function ui_card_list_down() {
 	g_deck.moveCardDown(cardIdx);
 	ui_card_list_update(true);
 	ui_select_card_by_index(cardIdx + 1);
+	
+	local_store_cards_save();
 }
 
 function ui_card_count_decrease() {
@@ -347,7 +373,7 @@ function ui_card_list_update(doNotUpdateSelectedCard) {
 		cardElt.text(card.title);
 		newCardInList.append(cardElt);
 
-		if (card.title && card.title.length > 0) {
+		if (card.title !== 'SEPARATOR') {
 			cardElt.click(ui_card_list_select_card);
 
 			let countBlock = $('<div class="card-count"></div>');
@@ -369,6 +395,8 @@ function ui_card_list_update(doNotUpdateSelectedCard) {
 				newCardInList.addClass('card-error');
 			else
 				newCardInList.removeClass('card-error');
+		} else {
+			cardElt.addClass('separator');
 		}
 		cardsList.append(newCardInList);
 	}
@@ -380,8 +408,9 @@ function ui_card_list_update(doNotUpdateSelectedCard) {
 function ui_update_selected_card() {
 	g_dontRenderSelectedCard = true;
 	let card = g_deck.cards[g_ui.selectedCardIdx];
+	let cardType = 'Card';
 	if (card) {
-		$('#card-type').val(card.constructor.name);
+		cardType = card.constructor.name;
 
 		$('#card-title').val(card.title);
 		$('#card-title-multiline').prop('checked', card.title_multiline);
@@ -494,8 +523,6 @@ function ui_update_selected_card() {
 			$('#card-contents').attr('rows', 27);
 		}
 	} else {
-		$('#card-type').val('');
-
 		$('#card-title').val('');
 		$('#card-title-multiline').prop('checked', false);
 		$('#card-subtitle').val('');
@@ -514,6 +541,8 @@ function ui_update_selected_card() {
 		$('.spell-only').hide();
 		$('.power-only').hide();
 	}
+	$('#card-form-container').attr('card-type', cardType);
+	$('#card-type').val(cardType);
 
 	if (g_deck.cards.length > 0) {
 		let cardsList = $('#cards-list');
@@ -583,6 +612,18 @@ function ui_change_option() {
 	ui_render_selected_card();
 }
 
+function ui_change_default_type() {
+	const couldSave = g_canSave;
+	g_canSave = false;
+	let cardType = $('#default-card-type').val();
+	$('#default-color-selector').colorselector('setColor', g_deck.options.cardsDefault[cardType].color);
+	$('#default-color-front-selector').colorselector('setColor', g_deck.options.cardsDefault[cardType].color_front);
+	$('#default-icon').val(g_deck.options.cardsDefault['Card'].icon);
+	$('#default-color-back-selector').colorselector('setColor', g_deck.options.cardsDefault[cardType].color_back);
+	$('#default-icon-back').val(g_deck.options.cardsDefault['Card'].icon_back);
+	g_canSave = couldSave;
+}
+
 function ui_change_default_property() {
 	let property = $(this).attr('data-property');
 	let value;
@@ -590,8 +631,29 @@ function ui_change_default_property() {
 		value = $(this).is(':checked');
 	else
 		value = $(this).val();
-	g_deck.options.cardDefault[property] = value;
+
+	let cardType = $('#default-card-type').val();
+	g_deck.options.cardsDefault[cardType][property] = value;
 	ui_render_selected_card();
+}
+
+function ui_default_change_color() {
+	let color = $(this).val();
+
+	if ($('#' + this.id + '-selector option[value=\'' + color + '\']').length > 0) {
+		// Update the color selector to the entered value
+		$('#' + this.id + '-selector').colorselector('setColor', color);
+	} else {
+		let property = $(this).attr('data-property');
+		ui_default_set_color(color, property);
+	}
+}
+
+function ui_default_set_color(color, property) {
+	let cardType = $('#default-card-type').val();
+	g_deck.options.cardsDefault[cardType][property] = color;
+	
+	ui_card_list_update();
 }
 
 
@@ -626,25 +688,26 @@ function ui_card_change_title() {
 function ui_card_change_color() {
 	let color = $(this).val();
 
-	if ($('#card-color-selector option[value=\'' + color + '\']').length > 0) {
+	if ($('#' + this.id + '-selector option[value=\'' + color + '\']').length > 0) {
 		// Update the color selector to the entered value
-		$('#card-color-selector').colorselector('setColor', color);
+		$('#' + this.id + '-selector').colorselector('setColor', color);
 	} else {
-		ui_card_set_color(color);
+		let property = $(this).attr('data-property');
+		ui_card_set_color(color, property);
 	}
 }
 
-function ui_card_set_color(value) {
+function ui_card_set_color(color, property) {
 	let card = g_deck.cards[g_ui.selectedCardIdx];
 	if (card) {
-		if (value) {
-			card.color = value;
+		if (color) {
+			card[property] = color;
 		} else {
-			card.color = g_deck.options.cardDefault.color;
+			card[property] = g_deck.options.cardsDefault[card.constructor.name][property];
 		}
 
 		if (g_ui.selectedCardIdx || g_ui.selectedCardIdx === 0)
-			$('#cards-list')[0].children[g_ui.selectedCardIdx].style.backgroundColor = card.color + '29';
+			$('#cards-list')[0].children[g_ui.selectedCardIdx].style.backgroundColor = card[property] + '29';
 
 		ui_render_selected_card();
 	}
@@ -880,23 +943,19 @@ function ui_fold_block() {
 		g_ui.foldedBlocks[foldedBlock.selector] = button.selector;
 		foldedBlock.hide();
 		let buttonsPoints = button[0].children[0].children[0].points;
-		buttonsPoints[0].x = 0;
-		buttonsPoints[0].y = 0;
-		buttonsPoints[1].x = 100;
-		buttonsPoints[1].y = 50;
-		buttonsPoints[2].x = 0;
-		buttonsPoints[2].y = 100;
+		buttonsPoints[1].x = 0;
+		buttonsPoints[1].y = 10;
+		buttonsPoints[2].x = 10;
+		buttonsPoints[2].y = 5;
 	} else {
 		shouldSave = g_ui.foldedBlocks[foldedBlock.selector];
 		g_ui.foldedBlocks[foldedBlock.selector] = null;
 		foldedBlock.show();
 		let buttonsPoints = button[0].children[0].children[0].points;
-		buttonsPoints[0].x = 0;
-		buttonsPoints[0].y = 0;
-		buttonsPoints[1].x = 100;
+		buttonsPoints[1].x = 10;
 		buttonsPoints[1].y = 0;
-		buttonsPoints[2].x = 50;
-		buttonsPoints[2].y = 100;
+		buttonsPoints[2].x = 5;
+		buttonsPoints[2].y = 10;
 	}
 
 	if (shouldSave)
@@ -1091,28 +1150,31 @@ function ui_setup_color_selector() {
 	});
 
 	// Callbacks for when the user picks a color
+	$('#default-color-selector').colorselector({
+		callback: function (value, color, title) {
+			$('#default-color').val(title);
+			ui_default_set_color(color, 'color');
+		}
+	});
+
 	$('#default-color-front-selector').colorselector({
 		callback: function (value, color, title) {
 			$('#default-color-front').val(title);
-			g_deck.options.cardDefault.color_front = title;
-			ui_render_selected_card();
+			ui_default_set_color(color, 'color_front');
 		}
 	});
-	$('#default-color-front-selector').colorselector('setColor', g_deck.options.cardDefault.color_front);
 
 	$('#default-color-back-selector').colorselector({
 		callback: function (value, color, title) {
 			$('#default-color-back').val(title);
-			g_deck.options.cardDefault.color_back = title;
-			ui_render_selected_card();
+			ui_default_set_color(color, 'color_back');
 		}
 	});
-	$('#default-color-back-selector').colorselector('setColor', g_deck.options.cardDefault.color_back);
 
 	$('#card-color-selector').colorselector({
 		callback: function (value, color, title) {
 			$('#card-color').val(title);
-			ui_card_set_color(value);
+			ui_card_set_color(color, 'color');
 		}
 	});
 
@@ -1132,6 +1194,8 @@ $(document).ready(function () {
 		}
 	};
 	$(document).on('keydown', ui_document_shortcut);
+
+	g_canSave = false;
 
 	ui_setup_resize();
 
@@ -1156,6 +1220,8 @@ $(document).ready(function () {
 	}
 
 	$('.btn-fold-block').click(ui_fold_block);
+	let foldIconElt = $('<svg viewbox="0 0 10 10" preserveaspectratio="none"><polygon points="0,0 10,0 5,10" fill="black" style="stroke-width:1"></polygon></svg>');
+	$('.btn-fold-block').contents().before(foldIconElt);
 	let foldedBlockKeys = Object.keys(g_ui.foldedBlocks);
 	for (let i = 0; i < foldedBlockKeys.length; i++) {
 		if (g_ui.foldedBlocks[foldedBlockKeys[i]])
@@ -1198,17 +1264,19 @@ $(document).ready(function () {
 	$('#page-columns').val(g_deck.options.pageColumns).change(ui_change_option);
 	$('#card-arrangement').val(g_deck.options.cardsArrangement).change(ui_change_option);
 	$('#card-size').val(g_deck.options.cardsSize).change(ui_change_option);
-
-	// ----- Default values
-
 	$('#round-corners').prop('checked', g_deck.options.roundCorners).change(ui_change_option);
 	$('#spell-classes').prop('checked', g_deck.options.showSpellClasses).change(ui_change_option);
 	$('#small-icons').prop('checked', g_deck.options.smallIcons).change(ui_change_option);
-	$('#default-color-front').change(ui_change_default_property);
-	$('#default-icon').val(g_deck.options.cardDefault.icon).change(ui_change_default_property);
-	$('#default-color-back').change(ui_change_default_property);
-	$('#default-icon-back').val(g_deck.options.cardDefault.icon_back).change(ui_change_default_property);
 	$('#title-size').val(g_deck.options.titleSize).change(ui_change_option);
+
+	// ----- Default values
+
+	$('#default-card-type').change(ui_change_default_type).val('Card').change();
+	$('#default-color').change(ui_default_change_color);
+	$('#default-color-front').change(ui_default_change_color);
+	$('#default-icon').change(ui_change_default_property);
+	$('#default-color-back').change(ui_default_change_color);
+	$('#default-icon-back').change(ui_change_default_property);
 
 	// ----- Cards list
 
@@ -1318,6 +1386,7 @@ $(document).ready(function () {
 
 	ui_card_list_update();
 
+	g_canSave = true;
 
 	$(window).resize();
 });

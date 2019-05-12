@@ -4,15 +4,8 @@ export class ItemCard extends Card {
 	constructor() {
 		super();
 		this.color = '#696969';
+		this.color_front = this.color;
+		this.color_back = this.color;
 		this.icon = 'swap-bag';
-	}
-
-	/**
-	 * @returns {ItemCard}
-	 */
-	clone() {
-		let card = new ItemCard();
-		Object.assign(card, this);
-		return card;
 	}
 }

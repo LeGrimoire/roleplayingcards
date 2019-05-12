@@ -13,7 +13,6 @@ export function CardExamples() {
 
 	let card = new Card();
 	card.title = 'All';
-	card.color = 'DarkGray';
 	card.contents = [
 		'comment | icon | name | size | align',
 		'icon | oak-leaf | 15 | right',
@@ -37,8 +36,6 @@ export function CardExamples() {
 	];
 	card.count = 1;
 	cards.push(card);
-	
-	cards.push(new Card());
 
 	let creature = new CreatureCard();
 	creature.title = 'Creature';
@@ -92,7 +89,7 @@ export function CardExamples() {
 	power.count = 1;
 	cards.push(power);
 	
-	cards.push(new Card());
+	cards.push(new Card('SEPARATOR'));
 
 	let goblin = new CreatureCard();
 	goblin.title = 'Goblin';
@@ -207,7 +204,7 @@ export function CardExamples() {
 	let cunningAction = new PowerCard();
 	cunningAction.title = 'Cunning Action';
 	cunningAction.subtitle = 'Rogue feature';
-	cunningAction.color = 'indigo';
+	cunningAction.color = '#4B0082';
 	cunningAction.icon_back = 'cloak-dagger';
 	cunningAction.contents = [
 		'You can take a <b>bonus action on each of your turns</b> in combat. This action can be used only to take the <b>Dash, Disengage, or Hide</b> action.',

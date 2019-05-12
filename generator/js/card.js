@@ -7,8 +7,8 @@ export class Card {
 	title_multiline = false;
 	subtitle = '';
 	color = '#A9A9A9';
-	color_front = '';
-	color_back = '';
+	color_front = this.color;
+	color_back = this.color;
 	icon = '';
 	icon_back = '';
 	background_image = '';
@@ -23,7 +23,9 @@ export class Card {
 	#table_previous_line_colored = false;
 	#element_counts = {};
 
-	constructor() {
+	constructor(title) {
+		if (title)
+			this.title = title;
 	}
 
 	get error() {
@@ -47,13 +49,62 @@ export class Card {
 		return this.#element_counts;
 	}
 
+	/**
+	 * @param {DeckOptions} options
+	 * @param {string} space
+	 */
+	stringify(options, space) {
+		let result = space ? '\n' + space + '{' : '{';
+		let hasTrailingComma = false;
+		for (const property in this) {
+			if (Array.isArray(this[property]) && this[property].length === 0)
+				continue;
+
+			if (!options || this[property] !== options.cardsDefault[this.constructor.name][property]) {
+				hasTrailingComma = true;
+				if (space) {
+					result += '\n' + space + '\t"' + property + '":';
+					result += JSON.stringify(this[property], null, space + '\t\t');
+					if (Array.isArray(this[property])) // Fix JSON issue with the closing bracket not indented
+						result = result.slice(0, result.length - 1) + space + '\t]';
+					result += ',';
+				} else {
+					result += '"' + property + '":';
+					result += JSON.stringify(this[property]);
+					result += ',';
+				}
+			}
+		}
+
+		if (this.constructor !== Card) {
+			hasTrailingComma = false;
+			if (space) {
+				result += '\n' + space + '\t"cardType": "' + this.constructor.name + '"';
+			} else {
+				result += '"cardType":"' + this.constructor.name + '"';
+			}
+		}
+
+		if (space) {
+			if (hasTrailingComma)
+				result = result.slice(0, result.length - 1);// Remove the last ','
+			result += '\n' + space + '}';
+		} else {
+			if (hasTrailingComma)
+				result = result.slice(0, result.length - 1);// Remove the last ','
+			result += '}';
+		}
+		return result;
+	}
+
 
 	/**
 	 * @returns {Card}
 	 */
 	clone() {
-		let card = new Card();
+		let card = new this.constructor();
 		Object.assign(card, this);
+		card.update();
 		return card;
 	}
 
@@ -102,39 +153,47 @@ export class Card {
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
+	 * @returns {string}
+	 */
+	colorContent(options) {
+		return this.color || options.cardsDefault[this.constructor.name].color || this.color_front || options.cardsDefault[this.constructor.name].color_front || '#000000';
+	}
+
+	/**
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	colorFront(options) {
-		return this.color_front || this.color || options.cardDefault.color_front || options.cardDefault.color || '#000000';
+		return this.color_front || options.cardsDefault[this.constructor.name].color_front || this.color || options.cardsDefault[this.constructor.name].color || '#000000';
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	colorBack(options) {
-		return this.color_back || this.color || options.cardDefault.color_back || options.cardDefault.color || '#000000';
+		return this.color_back || options.cardsDefault[this.constructor.name].color_back || this.color || options.cardsDefault[this.constructor.name].color || '#000000';
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	iconFront(options) {
-		return this.icon || options.cardDefault.icon || '';
+		return this.icon || options.cardsDefault[this.constructor.name].icon || '';
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	iconBack(options) {
-		return this.icon_back || this.icon || options.cardDefault.icon || '';
+		return this.icon_back || this.icon || options.cardsDefault[this.constructor.name].icon || '';
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -145,7 +204,7 @@ export class Card {
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -163,7 +222,7 @@ export class Card {
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -175,7 +234,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} parts
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	generateElement(parts, options) {
@@ -190,7 +249,7 @@ export class Card {
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -214,7 +273,7 @@ export class Card {
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -224,7 +283,7 @@ export class Card {
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -234,7 +293,7 @@ export class Card {
 	}
 
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	generateFront(options) {
@@ -265,7 +324,7 @@ export class Card {
 	}
 	
 	/**
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	generateBack(options) {
@@ -309,7 +368,7 @@ export class Card {
 
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -323,7 +382,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -337,7 +396,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -351,7 +410,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -365,12 +424,12 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
 	generateElement_section(params, options) {
-		let color = this.colorFront(options);
+		let color = this.colorContent(options);
 		let result = '';
 		result += '<div class="card-element">';
 		result += '<div class="card-section" style="color:' + color + '">';
@@ -385,7 +444,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -405,7 +464,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -417,12 +476,12 @@ export class Card {
 
 	/**
 	 * @param {string[]} params height | dash
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
 	generateElement_line(params, options) {
-		let color = this.colorFront(options);
+		let color = this.colorContent(options);
 		let styleDash = '';
 		let height = params[0] || '1';
 		if (params[1] && params[1].indexOf('dash') > -1) {
@@ -438,12 +497,12 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
 	generateElement_ruler(params, options) {
-		let color = this.colorFront(options);
+		let color = this.colorContent(options);
 	
 		let result = '';
 		result += '<svg class="card-ruler" viewbox="0 0 10 10" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">';
@@ -461,7 +520,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -472,7 +531,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -483,12 +542,12 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
 	generateElement_boxes(params, options) {
-		let color = this.colorFront(options);
+		let color = this.colorContent(options);
 		let count = params[0] || 1;
 		let size = params[1] || 1;
 		let styleSvg = 'width:' + size + 'em;min-width:' + size + 'em;height:' + size + 'em;min-height:' + size + 'em;';
@@ -535,12 +594,12 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
 	generateElement_circles(params, options) {
-		let color = this.colorFront(options);
+		let color = this.colorContent(options);
 		let count = params[0] || 1;
 		let size = params[1] || 1;
 		let styleSvg = 'width:' + size + 'em;min-width:' + size + 'em;height:' + size + 'em;';
@@ -573,7 +632,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -587,7 +646,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -608,7 +667,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -629,7 +688,7 @@ export class Card {
 
 	/**
 	 * @param {string[]} params name | size | alignment background
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -638,7 +697,7 @@ export class Card {
 		let size = params[1] || '40';
 		let background = '';
 		if (params[2] && params[2].includes('background')) {
-			background = 'background-color:' + this.colorFront(options) + ';border-radius: 1px;';
+			background = 'background-color:' + this.colorContent(options) + ';border-radius: 1px;';
 			params[2] = params[2].replace('background', '');
 		}
 		let align = params[2] || 'center';
@@ -657,7 +716,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -665,20 +724,20 @@ export class Card {
 		let url = params[0] || '';
 		let height = params[1] || '';
 		let width = params[2] || height || '';
-		let color = this.colorFront(options);
+		let color = this.colorContent(options);
 		return '<div class="card-element card-picture" style ="background-image: url(&quot;' + url + '&quot;); background-size: contain; background-position: center;background-repeat: no-repeat;height:' + height + 'px;width:' + width + 'px;background-color: ' + color + '"></div>';
 	}
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
 	generateElement_table_header(params, options) {
 		this.isPreviousLineColored = true;
 		let result = '';
-		result += '<table class="card-element card-table card-table-header" style="background-color:' + this.colorFront(options) + '66;">';
+		result += '<table class="card-element card-table card-table-header" style="background-color:' + this.colorContent(options) + '66;">';
 		result += '<tr>';
 		let width = 100 / params.length;
 		for (let i = 0; i < params.length; i++) {
@@ -691,7 +750,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -699,9 +758,9 @@ export class Card {
 		let result = '';
 		let style = '';
 		if (this.isPreviousLineColored)
-			style = 'background-color:' + this.colorFront(options) + '0d;';
+			style = 'background-color:' + this.colorContent(options) + '0d;';
 		else
-			style = 'background-color:' + this.colorFront(options) + '22;';
+			style = 'background-color:' + this.colorContent(options) + '22;';
 		result += '<table class="card-element card-table card-table-line" style="' + style + '">';
 		result += '<tr>';
 		let width = 100 / params.length;
@@ -715,7 +774,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
@@ -723,9 +782,9 @@ export class Card {
 		let result = '';
 		let style = '';
 		if (this.isPreviousLineColored)
-			style = 'background-color:' + this.colorFront(options) + '0d;';
+			style = 'background-color:' + this.colorContent(options) + '0d;';
 		else
-			style = 'background-color:' + this.colorFront(options) + '22;';
+			style = 'background-color:' + this.colorContent(options) + '22;';
 		result += '<table class="card-element card-table card-table-line" style="text-align:center;' + style + '">';
 		result += '<tr>';
 		let width = 100 / params.length;
@@ -739,7 +798,7 @@ export class Card {
 	
 	/**
 	 * @param {string[]} params
-	 * @param {DocumentOptions} options
+	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
 	// eslint-disable-next-line no-unused-vars
