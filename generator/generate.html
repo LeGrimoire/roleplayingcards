@@ -14,7 +14,12 @@
     <!-- Library: Color picker -->
     <script type="application/javascript" src="lib/colorpicker/js/bootstrap-colorselector.js" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="lib/colorpicker/css/bootstrap-colorselector.css" />
-    <!-- Javascript -->
+	<!-- Javascript -->
+	<script type="application/javascript">
+		(async () => {
+			await import('./js/i18n.js');
+		})();
+	</script>
     <script type="module" src="js/ui.js"></script>
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="css/ui.css" />
@@ -138,7 +143,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="title-size" class="col-sm-2 control-label">Title</label>
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <select class="form-control" id="title-size" data-property="titleSize">
                                         <option value="16">16pt</option>
                                         <option value="15">15pt</option>
@@ -548,6 +553,24 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal (Language) -->
+    <div class="modal" id="language-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Language</h4>
+                </div>
+                <div class="modal-body">
+					<div id="language-list">
+						<button type="button" class="btn btn-default" data-local="fr">Français</button>
+						<button type="button" class="btn btn-default" data-local="en">English</button>
+					</div>
                 </div>
             </div>
         </div>

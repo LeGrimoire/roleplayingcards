@@ -1,6 +1,6 @@
 
 import { Card } from '../js/card.js';
-import { I18N } from '../js/i18n_french.js';
+import { I18N } from '../js/i18n.js';
 
 /**
  * @returns {Card[]}

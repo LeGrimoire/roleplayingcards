@@ -92,9 +92,10 @@ export class DeckOptions {
 
 export class Deck {
 	#cards = [];
-	options = new DeckOptions();
+	options = null;
 
 	constructor() {
+		this.options = new DeckOptions();
 	}
 
 	get cards() {

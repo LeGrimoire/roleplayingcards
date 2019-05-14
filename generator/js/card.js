@@ -1,4 +1,4 @@
-import { I18N } from './i18n_french.js';
+import { I18N } from './i18n.js';
 
 
 export class Card {

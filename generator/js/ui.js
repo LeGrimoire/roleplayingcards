@@ -6,11 +6,12 @@ import { PowerCard } from './card_power.js';
 import { SpellCard } from './card_spell.js';
 import { card_colors } from './colors.js';
 import { Deck } from './deck.js';
-import { I18N } from './i18n_french.js';
+import { I18N, updateLocal } from './i18n.js';
 import { icon_names } from './icons.js';
+import { is_storage_available } from './storage.js';
 
 // Ugly global variable holding the current card deck
-var g_deck = new Deck();
+var g_deck = null;
 
 var g_ui = {
 	foldedSections: {},
@@ -30,31 +31,6 @@ var g_canSave;
 // ============================================================================
 // Data save/load
 // ============================================================================
-
-// Adding support for local store
-function is_storage_available(type) {
-	try {
-		var storage = window[type],
-			x = '__storage_test__';
-		storage.setItem(x, x);
-		storage.removeItem(x);
-		return true;
-	}
-	catch (e) {
-		return e instanceof DOMException && (
-			// Everything except Firefox
-			e.code === 22 ||
-			// Firefox
-			e.code === 1014 ||
-			// Test name field too, because code might not be present
-			// Everything except Firefox
-			e.name === 'QuotaExceededError' ||
-			// Firefox
-			e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-			// Acknowledge QuotaExceededError only if there's something already stored
-			storage.length !== 0;
-	}
-}
 
 function local_store_cards_save() {
 	if (g_canSave && is_storage_available('localStorage') && window.localStorage) {
@@ -103,6 +79,17 @@ function local_store_ui_load() {
 }
 
 
+function ui_update_local() {
+	$('#language-modal').modal('hide');
+
+	let local = $(this).attr('data-local');
+
+	// Save the desired local
+	updateLocal(local);
+
+	// Reload the window with the choose local
+	location.reload();
+}
 
 function ui_sort_execute() {
 	$('#sort-modal').modal('hide');
@@ -1186,7 +1173,9 @@ function ui_setup_color_selector() {
 // Page load setup
 // ============================================================================
 
-$(document).ready(function () {
+$(async function () {
+	await import('./i18n.js');
+
 	let preventPageDownOrUp = function (e) {
 		if (e.key === 'PageUp' || e.key === 'PageDown') { // Pg up or down
 			if (e.preventDefault)
@@ -1194,7 +1183,8 @@ $(document).ready(function () {
 		}
 	};
 	$(document).on('keydown', ui_document_shortcut);
-
+	
+	g_deck = new Deck();
 	g_canSave = false;
 
 	ui_setup_resize();
@@ -1238,7 +1228,8 @@ $(document).ready(function () {
 	$('.icon-select-button').click(function () { window.open('http://game-icons.net/', '_blank'); });
 
 	$('#button-help').click(function () { $('#help-modal').modal('show'); });
-	$('#button-language').click();// TODO GREGOIRE
+	$('#button-language').click(function () { $('#language-modal').modal('show'); });
+	$('#language-list button').click(ui_update_local);
 	$('#button-sort').click(function () { $('#sort-modal').modal('show'); });
 	$('#sort-execute').click(ui_sort_execute);
 	$('#button-filter').click(function () { $('#filter-modal').modal('show'); });

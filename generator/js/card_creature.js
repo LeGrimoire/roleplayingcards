@@ -1,4 +1,4 @@
-import { I18N } from './i18n_french.js';
+import { I18N } from './i18n.js';
 import { Card } from './card.js';
 
 export class CreatureCard extends Card {
@@ -190,6 +190,46 @@ export class CreatureCard extends Card {
 			result += this.generateElement_property([I18N.RESISTANCES, this.resistances], options);
 		if (this.immunities)
 			result += this.generateElement_property([I18N.IMMUNITIES, this.immunities], options);
+		return result;
+	}
+	
+
+	/**
+	 * @param {string[]} params
+	 * @param {DeckOptions} options
+	 * @returns {string}
+	 */
+	// eslint-disable-next-line no-unused-vars
+	generateElement_spells(params, options) {
+		let result = '';
+		result += '<div class="card-element card-spells-line">';
+		if (params[0])
+			result += '<h4 class="card-inlineicon icon-spell-caster_' + params[0] + '"></h4>';
+		else
+			result += '<h4 class="card-inlineicon icon-spell-caster"></h4>';
+		result += '<p class="card-spells-ability">' + params[1] + '</p>';
+		if (params.length === 3) {
+			result += '<p class="card-spells-level"><span class="card-inlineicon icon-spell-level"></span></p>';
+			result += '<p class="card-spells-list">' + params[2] + '</p>';
+		} else {
+			if (params[2]) {
+				result += '<p class="card-spells-level"><span class="card-inlineicon icon-spell-level_0"></span></p>';
+				result += '<p class="card-spells-list">' + params[2] + '</p>';
+			}
+			let last = params.length - 1;
+			for (let i = 1; i < 9; i++) {
+				let level = 2 * i + 1;
+				if (params[level] && params[level + 1]) {
+					last = level + 2;
+
+					result += '<p class="card-spells-level"><span class="card-inlineicon icon-spell-level_' + i + '"></span>(' + params[level] + ')</p>';
+					result += '<p class="card-spells-list">' + params[level + 1] + '</p>';
+				}
+			}
+			if (last > 2 && params[last])
+				result += '<p class="card-spells-text">' + Card.parse_icons_params(params[last]) + '</p>';
+		}
+		result += '</div>';
 		return result;
 	}
 

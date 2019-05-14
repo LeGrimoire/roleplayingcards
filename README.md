@@ -17,7 +17,7 @@ In active development. I have a list of stuffs i would like to improve/add, but 
 =====================
 
 - What browsers are supported?
-  - A modern browser (Chrome, Firefox, Edge, Safari). The generator has some issues on IE.
+  - This poject uses ES6 features like `import` and `class`, therefore it's not supported by all browsers. It works on Chrome 73+ and the list of supported browsers will be updated later. 
 - Cards are generated without icons and background colors, what's wrong?
   - Enable printing backround images in your browser print dialog
 - I can't find an icon that I've seen on [game-icons.net](https://game-icons.net), where is it?
