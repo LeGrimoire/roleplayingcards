@@ -109,7 +109,14 @@ export class CreatureCard extends Card {
 		else
 			result += '    <p class="card-title-xp">' + this.xp + 'px</p>';
 		result += '</div>';
-		result += '<div class="card-subtitle card-creature-subtitle">' + this.type + ', taille ' + this.size;
+		result += '<div class="card-subtitle card-creature-subtitle">';
+		if (this.type) {
+			result += this.type;
+			if (this.size) 
+				result += ', ';
+		}
+		if (this.size)
+			result += 'taille ' + this.size;
 		if (this.alignment)
 			result += '<div style="float:right">' + this.alignment + '</div>';
 		result += '</div>';
