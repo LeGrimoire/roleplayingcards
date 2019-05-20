@@ -260,7 +260,7 @@ export const I18N = {
 		SAMPLE: 'Ins. examples',
 		LEXICAL: 'Ins. lexique',
 		CLEAR: 'Supprimer tout',
-		IMPORT: 'Importer fichier',
+		IMPORT: 'Charger',
 		SAVE: 'Sauvegarder',
 		GENERATE: 'Génerer',
 		FILE: 'Fichier',

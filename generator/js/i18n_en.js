@@ -245,7 +245,7 @@ export const I18N = {
 		SAMPLE: 'Add sample',
 		LEXICAL: 'Ins. lexical',
 		CLEAR: 'Delete all',
-		IMPORT: 'Import file',
+		IMPORT: 'Load file',
 		SAVE: 'Save to file',
 		GENERATE: 'Generate',
 		FILE: 'File',

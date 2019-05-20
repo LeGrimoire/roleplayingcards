@@ -1127,7 +1127,7 @@ function ui_update_lang() {
 	$('#card-icon-back-label').text(I18N.get('UI.BACK_ICON'));
 	$('#card-icon-back').attr('placeholder', I18N.get('UI.SAME_AS_FRONT'));
 	$('#card-background-label').text(I18N.get('UI.BACKGROUND'));
-	$('#card-background').attr('placeholder', I18N.get('UI.DEFAULT'));
+	$('#card-background').attr('placeholder', 'url');
 	$('#card-description-label').text(I18N.get('UI.BACK_DESCRIPTION'));
 	$('#card-creature-cr-label').text(I18N.get('CREATURE.CR'));
 	$('#card-creature-size-label').text(I18N.get('UI.SIZE'));
