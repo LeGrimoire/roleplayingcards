@@ -7,7 +7,8 @@
 	"extends": "eslint:recommended",
 	"globals": {
 		"Atomics": "readonly",
-		"SharedArrayBuffer": "readonly"
+		"SharedArrayBuffer": "readonly",
+		"Promise": "readonly"
 	},
 	"parser": "babel-eslint",
 	"parserOptions": {
@@ -46,10 +47,12 @@
 		"spaced-comment": [
 			"error"
 		],
+		"no-shadow": "error",
 		"new-parens": "warn",
 		"prefer-rest-params": "warn",
 		"no-self-assign": "warn",
 		"no-self-compare": "warn",
+		"no-var": "error",
 		"jsdoc/check-alignment": "warn",
 		"jsdoc/check-examples": "warn",
 		"jsdoc/check-indentation": "warn",
@@ -64,10 +67,11 @@
 	},
 	"settings": {
 		"jsdoc": {
+			"exemptEmptyFunctions": true,
 			"noDefaultExampleRules": true,
 			"tagNamePreference": {
 				"param": "param",
-				"returns": "returns"
+				"returns": "return"
 			}
 		}
 	}

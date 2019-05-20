@@ -4,30 +4,30 @@
   "description": "RPG card generator",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/crobi/rpg-cards.git"
+    "url": "git+https://github.com/Radnap/crobi-rpg-cards.git"
   },
-  "author": "Robert Autenrieth",
-  "license": "ISC",
+  "author": "Grégoire André",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/crobi/rpg-cards/issues"
+    "url": "https://github.com/Radnap/crobi-rpg-cards/issues"
   },
-  "homepage": "https://github.com/crobi/rpg-cards#readme",
+  "homepage": "https://github.com/Radnap/crobi-rpg-cards#readme",
   "main": "generator/generate.html",
   "devDependencies": {
-    "@types/bootstrap": "^4.3.0",
-    "@types/jquery": "^3.3.29",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^4.19.1",
+    "eslint-plugin-jsdoc": "^4.8.4",
     "fs-extra": "^3.0.0",
-    "mv": "^2.1.1",
     "promise-streams": "^1.0.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "unzip": "^0.1.11",
-    "walk": "^2.3.14"
+    "unzip": "^0.1.11"
   },
   "dependencies": {
-    "jquery": "^3.4.0"
+    "jquery": "^3.4.1",
+    "require": "^2.4.20"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified, see package.json\" && exit 1"
   }
 }

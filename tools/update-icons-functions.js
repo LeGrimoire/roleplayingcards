@@ -1,22 +1,19 @@
 'use strict';
 
-const mv = require('mv');
 const fse = require('fs-extra');
 const http = require('https');
 const path = require('path');
-const walk = require('walk');
 const unzip = require('unzip');
 const child_process = require('child_process');
-const ncp = require('ncp');
 
-const gameIconsUrl = "https://game-icons.net/archives/png/zip/ffffff/transparent/game-icons.net.png.zip";
-const tempFilePath = "./temp.zip";
-const tempDir = "./temp";
-const imgDir = "./generator/img";
-const imgSrcDir = "./resources";
-const cssPath = "./generator/css/icons.css";
-const jsPath = "./generator/js/icons.js";
-const excludeCfgPath = "./generator_exclude.cfg";
+const gameIconsUrl = 'https://game-icons.net/archives/png/zip/ffffff/transparent/game-icons.net.png.zip';
+const tempFilePath = './temp.zip';
+const tempDir = './temp';
+const imgDir = './generator/img';
+const imgSrcDir = './resources';
+const cssPath = './generator/css/icons.css';
+const jsPath = './generator/js/icons.js';
+const excludeCfgPath = './generator_exclude.cfg';
 // const processIconsCmd = 'mogrify -background white -alpha shape *.png';
 const processIconsCmd = 'mogrify -channel-fx "red=100%, blue=100%, green=100%" *.png';
 
@@ -43,7 +40,7 @@ async function unzipAll(src, dest) {
 			const fileName = entry.path;
 			const baseName = path.basename(fileName);
 			const type = entry.type;
-			if (type === "File") {
+			if (type === 'File') {
 				entry.pipe(fse.createWriteStream(path.join(dest, baseName)));
 			} else {
 				entry.autodrain();
@@ -64,29 +61,31 @@ async function copyAll(src, dest) {
 // ----------------------------------------------------------------------------
 // Process icons
 // ----------------------------------------------------------------------------
-async function transformAll(path) {
-	console.log('Transforming png ' + path + ' (this will take a while)...');
+async function transformAll(filepath) {
+	console.log('Transforming png ' + filepath + ' (this will take a while)...');
 	try {
-		child_process.exec(processIconsCmd, { cwd: path });
-	} catch (err) { }
-	console.log('Transforming png ' + path + ' => DONE');
+		child_process.exec(processIconsCmd, { cwd: filepath });
+	} catch (err) { 
+		console.log(err.stack);
+	}
+	console.log('Transforming png ' + filepath + ' => DONE');
 
-	var buffer = fse.readFileSync(excludeCfgPath);
-	var excludeFolders = [];
+	let buffer = fse.readFileSync(excludeCfgPath);
+	let excludeFolders = [];
 	if (buffer) {
-		excludeFolders = buffer.toString().split("\n");
+		excludeFolders = buffer.toString().split('\n');
 	}
 
 	// Subdirectories icons
-	var subDir = fse.readdirSync(path).filter(file => fse.lstatSync(path + '/' + file).isDirectory());
-	for (var i = 0; i < subDir.length; i++) {
-		var e = excludeFolders.indexOf(path + '/' + subDir[i]);
+	let subDir = fse.readdirSync(filepath).filter(file => fse.lstatSync(filepath + '/' + file).isDirectory());
+	for (let i = 0; i < subDir.length; i++) {
+		let e = excludeFolders.indexOf(filepath + '/' + subDir[i]);
 		if (e >= 0)
 			continue;
 		try {
-			console.log('Transforming png ' + path + '/' + subDir[i] + ' (this will take a while)...');
-			child_process.exec(processIconsCmd, { cwd: path + '/' + subDir[i] });
-			console.log('Transforming png ' + path + '/' + subDir[i] + ' => DONE');
+			console.log('Transforming png ' + filepath + '/' + subDir[i] + ' (this will take a while)...');
+			child_process.exec(processIconsCmd, { cwd: filepath + '/' + subDir[i] });
+			console.log('Transforming png ' + filepath + '/' + subDir[i] + ' => DONE');
 		} catch (error) {
 			console.log('No pictures found in "' + subDir[i] + '"');
 		}
@@ -102,15 +101,15 @@ async function generateCSS(src, dest) {
 		if (err) {
 			throw err;
 		} else {
-			var content = "";
+			let content = '';
 			files.map(function (name) {
-				if (fse.lstatSync(src + "/" + name).isDirectory()) {
-					var subDirFiles = fse.readdirSync(src + "/" + name);
+				if (fse.lstatSync(src + '/' + name).isDirectory()) {
+					let subDirFiles = fse.readdirSync(src + '/' + name);
 					subDirFiles.map(function (subDirName) {
-						content += '.icon-' + name + '-' + subDirName.replace(".png", "").replace(".jpg", "") + '{background-image:url(../img/' + name + '/' + subDirName + ');}\n';
+						content += '.icon-' + name + '-' + subDirName.replace('.png', '').replace('.jpg', '') + '{background-image:url(../img/' + name + '/' + subDirName + ');}\n';
 					});
 				} else
-					content += '.icon-' + name.replace(".png", "").replace(".jpg", "") + '{background-image:url(../img/' + name + ');}\n';
+					content += '.icon-' + name.replace('.png', '').replace('.jpg', '') + '{background-image:url(../img/' + name + ');}\n';
 			});
 
 			fse.outputFile(dest, content);
@@ -128,15 +127,15 @@ async function generateJS(src, dest) {
 		if (err) {
 			throw err;
 		} else {
-			var content = "export const icon_names = [\n";
+			let content = 'export const icon_names = [\n';
 			files.map(function (name) {
-				if (fse.lstatSync(src + "/" + name).isDirectory()) {
-					var subDirFiles = fse.readdirSync(src + "/" + name);
+				if (fse.lstatSync(src + '/' + name).isDirectory()) {
+					let subDirFiles = fse.readdirSync(src + '/' + name);
 					subDirFiles.map(function (subDirName) {
-						content += '    "' + name + '-' + subDirName.replace(".png", "").replace(".jpg", "") + '",\n';
+						content += '    "' + name + '-' + subDirName.replace('.png', '').replace('.jpg', '') + '",\n';
 					});
 				} else
-					content += '    "' + name.replace(".png", "").replace(".jpg", "") + '",\n';
+					content += '    "' + name.replace('.png', '').replace('.jpg', '') + '",\n';
 			});
 			content += '];\n';
 
@@ -169,7 +168,7 @@ exports.update = async function () {
 	} catch (err) {
 		console.error('Error', err);
 	}
-}
+};
 
 exports.update_no_dl = async function () {
 	try {
@@ -187,7 +186,7 @@ exports.update_no_dl = async function () {
 	} catch (err) {
 		console.error('Error', err);
 	}
-}
+};
 
 exports.update_no_dl_no_transform = async function () {
 	try {
@@ -201,4 +200,4 @@ exports.update_no_dl_no_transform = async function () {
 	} catch (err) {
 		console.error('Error', err);
 	}
-}
+};
