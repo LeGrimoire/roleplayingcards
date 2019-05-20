@@ -136,6 +136,7 @@ function insert_lexical() {
 
 function clear_all() {
 	g_deck.clear();
+	g_ui.filename.clear();
 	card_list_update();
 }
 

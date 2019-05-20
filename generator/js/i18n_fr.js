@@ -35,6 +35,9 @@ export const I18N = {
 		WISDOM: 'SAG',
 		CHARISMA: 'CHA',
 
+		MAGICAL_CARAC: 'CM',
+		SAVING_THROW: 'JS',
+
 		ALIGNMENTS: {
 			UNALIGNED: 'Sans alignement',
 			ANY_ALIGNMENT: 'Tout alignement',

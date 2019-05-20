@@ -153,18 +153,23 @@ export class CreatureCard extends Card {
 		let saving = ['', '', '', '', '', ''];
 		for (let i = 0; i < 6; ++i) {
 			stats[i] = this.stats[i];
-			if (stats[i].includes('M')) {
-				stats[i] = stats[i].replace('M', '');
-				spellcasting[i] = '<span class="card-stats-header-spellcasting">CM</span>';
+
+			if (i >= 3) {
+				if (stats[i].includes('M')) {
+					stats[i] = stats[i].replace('M', '');
+					spellcasting[i] = '<span class="card-stats-header-spellcasting">' + I18N.get('CREATURE.MAGICAL_CARAC') + '</span>';
+				}
+				else
+					spellcasting[i] = '<span class="card-stats-header-spellcasting" style="opacity:0.2;">' + I18N.get('CREATURE.MAGICAL_CARAC') + '</span>';	
 			}
-			else
-				spellcasting[i] = '<span class="card-stats-header-spellcasting" style="opacity:0.2;">CM</span>';
+
 			if (stats[i].includes('S')) {
 				stats[i] = stats[i].replace('S', '');
-				saving[i] = '<span class="card-stats-header-saving">JS</span>';
+				saving[i] = '<span class="card-stats-header-saving">' + I18N.get('CREATURE.SAVING_THROW') + '</span>';
 			}
 			else
-				saving[i] = '<span class="card-stats-header-saving" style="opacity:0.25;">JS</span>'; // ○
+				saving[i] = '<span class="card-stats-header-saving" style="opacity:0.25;">' + I18N.get('CREATURE.SAVING_THROW') + '</span>'; // ○
+
 			let stat = parseInt(stats[i], 10) || 0;
 			let mod = Math.floor((stat - 10) / 2);
 			if (mod >= 0)
