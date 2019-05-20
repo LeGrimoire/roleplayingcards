@@ -13,7 +13,7 @@ export class DeckOptions {
 	smallIcons = true;
 	roundCorners = true;
 	showSpellClasses = false;
-	titleSize = '13';
+	titleSize = '14';
 	cardsDefault = {};
 
 	constructor() {
@@ -91,7 +91,7 @@ export class DeckOptions {
 }
 
 export class Deck {
-	#cards = Array<Card>(0);
+	#cards = [];
 	options = new DeckOptions();
 
 	constructor() {
@@ -105,7 +105,7 @@ export class Deck {
 	}
 
 	clear() {
-		this.#cards = [];
+		this.#cards.length = 0;
 	}
 
 	/**
