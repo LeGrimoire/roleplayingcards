@@ -6,7 +6,7 @@ export class CreatureCard extends Card {
 	xp = 100;
 	proficiency = 2;
 	size = 'M';
-	alignment = I18N.ALIGNMENTS.UNALIGNED;
+	alignment = I18N.get('CREATURE.ALIGNMENTS.UNALIGNED');
 	type = '';
 	ac = '10';
 	hp = '3 (1d6)';
@@ -27,6 +27,7 @@ export class CreatureCard extends Card {
 
 	/**
 	 * Update xp and proficiency based on the cr
+	 * @override
 	 */
 	update() {
 		super.update();
@@ -84,6 +85,7 @@ export class CreatureCard extends Card {
 	}
 
 	/**
+	 * @override
      * @param {DeckOptions} options
      * @returns {string}
      */
@@ -115,6 +117,7 @@ export class CreatureCard extends Card {
 	}
 
 	/**
+	 * @override
      * @param {DeckOptions} options
      * @returns {string}
      */
@@ -125,7 +128,7 @@ export class CreatureCard extends Card {
 		result += '<h4 class="card-inlineicon icon-custom-ac"></h4>';
 		result += '<p class="card-property-text">' + this.ac + '</p>';
 		result += '<div class="card-creature-base-element">';
-		result += '<h4 class="card-property-name">' + I18N.PERCEPTION + '.</h4>';
+		result += '<h4 class="card-property-name">' + I18N.get('CREATURE.PERCEPTION') + '.</h4>';
 		result += '<p class="card-property-text">' + this.perception + '</p>';
 		result += '</div>';
 		result += '</div>';
@@ -133,7 +136,7 @@ export class CreatureCard extends Card {
 		result += '<h4 class="card-inlineicon icon-custom-hp"></h4>';
 		result += '<p class="card-property-text">' + this.hp + '</p>';
 		result += '<div class="card-creature-base-element">';
-		result += '<h4 class="card-property-name">' + I18N.SPEED + '.</h4>';
+		result += '<h4 class="card-property-name">' + I18N.get('CREATURE.SPEED') + '.</h4>';
 		result += '<p class="card-property-text">' + this.speed + '</p>';
 		result += '</div>';
 		result += '</div>';
@@ -165,12 +168,12 @@ export class CreatureCard extends Card {
 		result += '<table class="card-stats">';
 		result += '<tbody>';
 		result += '<tr>';
-		result += '<th class="card-stats-header">' + I18N.STRENGTH + spellcasting[0] + saving[0] + '</th>';
-		result += '<th class="card-stats-header">' + I18N.DEXTERITY + spellcasting[1] + saving[1] + '</th>';
-		result += '<th class="card-stats-header">' + I18N.CONSTITUTION + spellcasting[2] + saving[2] + '</th>';
-		result += '<th class="card-stats-header">' + I18N.INTELLIGENCE + spellcasting[3] + saving[3] + '</th>';
-		result += '<th class="card-stats-header">' + I18N.WISDOM + spellcasting[4] + saving[4] + '</th>';
-		result += '<th class="card-stats-header">' + I18N.CHARISMA + spellcasting[5] + saving[5] + '</th>';
+		result += '<th class="card-stats-header">' + I18N.get('CREATURE.STRENGTH') + spellcasting[0] + saving[0] + '</th>';
+		result += '<th class="card-stats-header">' + I18N.get('CREATURE.DEXTERITY') + spellcasting[1] + saving[1] + '</th>';
+		result += '<th class="card-stats-header">' + I18N.get('CREATURE.CONSTITUTION') + spellcasting[2] + saving[2] + '</th>';
+		result += '<th class="card-stats-header">' + I18N.get('CREATURE.INTELLIGENCE') + spellcasting[3] + saving[3] + '</th>';
+		result += '<th class="card-stats-header">' + I18N.get('CREATURE.WISDOM') + spellcasting[4] + saving[4] + '</th>';
+		result += '<th class="card-stats-header">' + I18N.get('CREATURE.CHARISMA') + spellcasting[5] + saving[5] + '</th>';
 		result += '</tr>';
 		result += '<tr>';
 		result += '<td class="card-stats-cell">' + stats[0] + '</td>';
@@ -185,11 +188,11 @@ export class CreatureCard extends Card {
 		result += '</div>'; // card-creature-base
 		result += this.generateElement_ruler(null, options);
 		if (this.vulnerabilities)
-			result += this.generateElement_property([I18N.VULNERABILITIES, this.vulnerabilities], options);
+			result += this.generateElement_property([I18N.get('CREATURE.VULNERABILITIES'), this.vulnerabilities], options);
 		if (this.resistances)
-			result += this.generateElement_property([I18N.RESISTANCES, this.resistances], options);
+			result += this.generateElement_property([I18N.get('CREATURE.RESISTANCES'), this.resistances], options);
 		if (this.immunities)
-			result += this.generateElement_property([I18N.IMMUNITIES, this.immunities], options);
+			result += this.generateElement_property([I18N.get('CREATURE.IMMUNITIES'), this.immunities], options);
 		return result;
 	}
 	

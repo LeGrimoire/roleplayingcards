@@ -40,13 +40,10 @@ body {
 .form-group .col-sm-1, .form-group .col-sm-2, .form-group .col-sm-3, .form-group .col-sm-4,
 .form-group .col-sm-5, .form-group .col-sm-6, .form-group .col-sm-7, .form-group .col-sm-8, 
 .form-group .col-sm-9, .form-group .col-sm-10, .form-group .col-sm-11, .form-group .col-sm-12 {
-	padding-right: 2px;
 	padding-left: 0px;
-}
-.form-group .col-sm-1:last-child, .form-group .col-sm-2:last-child, .form-group .col-sm-3:last-child, .form-group .col-sm-4:last-child,
-.form-group .col-sm-5:last-child, .form-group .col-sm-6:last-child, .form-group .col-sm-7:last-child, .form-group .col-sm-8:last-child, 
-.form-group .col-sm-9:last-child, .form-group .col-sm-10:last-child, .form-group .col-sm-11:last-child, .form-group .col-sm-12:last-child {
-	padding-right: 0px;
+    padding-right: 1px;
+    margin-left: -2px;
+    margin-right: 2px;
 }
 .form-group .control-label {
 	padding-right: 3px;
@@ -56,10 +53,6 @@ body {
 }
 .form-group .icon-select-button {
 	padding: 6px 6px;
-}
-
-.form-horizontal {
-	margin-top: 10px;
 }
 
 .form-control {
@@ -228,6 +221,7 @@ input[id*="color"] {
 #menu-container {
 	padding-right: 12px;
 	padding-left: 10px;
+	padding-top: 5px;
 }
 
 #menu-container .form-group {
@@ -294,7 +288,7 @@ p#file-name {
 	line-height: unset;
 }
 
-#title-default-block h3 {
+#default-block-title h3 {
     float: left;
     margin: 2px 0px 0px;
 	margin-left: 15px;
@@ -305,21 +299,20 @@ p#file-name {
 	float: right;
 }
 
-#title-cards-list-block * {
+#cards-list-title * {
 	margin-bottom: 0px;
 }
-#title-cards-list-block h3 {
+#cards-list-title h3 {
 	margin-left: 15px;
 	margin-top: 2px;
 }
-#title-cards-list-block button {
-	width: 40px;
-	margin: 0px 2px 0px 0px;
-	float: right;
-	font-size: 13px;
+#cards-list-buttons.form-group {
+	margin-bottom: 1px;
 }
 #cards-list-buttons > * {
-	padding-right: 2px;
+	padding-right: 1px;
+    margin-left: -2px;
+    margin-right: 2px;
 }
 #cards-list-buttons button,
 #cards-list-buttons select {
@@ -328,7 +321,7 @@ p#file-name {
 	height: 24px;
 }
 
-#total_card_count {
+#total_cards_count {
 	padding: 2px 0px 0px 2px;
 	display: inline-block;
 }
@@ -346,7 +339,6 @@ p#file-name {
 	position: relative;
 }
 #cards-list .card-name.selected {
-	margin-right: -4px;
 	padding: 0px 0px 0px 1px;
 	border: solid 1px #33333377;
 	border-left-width: 6px;
@@ -365,9 +357,9 @@ p#file-name {
 }
 #cards-list .card-count {
 	position: absolute;
-	right: 0px;
+	right: 12px;
 	top: 1px;
-	margin-right: 12px;
+	/* margin-right: 12px; */
     text-shadow: 0 0 3px white;
 }
 #cards-list .card-count * {
@@ -376,8 +368,8 @@ p#file-name {
 	line-height: 17px;
 }
 #cards-list .card-name.selected .card-count {
-	right: 3px;
 	top: 0px;
+	right: 11px;
 }
 #cards-list .card-error {
 	text-decoration: #f00 underline dotted;
@@ -412,6 +404,10 @@ p#file-name {
 /****************************/
 
 /* Don't set margin, it's done in js and would break the folding of menu and preview. */
+#card-form-container {
+	padding-top: 5px;
+}
+
 #card-form-container:before {
 	content: "";
 	position: absolute;

@@ -18,37 +18,64 @@ export const I18N = {
 		SCHOLAR: 'Lettré'
 	},
 
-	AC: 'CA',
-	HP: 'PV',
-	PERCEPTION: 'Perception',
-	SPEED: 'VD',
-	RESISTANCES: 'Résistances',
-	VULNERABILITIES: 'Vulnérabilités',
-	IMMUNITIES: 'Immunités',
+	CREATURE: {
+		CR: 'FP',
+		AC: 'CA',
+		HP: 'PV',
+		PERCEPTION: 'Perception',
+		SPEED: 'VD',
+		RESISTANCES: 'Résistances',
+		VULNERABILITIES: 'Vulnérabilités',
+		IMMUNITIES: 'Immunités',
 
-	STRENGTH: 'FOR',
-	DEXTERITY: 'DEX',
-	CONSTITUTION: 'CON',
-	INTELLIGENCE: 'INT',
-	WISDOM: 'SAG',
-	CHARISMA: 'CHA',
+		STRENGTH: 'FOR',
+		DEXTERITY: 'DEX',
+		CONSTITUTION: 'CON',
+		INTELLIGENCE: 'INT',
+		WISDOM: 'SAG',
+		CHARISMA: 'CHA',
 
-	ALIGNMENTS: {
-		UNALIGNED: 'Sans alignement',
-		ANY_ALIGNMENT: 'Tout alignement',
-		GOOD: 'Bon',
-		BAD: 'Mauvais',
-		NEUTRAL: 'Neutre',
-		NEUTRAL_GOOD: 'Neutre bon',
-		NEUTRAL_EVIL: 'Neutre mauvais',
-		CHAOTIC: 'Chaotique',
-		CHAOTIC_NEUTRAL: 'Chaotique neutre',
-		CHAOTIC_GOOD: 'Chaotique bon',
-		CHAOTIC_EVIL: 'Chaotique mauvais',
-		LOYAL: 'Loyal',
-		LOYAL_NEUTRAL: 'Loyal neutre',
-		LOYAL_GOOD: 'Loyal bon',
-		LOYAL_EVIL: 'Loyal mauvais'
+		ALIGNMENTS: {
+			UNALIGNED: 'Sans alignement',
+			ANY_ALIGNMENT: 'Tout alignement',
+			GOOD: 'Bon',
+			BAD: 'Mauvais',
+			NEUTRAL: 'Neutre',
+			NEUTRAL_GOOD: 'Neutre bon',
+			NEUTRAL_EVIL: 'Neutre mauvais',
+			CHAOTIC: 'Chaotique',
+			CHAOTIC_NEUTRAL: 'Chaotique neutre',
+			CHAOTIC_GOOD: 'Chaotique bon',
+			CHAOTIC_EVIL: 'Chaotique mauvais',
+			LOYAL: 'Loyal',
+			LOYAL_NEUTRAL: 'Loyal neutre',
+			LOYAL_GOOD: 'Loyal bon',
+			LOYAL_EVIL: 'Loyal mauvais'
+		}
+	},
+
+	SPELL: {
+		LEVEL: 'Niveau',
+		CASTING_TIME: 'Incantation',
+		RANGE: 'Portée',
+		DURATION: 'Durée',
+		RITUAL: 'Rituel',
+		MATERIALS: 'Matériaux',
+		VERBAL: 'Verbal',
+		SOMATIC: 'Gestuel',
+	
+		SPELL_TYPES: {
+			CONJURATION: 'Abjuration',
+			DIVINATION: 'Divination',
+			ENCHANTMENT: 'Enchantement',
+			EVOCATION: 'Évocation',
+			ILLUSION: 'Illusion',
+			NECROMANCY: 'Nécromancie',
+			SUMMONING: 'Invocation',
+			TRANSMUTATION: 'Transmutation'
+		},
+
+		AT_HIGHER_LEVELS: 'Aux niveaux supérieurs'
 	},
 
 	DAMAGE_TYPES: [
@@ -144,27 +171,9 @@ export const I18N = {
 			regex: new RegExp('([ ([>\']|^){1}inconscient[e]?[s]?([^a-zA-Z]{1}|$)', 'gi')
 		}
 	],
-	
-	CASTING_TIME: 'Incantation',
-	RANGE: 'Portée',
-	DURATION: 'Durée',
-	RITUAL: 'Rituel',
-
-	SPELL_TYPES: {
-		CONJURATION: 'Abjuration',
-		DIVINATION: 'Divination',
-		ENCHANTMENT: 'Enchantement',
-		EVOCATION: 'Évocation',
-		ILLUSION: 'Illusion',
-		NECROMANCY: 'Nécromancie',
-		SUMMONING: 'Invocation',
-		TRANSMUTATION: 'Transmutation'
-	},
 
 	FAIL: 'Échec',
 	SUCCESS: 'Réussite',
-
-	AT_HIGHER_LEVELS: 'Aux niveaux supérieurs',
 
 	CUSTOM_ICONS: [
 		{
@@ -192,36 +201,36 @@ export const I18N = {
 	],
 
 	ABREVIATIONS: [
-		{ 
+		{
 			name: 'JS', meaning: 'Jet de sauvegarde',
-			regex: new RegExp('((?:[([>])|^| ){1}(JS)[ ]?([^a-zA-Z]{1}|$)', 'g') 
-		}, { 
+			regex: new RegExp('((?:[([>])|^| ){1}(JS)[ ]?([^a-zA-Z]{1}|$)', 'g')
+		}, {
 			name: 'JA', meaning: 'Jet d\'attaque',
-			regex: new RegExp('((?:[([>])|^| ){1}(JA)[ ]?([^a-zA-Z]{1}|$)', 'g') 
-		}, { 
+			regex: new RegExp('((?:[([>])|^| ){1}(JA)[ ]?([^a-zA-Z]{1}|$)', 'g')
+		}, {
 			name: 'JC', meaning: 'Jet de caractéristique',
-			regex: new RegExp('((?:[([>])|^| ){1}(JC)[ ]?([^a-zA-Z]{1}|$)', 'g') 
-		}, { 
+			regex: new RegExp('((?:[([>])|^| ){1}(JC)[ ]?([^a-zA-Z]{1}|$)', 'g')
+		}, {
 			name: 'CA', meaning: 'Classe d\'armure',
-			regex: new RegExp('((?:[([>])|^| ){1}(CA)[ ]?([^a-zA-Z]{1}|$)', 'g') 
-		}, { 
+			regex: new RegExp('((?:[([>])|^| ){1}(CA)[ ]?([^a-zA-Z]{1}|$)', 'g')
+		}, {
 			name: 'VD', meaning: 'Vitesse de déplacement',
-			regex: new RegExp('((?:[([>])|^| ){1}(VD)[ ]?([^a-zA-Z]{1}|$)', 'g') 
-		}, { 
+			regex: new RegExp('((?:[([>])|^| ){1}(VD)[ ]?([^a-zA-Z]{1}|$)', 'g')
+		}, {
 			name: 'PP', meaning: 'Perception passive',
-			regex: new RegExp('((?:[([>])|^| ){1}(pp)[ ]?([^a-zA-Z]{1}|$)', 'g') 
-		}, { 
+			regex: new RegExp('((?:[([>])|^| ){1}(pp)[ ]?([^a-zA-Z]{1}|$)', 'g')
+		}, {
 			name: 'CM', meaning: 'Caractéristique magique',
-			regex: new RegExp('((?:[([>])|^| ){1}(CM)[ ]?([^a-zA-Z]{1}|$)', 'g') 
-		}, { 
+			regex: new RegExp('((?:[([>])|^| ){1}(CM)[ ]?([^a-zA-Z]{1}|$)', 'g')
+		}, {
 			name: 'av', meaning: 'Avantage (sur 2d20, garder le meilleur)',
-			regex: new RegExp('((?:[([>])|^| ){1}(av)[ ]?([^a-zA-Z]{1}|$)', 'g') 
-		}, { 
+			regex: new RegExp('((?:[([>])|^| ){1}(av)[ ]?([^a-zA-Z]{1}|$)', 'g')
+		}, {
 			name: 'dav', meaning: 'Désavantage (sur 2d20, garder le moins bon)',
-			regex: new RegExp('((?:[([>])|^| ){1}(dav)[ ]?([^a-zA-Z]{1}|$)', 'g') 
-		}, { 
+			regex: new RegExp('((?:[([>])|^| ){1}(dav)[ ]?([^a-zA-Z]{1}|$)', 'g')
+		}, {
 			name: 'FP', meaning: 'Facteur de puissance',
-			regex: new RegExp('((?:[([>])|^| ){1}(FP)[ ]?([^a-zA-Z]{1}|$)', 'g') 
+			regex: new RegExp('((?:[([>])|^| ){1}(FP)[ ]?([^a-zA-Z]{1}|$)', 'g')
 		}, {
 			name: 'DD', meaning: 'Degré de difficulté',
 			regex: new RegExp('((?:[([>])|^| ){1}(DD)[ ]?([^a-zA-Z]{1}|$)', 'g')
@@ -240,5 +249,65 @@ export const I18N = {
 
 	PICTO: 'Picto',
 	ABREVIATIONS_TITLE: 'Lexique',
-	COMMON_RULES_TITLE: 'Règles courantes'
+	COMMON_RULES_TITLE: 'Règles courantes',
+
+	UI: {
+		HELP: 'Aide',
+		ICONS: 'Icônes',
+		LANGUAGE: 'Langue',
+		SORT: 'Trier',
+		FILTER: 'Filtrer',
+		SAMPLE: 'Ins. examples',
+		LEXICAL: 'Ins. lexique',
+		CLEAR: 'Supprimer tout',
+		IMPORT: 'Importer fichier',
+		SAVE: 'Sauvegarder',
+		GENERATE: 'Génerer',
+		FILE: 'Fichier',
+		DECK_SETTINGS: 'Paramètres',
+		PAGE: 'Page',
+		CARDS_PAGE: 'Cartes/page',
+		ROWS: 'Lignes',
+		COLUMNS: 'Colonnes',
+		CARD: 'Carte',
+		CARDS: 'Cartes',
+		DOUBLESIDED: 'Recto+Verso',
+		FRONT_ONLY: 'Recto',
+		SIDE_BY_SIDE: 'Côte à côte',
+		ROUND_CORNERS: 'Bords arrondis',
+		SMALL_ICONS: 'Petites icônes',
+		SPELL_CLASSES: 'Classes du sort',
+		DEFAULT_VALUES: 'Valeur par défaut',
+		GENERIC: 'Generique',
+		CREATURE: 'Créature',
+		ITEM: 'Objet',
+		SPELL: 'Sort',
+		POWER: 'Abilité',
+		CONTENT: 'Contenu',
+		FRONT: 'Recto',
+		BACK: 'Verso',
+		COLOR: 'Couleur',
+		ICON_NAME: 'Nom d\'icône',
+		UNIQUE: 'unique',
+		DELETE: 'Supprimer',
+		COPY: 'Copier',
+		NEW: 'Nouveau',
+		TITLE: 'Titre',
+		MULTILINE: 'sur 2 lignes',
+		SUBTITLE: 'Sous-titre',
+		FRONT_ICON: 'Icône recto',
+		DEFAULT: 'Défaut',
+		BACK_ICON: 'Icône verso',
+		SAME_AS_FRONT: 'Comme le recto',
+		BACKGROUND: 'Image de fond',
+		BACK_DESCRIPTION: 'Description verso',
+		SIZE: 'Taille',
+		ALIGNMENT: 'Alignement',
+		TYPE: 'Type',
+		CONTENTS: 'Contenus',
+		CLASSES: 'Classes',
+		TAGS: 'Tags',
+		REFERENCE: 'Reférence',
+		COMPACT: 'Compacte'
+	}
 };

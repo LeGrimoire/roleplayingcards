@@ -99,7 +99,7 @@ export class Card {
 
 
 	/**
-	 * @returns {Card}
+	 * @return {Card}
 	 */
 	clone() {
 		let card = new this.constructor();
@@ -114,7 +114,7 @@ export class Card {
 
 	/**
 	 * @param {string} tag
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	hasTag(tag) {
 		if (!tag || !this.tags)
@@ -154,7 +154,7 @@ export class Card {
 
 	/**
 	 * @param {DeckOptions} options
-	 * @returns {string}
+	 * @return {string}
 	 */
 	colorContent(options) {
 		return this.color || options.cardsDefault[this.constructor.name].color || this.color_front || options.cardsDefault[this.constructor.name].color_front || '#000000';
@@ -162,7 +162,7 @@ export class Card {
 
 	/**
 	 * @param {DeckOptions} options
-	 * @returns {string}
+	 * @return {string}
 	 */
 	colorFront(options) {
 		return this.color_front || options.cardsDefault[this.constructor.name].color_front || this.color || options.cardsDefault[this.constructor.name].color || '#000000';
@@ -170,7 +170,7 @@ export class Card {
 
 	/**
 	 * @param {DeckOptions} options
-	 * @returns {string}
+	 * @return {string}
 	 */
 	colorBack(options) {
 		return this.color_back || options.cardsDefault[this.constructor.name].color_back || this.color || options.cardsDefault[this.constructor.name].color || '#000000';
@@ -178,7 +178,7 @@ export class Card {
 
 	/**
 	 * @param {DeckOptions} options
-	 * @returns {string}
+	 * @return {string}
 	 */
 	iconFront(options) {
 		return this.icon || options.cardsDefault[this.constructor.name].icon || '';
@@ -186,7 +186,7 @@ export class Card {
 
 	/**
 	 * @param {DeckOptions} options
-	 * @returns {string}
+	 * @return {string}
 	 */
 	iconBack(options) {
 		return this.icon_back || this.icon || options.cardsDefault[this.constructor.name].icon || '';
@@ -231,11 +231,11 @@ export class Card {
 			return '<div class="card-element card-subtitle">' + this.subtitle + '</div>';
 		return '';
 	}
-	
+
 	/**
 	 * @param {string[]} parts
 	 * @param {DeckOptions} options
-	 * @returns {string}
+	 * @return {string}
 	 */
 	generateElement(parts, options) {
 		let element_name = parts[0];
@@ -262,7 +262,7 @@ export class Card {
 		}
 
 		let result = '';
-		var card = this;
+		let card = this;
 		result += this.contents.map(function (content_line) {
 			let parts = content_line.split('|').map(function (str) { return str.trim(); });
 			let element_name = parts[0];
@@ -294,12 +294,12 @@ export class Card {
 
 	/**
 	 * @param {DeckOptions} options
-	 * @returns {string}
+	 * @return {string}
 	 */
 	generateFront(options) {
 		let color = this.colorFront(options);
 		let style_color = 'style="color:' + color + ';border-color:' + color + ';background-color:' + color + '"';
-	
+
 		let result = '';
 		result += '<div class="card card-size-' + options.cardsSize
 			+ (options.roundCorners ? ' round-corners' : '')
@@ -316,16 +316,16 @@ export class Card {
 		result += '</div>';
 		result += '</div>';
 		result += this.generateFooter(options);
-	
+
 		if (this.reference)
 			result += '<p class="card-reference">' + this.reference + '</p>';
 		result += '</div>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {DeckOptions} options
-	 * @returns {string}
+	 * @return {string}
 	 */
 	generateBack(options) {
 		let color = this.colorBack(options);
@@ -338,7 +338,7 @@ export class Card {
 		} else {
 			background_style = 'style="background: radial-gradient(ellipse at center, white 20%, ' + color + ' 120%)"';
 		}
-	
+
 		let result = '';
 		result += '<div class="card card-size-' + options.cardsSize + ' ' + (options.roundCorners ? 'round-corners' : '') + '">';
 		result += '<div class="card-border" ' + style_color + '>';
@@ -355,16 +355,16 @@ export class Card {
 			result += '</div>';
 		} else if (!url) {
 			let icon = this.iconBack(options);
-			
+
 			result += '<div class="card-back-icon icon-' + icon + '" ' + style_color + '></div>';
 		}
 		result += '</div>';
 		result += '</div>';
 		result += '</div>';
-	
+
 		return result;
 	}
-	
+
 
 	/**
 	 * @param {string[]} params
@@ -379,7 +379,7 @@ export class Card {
 		result += '</p>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -393,7 +393,7 @@ export class Card {
 		result += '</p>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -407,7 +407,7 @@ export class Card {
 		result += '</p>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -421,7 +421,7 @@ export class Card {
 		result += '</p>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -441,7 +441,7 @@ export class Card {
 		result += '</div>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -461,7 +461,7 @@ export class Card {
 		result += '</div>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -487,14 +487,14 @@ export class Card {
 		if (params[1] && params[1].indexOf('dash') > -1) {
 			styleDash = 'opacity:0.5;stroke-dasharray:1,1';
 		}
-	
+
 		let result = '';
 		result += '<svg class="card-line" height="' + height + 'px" width="100px" viewbox="0 0 100 1" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">';
 		result += '<line x1="0" y1="0" x2="100" y2="0" stroke-width="' + height + '" style="stroke:' + color + ';' + styleDash + '"	></line>';
 		result += '</svg>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -503,7 +503,7 @@ export class Card {
 	// eslint-disable-next-line no-unused-vars
 	generateElement_ruler(params, options) {
 		let color = this.colorContent(options);
-	
+
 		let result = '';
 		result += '<svg class="card-ruler" viewbox="0 0 10 10" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">';
 		result += '<defs>';
@@ -517,7 +517,7 @@ export class Card {
 		result += '</svg>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -528,7 +528,7 @@ export class Card {
 		let flex = params[0] || '1';
 		return '<span class="card-fill" style="flex:' + flex + '"></span>';
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -539,7 +539,7 @@ export class Card {
 		let height = params[0] || '1';
 		return '<span style="height:' + height + 'px"></span>';
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -566,7 +566,7 @@ export class Card {
 				align = 'text-align:right;';
 			double = params[2].indexOf('double') > -1;
 		}
-	
+
 		let result = '';
 		result += '<div class="card-element">';
 		result += '<div class="card-boxes" style="' + align + '">';
@@ -591,7 +591,7 @@ export class Card {
 		result += '</div>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -613,7 +613,7 @@ export class Card {
 			else if (params[2].indexOf('right') > -1)
 				align = 'text-align:right;';
 		}
-	
+
 		let result = '';
 		result += '<div class="card-element">';
 		result += '<div class="card-circles" style="' + align + '">';
@@ -629,7 +629,7 @@ export class Card {
 		result += '</div>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -643,7 +643,7 @@ export class Card {
 		result += '</ul>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -656,7 +656,7 @@ export class Card {
 		if (params[1])
 			style = 'style="display:flex;flex-direction:row;"';
 		result += '<div class="card-element card-property-line card-property-fail" ' + style + '>';
-		result += '<p class="card-property-name">' + I18N.FAIL + '.</p>';
+		result += '<p class="card-property-name">' + I18N.get('FAIL') + '.</p>';
 		result += '<p class="card-property-text">' + (params[0] ? Card.parse_icons_params(params[0]) : '') + '</p>';
 		if (params[1]) {
 			result += this.generateElement(params.splice(1), options);
@@ -664,7 +664,7 @@ export class Card {
 		result += '</div>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -677,7 +677,7 @@ export class Card {
 		if (params[1])
 			style = 'style="display:flex;flex-direction:row;"';
 		result += '<div class="card-element card-property-line card-property-success" ' + style + '>';
-		result += '<p class="card-property-name">' + I18N.SUCCESS + '.</p>';
+		result += '<p class="card-property-name">' + I18N.get('SUCCESS') + '.</p>';
 		result += '<p class="card-property-text">' + (params[0] ? Card.parse_icons_params(params[0]) : '') + '</p>';
 		if (params[1]) {
 			result += this.generateElement(params.splice(2), options);
@@ -702,7 +702,7 @@ export class Card {
 		}
 		let align = params[2] || 'center';
 		let result = '';
-	
+
 		result += '<div class="card-element">';
 		result += '<div class="card-icon align-' + align + '">';
 		result += '<span class="icon-' + name + '" style="height:' + size + 'px;width:' + size + 'px;' + background + '"></span>';
@@ -713,7 +713,7 @@ export class Card {
 		result += '</div>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -737,7 +737,7 @@ export class Card {
 		let color = this.colorContent(options);
 		return '<div class="card-element card-picture" style="background:url(&quot;' + url + '&quot;) center no-repeat ' + color + ';background-size:contain; height:' + height + 'px;width:' + width + 'px;' + invert + '"></div>';
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -757,7 +757,7 @@ export class Card {
 		result += '</table>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -781,7 +781,7 @@ export class Card {
 		result += '</table>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -805,7 +805,7 @@ export class Card {
 		result += '</table>';
 		return result;
 	}
-	
+
 	/**
 	 * @param {string[]} params
 	 * @param {DeckOptions} options
@@ -815,25 +815,41 @@ export class Card {
 	generateElement_comment(params, options) {
 		return '';
 	}
-	
-	
+
+
 	/**
 	 * @param {string} content_line
-	 * @returns {string}
+	 * @return {string}
 	 */
 	static parse_icons_params(content_line) {
 		if (!content_line)
 			return content_line;
-		for (let i = 0; i < I18N.DAMAGE_TYPES.length; i++)
-			content_line = content_line.replace(I18N.DAMAGE_TYPES[i].regex, '$1<span class="card-inlineicon-tooltip"><span class="card-inlineicon icon-type-' + I18N.DAMAGE_TYPES[i].file + '"></span><span class="tooltiptext">' + I18N.DAMAGE_TYPES[i].name + '</span></span>$2');
-		for (let i = 0; i < I18N.CONDITION.length; i++)
-			content_line = content_line.replace(I18N.CONDITION[i].regex, '$1<span class="card-inlineicon-tooltip"><span class="card-inlineicon icon-condition-' + I18N.CONDITION[i].file + '"></span><span class="tooltiptext">' + I18N.CONDITION[i].name + '</span></span>$2');
-		for (let i = 0; i < I18N.CUSTOM_ICONS.length; i++)
-			content_line = content_line.replace(I18N.CUSTOM_ICONS[i].regex, '$1<span class="card-inlineicon-tooltip"><span class="card-inlineicon icon-custom-' + I18N.CUSTOM_ICONS[i].file + '"></span><span class="tooltiptext">' + I18N.CUSTOM_ICONS[i].name + '</span></span>$2');
-		for (let i = 0; i < I18N.ABREVIATIONS.length; i++)
-			content_line = content_line.replace(I18N.ABREVIATIONS[i].regex, '$1<span class="abreviation">$2<span class="tooltiptext">' + I18N.ABREVIATIONS[i].meaning + '</span></span>$3');
-		for (let i = 0; i < I18N.COMMON_RULES.length; i++)
-			content_line = content_line.replace(I18N.COMMON_RULES[i].regex, '$1<span class="commonrules">$2<span class="tooltiptext">' + I18N.COMMON_RULES[i].meaning + '</span></span>$3');
+
+		let damageTypes = I18N.get('DAMAGE_TYPES');
+		for (let i = 0; i < damageTypes.length; i++) {
+			content_line = content_line.replace(damageTypes[i].regex, '$1<span class="card-inlineicon-tooltip"><span class="card-inlineicon icon-type-' + damageTypes[i].file + '"></span><span class="tooltiptext">' + damageTypes[i].name + '</span></span>$2');
+		}
+
+		let conditions = I18N.get('CONDITION');
+		for (let i = 0; i < conditions.length; i++) {
+			content_line = content_line.replace(conditions[i].regex, '$1<span class="card-inlineicon-tooltip"><span class="card-inlineicon icon-condition-' + conditions[i].file + '"></span><span class="tooltiptext">' + conditions[i].name + '</span></span>$2');
+		}
+
+		let customIcons = I18N.get('CUSTOM_ICONS');
+		for (let i = 0; i < customIcons.length; i++) {
+			content_line = content_line.replace(customIcons[i].regex, '$1<span class="card-inlineicon-tooltip"><span class="card-inlineicon icon-custom-' + customIcons[i].file + '"></span><span class="tooltiptext">' + customIcons[i].name + '</span></span>$2');
+		}
+
+		let abreviations = I18N.get('ABREVIATIONS');
+		for (let i = 0; i < abreviations.length; i++) {
+			content_line = content_line.replace(abreviations[i].regex, '$1<span class="abreviation">$2<span class="tooltiptext">' + abreviations[i].meaning + '</span></span>$3');
+		}
+
+		let commonRules = I18N.get('COMMON_RULES');
+		for (let i = 0; i < commonRules.length; i++) {
+			content_line = content_line.replace(commonRules[i].regex, '$1<span class="commonrules">$2<span class="tooltiptext">' + commonRules[i].meaning + '</span></span>$3');
+		}
+
 		return content_line.replace(/\\/gi, '');// .replace(/ comme /g, ' ĉ ');
 	}
 }

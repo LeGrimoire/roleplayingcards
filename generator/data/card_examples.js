@@ -6,7 +6,7 @@ import { SpellCard } from '../js/card_spell.js';
 import { CreatureCard } from '../js/card_creature.js';
 
 /**
- * @returns {Card[]}
+ * @return {Card[]}
  */
 export function CardExamples() {
 	let cards = [];

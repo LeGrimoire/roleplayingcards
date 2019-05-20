@@ -77,13 +77,13 @@ export class DeckOptions {
 			for (const cardType in options.cardsDefault) {
 				if (!this.cardsDefault.hasOwnProperty(cardType))
 					continue;
-	
+
 				for (const key in this.cardsDefault[cardType]) {
 					if (options.cardsDefault[cardType].hasOwnProperty(key)) {
 						this.cardsDefault[cardType][key] = options.cardsDefault[cardType][key];
 					}
 				}
-	
+
 				this.cardsDefault[cardType].update();
 			}
 		}
@@ -91,13 +91,15 @@ export class DeckOptions {
 }
 
 export class Deck {
-	#cards = [];
-	options = null;
+	#cards = Array<Card>(0);
+	options = new DeckOptions();
 
 	constructor() {
-		this.options = new DeckOptions();
 	}
 
+	/**
+	 * @return {Card[]}
+	 */
 	get cards() {
 		return this.#cards;
 	}
@@ -115,7 +117,7 @@ export class Deck {
 			card.update();
 		});
 
-		if (cardIdx + 1 < this.#cards.length && cardIdx >= 0) {
+		if (cardIdx + 1 < this.#cards.length && cardIdx + 1 >= 0) {
 			let cards_after = this.#cards.splice(cardIdx + 1, this.#cards.length - cardIdx - 1);
 			this.#cards = this.#cards.concat(cards).concat(cards_after);
 		} else {
@@ -252,12 +254,12 @@ export class Deck {
 	stringify(readable) {
 		let result = '{';
 		if (readable) {
-			result += '\n\t"options":'+ this.options.stringify('\t') + ',';
-			result += '\n\t"cards":'+ this.stringifyCards('\t');
+			result += '\n\t"options":' + this.options.stringify('\t') + ',';
+			result += '\n\t"cards":' + this.stringifyCards('\t');
 			result += '\n}';
 		} else {
-			result +=  '"options":'+ this.options.stringify() + ',';
-			result +=  '"cards":'+ this.stringifyCards();
+			result += '"options":' + this.options.stringify() + ',';
+			result += '"cards":' + this.stringifyCards();
 			result += '}';
 		}
 		return result;
@@ -275,7 +277,7 @@ export class Deck {
 	 * @param {string} fn_code The sorting code to use.
 	 */
 	sort(fn_code) {
-		var fn = new Function('card_a', 'card_b', fn_code);
+		let fn = new Function('card_a', 'card_b', fn_code);
 
 		this.cards = this.cards.sort(function (card_a, card_b) {
 			let result = fn(card_a, card_b);
@@ -287,7 +289,7 @@ export class Deck {
 	 * @param {string} fn_code The filtering code to use.
 	 */
 	filter(fn_code) {
-		var fn = new Function('card', fn_code);
+		let fn = new Function('card', fn_code);
 
 		this.cards = this.cards.filter(function (card) {
 			let result = fn(card);
@@ -296,65 +298,70 @@ export class Deck {
 		});
 	}
 
-	
+
 	generatePagesHtml() {
 		// Generate the HTML for each card
-		let front_cards = [];
-		let back_cards = [];
-		this.#cards.forEach(function (card) {
-			let count = card.count === 0 ? 0 : (card.count || 1);
-			let front = card.generateFront(this.options);
-			let back = card.generateBack(this.options);
-			front_cards += card_repeat(front, count);
-			back_cards += card_repeat(back, count);
+		/** @type {string[]} */ 
+		let frontCards = [];
+		/** @type {string[]} */ 
+		let backCards = [];
+		let options = this.options;
+		this.cards.forEach(function (card) {
+			let front = card.generateFront(options);
+			let back = card.generateBack(options);
+			frontCards = frontCards.concat(card_repeat(front, card.count));
+			backCards = backCards.concat(card_repeat(back, card.count));
 		});
 
+		/** @type {string[][]} */
 		let pages = [];
 		if (this.options.cardsArrangement === 'doublesided') {
 			// Add padding cards so that the last page is full of cards
-			front_cards = cards_add_last_page_padding(front_cards, this.options);
-			back_cards = cards_add_last_page_padding(back_cards, this.options);
+			frontCards = cards_add_last_page_padding(frontCards, this.options);
+			backCards = cards_add_last_page_padding(backCards, this.options);
 
 			// Split cards to pages
-			let front_pages = cards_split_to_pages(front_cards, this.options);
-			let back_pages = cards_split_to_pages(back_cards, this.options);
+			let frontPages = cards_split_to_pages(frontCards, this.options);
+			let backPages = cards_split_to_pages(backCards, this.options);
 
-			// Shuffle back cards so that they line up with their corresponding front cards
-			back_pages = back_pages.map(function (page) {
-				let result = [];
+			// Mirror back cards so that they line up with their corresponding front cards
+			backPages = backPages.map(function (page) {
+				let resultPage = [];
 				let i = 0;
-				for (let r = 0; r < this.options.pageRows; ++r) {
-					i += this.options.pageColumns;
-					for (let c = 0; c < this.options.pageColumns; ++c) {
-						result.push(page[i - 1 - c]);
+				for (let r = 0; r < options.pageRows; ++r) {
+					i += options.pageColumns;
+					for (let c = 0; c < options.pageColumns; ++c) {
+						resultPage.push(page[i - 1 - c]);
 					}
 				}
-				return result;
+				return resultPage;
 			});
 
 			// Interleave front and back pages so that we can print double-sided
-			for (let i = 0; i < front_pages.length; ++i) {
-				pages.push(front_pages[i]);
-				pages.push(back_pages[i]);
+			for (let i = 0; i < frontPages.length; ++i) {
+				pages.push(frontPages[i]);
+				pages.push(backPages[i]);
 			}
-		} 
+		}
 		else if (this.options.cardsArrangement === 'front_only') {
 			// Add padding cards so that the last page is full of cards
-			front_cards = cards_add_last_page_padding(front_cards, this.options);
-			
+			frontCards = cards_add_last_page_padding(frontCards, this.options);
+
 			// Split cards to pages
-			pages = cards_split_to_pages(front_cards, this.options);
-		} 
+			pages = cards_split_to_pages(frontCards, this.options);
+		}
 		else if (this.options.cardsArrangement === 'side_by_side') {
+			/** @type {string[]} */
 			let cardsStr = [];
-			for (let i = 0; i < front_cards.length; i++) {
-				cardsStr.push(front_cards[i]);
-				cardsStr.push(back_cards[i]);
-				if (this.options.pageColumns > 2) {
-					cardsStr.concat(card_repeat(card_generate_empty(this.options), this.options.pageColumns - 2));
+			const nbPaddingColumns = this.options.pageColumns - (this.options.pageColumns % 2);
+			for (let i = 0; i < frontCards.length; i++) {
+				cardsStr.push(frontCards[i]);
+				cardsStr.push(backCards[i]);
+				if (nbPaddingColumns > 0) {
+					cardsStr = cardsStr.concat(card_repeat(card_generate_empty(this.options), nbPaddingColumns));
 				}
 			}
-			
+
 			// Add padding cards so that the last page is full of cards
 			cardsStr = cards_add_last_page_padding(cardsStr, this.options);
 
@@ -362,7 +369,6 @@ export class Deck {
 			pages = cards_split_to_pages(cardsStr, this.options);
 		}
 
-		// Wrap all pages in a <page> element and add CSS for the page size
 		let size = 'A4';
 		switch (this.options.pageSize) {
 			case 'A3': size = 'A3 portrait'; break;
@@ -373,15 +379,16 @@ export class Deck {
 			default: size = 'auto';
 		}
 
-		let result = '';
-		result += '<style>\n';
-		result += '@page {\n';
-		result += '    margin: 0;\n';
-		result += '    size:' + size + ';\n';
-		result += '    -webkit-print-color-adjust: exact;\n';
-		result += '}\n';
-		result += '</style>\n';
+		let resultHtml = '';
+		resultHtml += '<style>\n';
+		resultHtml += '@page {\n';
+		resultHtml += '    margin: 0;\n';
+		resultHtml += '    size:' + size + ';\n';
+		resultHtml += '    -webkit-print-color-adjust: exact;\n';
+		resultHtml += '}\n';
+		resultHtml += '</style>\n';
 
+		// Wrap all pages in a <page> element and add CSS for the page size
 		for (let i = 0; i < pages.length; ++i) {
 			let style = '';
 			if ((this.options.cardsArrangement === 'doublesided') && (i % 2 === 1)) {
@@ -389,11 +396,11 @@ export class Deck {
 			} else {
 				style += 'style="background-color:white"';
 			}
-			result += '<page class="page page-preview" size="' + size + '" ' + style + '>\n';
-			result += pages[i].join('\n');
-			result += '</page>\n';
+			resultHtml += '<page class="page page-preview" size="' + this.options.pageSize + '" ' + style + '>\n';
+			resultHtml += pages[i].join('\n');
+			resultHtml += '</page>\n';
 		}
-		return result;
+		return resultHtml;
 	}
 }
 
@@ -401,34 +408,33 @@ export class Deck {
 
 /**
  * @param {DeckOptions} options
- * @returns {string}
+ * @return {string}
  */
 function card_generate_empty(options) {
 	let color = 'white';
 	let style_color = 'style="color:' + color + ';border-color:' + color + ';background-color:' + color + '"';
-	let result = '';
-	result += '<div class="card card-size-' + options.cardsSize + '" ' + style_color + '>';
-	result += '</div>';
-	return result;
+	let resultCard = '';
+	resultCard += '<div class="card card-size-' + options.cardsSize + '" ' + style_color + '>';
+	resultCard += '</div>';
+	return resultCard;
 }
 
 /**
- * @param {string} card
+ * @param {string} cardStr
  * @param {number} count
- * @returns {string[]}
  */
-function card_repeat(card, count) {
-	let result = [];
+function card_repeat(cardStr, count) {
+	let resultCards = [];
 	for (let i = 0; i < count; ++i) {
-		result.push(card);
+		resultCards.push(cardStr);
 	}
-	return result;
+	return resultCards;
 }
 
 /**
  * @param {string[]} cards  
  * @param {DeckOptions} options
- * @returns {string[]}
+ * @return {string[]}
  */
 function cards_add_last_page_padding(cards, options) {
 	let cards_per_page = options.pageRows * options.pageColumns;
@@ -443,7 +449,7 @@ function cards_add_last_page_padding(cards, options) {
 /**
  * @param {string[]} cards
  * @param {DeckOptions} options
- * @returns {string[][]}
+ * @return {string[][]}
  */
 function cards_split_to_pages(cards, options) {
 	let cards_per_page = options.pageRows * options.pageColumns;

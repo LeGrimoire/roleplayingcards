@@ -1,5 +1,5 @@
 function receiveMessage(event) {
-	var html = event.data;
+	let html = event.data;
 	insertCards(html);
 }
 
@@ -10,7 +10,7 @@ function insertCards(html) {
 	}
 
 	// Create a div that holds all the received HTML
-	var div = document.createElement('div');
+	let div = document.createElement('div');
 	div.setAttribute('class', 'output-container');
 	div.id = 'output-container';
 	div.innerHTML = html;

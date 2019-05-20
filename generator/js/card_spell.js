@@ -24,6 +24,7 @@ export class SpellCard extends Card {
 	}
 
 	/**
+	 * @override
 	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
@@ -35,12 +36,13 @@ export class SpellCard extends Card {
 		result += '</div>';
 		result += '<div class="card-subtitle card-spell-subtitle">' + this.type;
 		if (this.ritual)
-			result += ' (' + I18N.RITUAL + ')';
+			result += ' (' + I18N.get('SPELL.RITUAL') + ')';
 		result += '</div>';
 		return result;
 	}
 
 	/**
+	 * @override
 	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
@@ -52,17 +54,17 @@ export class SpellCard extends Card {
 		result += '<div class="card-spell-base-texts" style="background-color:' + color + '33;">';
 
 		result += '<div>';
-		result += '<h4>' + I18N.CASTING_TIME + ':</h4>';
+		result += '<h4>' + I18N.get('SPELL.CASTING_TIME') + ':</h4>';
 		result += '<p>' + this.casting_time + '</p>';
 		result += '</div>';
 
 		result += '<div>';
-		result += '<h4>' + I18N.RANGE + ':</h4>';
+		result += '<h4>' + I18N.get('SPELL.RANGE') + ':</h4>';
 		result += '<p>' + this.range + '</p>';
 		result += '</div>';
 
 		result += '<div>';
-		result += '<h4>' + I18N.DURATION + ':</h4>';
+		result += '<h4>' + I18N.get('SPELL.DURATION') + ':</h4>';
 		result += '<p>' + this.duration + '</p>';
 		result += '</div>';
 
@@ -87,6 +89,7 @@ export class SpellCard extends Card {
 	}
 
 	/**
+	 * @override
 	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
@@ -99,7 +102,7 @@ export class SpellCard extends Card {
 				result += this.generateElement_fill(['1'], options);
 			}
 			result += '<div class="card-spell-higher-levels">';
-			result += '<h3 style="color:' + color + ';background-color:' + color + '33;">' + I18N.AT_HIGHER_LEVELS + '</h3>';
+			result += '<h3 style="color:' + color + ';background-color:' + color + '33;">' + I18N.get('SPELL.AT_HIGHER_LEVELS') + '</h3>';
 			result += '<p class="card-element" style="background-color:' + color + '11;">' + Card.parse_icons_params(this.higherLevels) + '</p>';
 			result += '</div>';
 		}
@@ -107,6 +110,7 @@ export class SpellCard extends Card {
 	}
 
 	/**
+	 * @override
 	 * @param {DeckOptions} options
 	 * @returns {string}
 	 */
@@ -115,9 +119,9 @@ export class SpellCard extends Card {
 		let result = '';
 		if (options.showSpellClasses) {
 			result += '<div class="card-spell-classes">';
-			let classesKeys = Object.keys(I18N.CLASSES);
+			let classesKeys = Object.keys(I18N.get('CLASSES'));
 			for (let i = 0; i < classesKeys.length; i++) {
-				let isForClass = this.classes.search(new RegExp(I18N.CLASSES[classesKeys[i]], 'gi')) !== -1;
+				let isForClass = this.classes.search(new RegExp(I18N.get('CLASSES')[classesKeys[i]], 'gi')) !== -1;
 				result += '<span class="card-class-inlineicon icon-class-' + classesKeys[i].toLowerCase() + (isForClass ? '' : ' card-class-hidden') + '"></span>';
 			}
 			result += '</div>';
