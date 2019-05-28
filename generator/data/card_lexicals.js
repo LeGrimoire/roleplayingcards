@@ -10,11 +10,12 @@ export function CardLexicals() {
 
 	// Picto
 	let card = new Card();
+	card.count = 1;
 	card.title = I18N.get('PICTO');
 	let damageTypes = I18N.get('DAMAGE_TYPES');
 	for (let i = 0; i < damageTypes.length; i++) {
 		let line = 'property | ' + damageTypes[i].name + ' | \\' + damageTypes[i].name;
-		if (i < I18N.get('DAMAGE_TYPES.').length - 1) {
+		if (i < damageTypes.length - 1) {
 			i++;
 			line += ' | property | ' + damageTypes[i].name + ' | \\' + damageTypes[i].name;
 		}
@@ -44,6 +45,7 @@ export function CardLexicals() {
 
 	// Lexical
 	card = new Card();
+	card.count = 1;
 	card.title = I18N.get('ABREVIATIONS_TITLE');
 	let abreviations = I18N.get('ABREVIATIONS');
 	for (let i = 0; i < abreviations.length; i++) {
@@ -54,6 +56,7 @@ export function CardLexicals() {
 
 	// Common rules
 	card = new Card();
+	card.count = 1;
 	card.title = I18N.get('COMMON_RULES_TITLE');
 	let commonRules = I18N.get('COMMON_RULES');
 	for (let i = 0; i < commonRules.length; i++) {

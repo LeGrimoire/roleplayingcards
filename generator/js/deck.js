@@ -5,6 +5,8 @@ import { PowerCard } from './card_power.js';
 import { SpellCard } from './card_spell.js';
 
 export class DeckOptions {
+	name = 'Deck';
+	filename = 'Deck.json';
 	pageSize = 'A4';
 	pageRows = 3;
 	pageColumns = 3;
@@ -16,7 +18,9 @@ export class DeckOptions {
 	titleSize = '14';
 	cardsDefault = {};
 
-	constructor() {
+	constructor(name) {
+		this.name = name || this.name;
+		this.filename = this.name + '.json';
 		this.cardsDefault['Card'] = new Card();
 		this.cardsDefault['CreatureCard'] = new CreatureCard();
 		this.cardsDefault['ItemCard'] = new ItemCard();
@@ -27,7 +31,7 @@ export class DeckOptions {
 	stringify(space) {
 		let result = '{';
 		for (const property in this) {
-			if (property === 'cardsDefault')
+			if (property === 'cardsDefault' || property === 'filename')
 				continue;
 			if (space) {
 				result += '\n' + space + '\t"' + property + '":';
@@ -39,11 +43,13 @@ export class DeckOptions {
 				result += ',';
 			}
 		}
+
 		if (space) {
 			result += '\n' + space + '\t"cardsDefault":{';
 		} else {
 			result += '"cardsDefault":{';
 		}
+
 		for (const cardType in this.cardsDefault) {
 			if (space) {
 				result += '\n' + space + '\t\t"' + cardType + '":';
@@ -55,6 +61,7 @@ export class DeckOptions {
 				result += ',';
 			}
 		}
+
 		if (space) {
 			result = result.slice(0, result.length - 1);// Remove the last ','
 			result += '\n' + space + '\t}\n' + space + '}';
@@ -62,6 +69,7 @@ export class DeckOptions {
 			result = result.slice(0, result.length - 1);// Remove the last ','
 			result += '}}';
 		}
+
 		return result;
 	}
 
@@ -91,10 +99,13 @@ export class DeckOptions {
 }
 
 export class Deck {
+	/** @type {Card[]} */
 	#cards = [];
-	options = new DeckOptions();
+	/** @type {DeckOptions} */
+	options = null;
 
-	constructor() {
+	constructor(name) {
+		this.options = new DeckOptions(name);
 	}
 
 	/**
@@ -106,6 +117,7 @@ export class Deck {
 
 	clear() {
 		this.#cards.length = 0;
+		this.options = new DeckOptions();
 	}
 
 	/**
@@ -301,9 +313,9 @@ export class Deck {
 
 	generatePagesHtml() {
 		// Generate the HTML for each card
-		/** @type {string[]} */ 
+		/** @type {string[]} */
 		let frontCards = [];
-		/** @type {string[]} */ 
+		/** @type {string[]} */
 		let backCards = [];
 		let options = this.options;
 		this.cards.forEach(function (card) {

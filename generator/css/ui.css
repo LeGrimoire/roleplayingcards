@@ -221,7 +221,7 @@ input[id*="color"] {
 #menu-container {
 	padding-right: 12px;
 	padding-left: 10px;
-	padding-top: 5px;
+	padding-top: 7px;
 }
 
 #menu-container .form-group {
@@ -234,6 +234,7 @@ input[id*="color"] {
 	padding-bottom: 0px;
 	height: 24px;
 	line-height: 24px;
+	overflow: hidden;
 }
 #menu-container select,
 #menu-container input {
@@ -279,6 +280,14 @@ input[id*="color"] {
 }
 #menu-container .dropdown-menu {
 	width: 322px;
+}
+
+#decks-list {
+	font-size: 16px;
+}
+
+#decks-list .selected-deck {
+	font-style: italic;
 }
 
 p#file-name {
@@ -405,7 +414,7 @@ p#file-name {
 
 /* Don't set margin, it's done in js and would break the folding of menu and preview. */
 #card-form-container {
-	padding-top: 5px;
+	padding-top: 7px;
 }
 
 #card-form-container:before {

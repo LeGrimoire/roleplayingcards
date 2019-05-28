@@ -1,661 +1,678 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <title>RPG cards</title>
-    <meta charset="UTF-8">
-    <!-- Library: jQuery -->
-    <script type="application/javascript" src="../node_modules/jquery/dist/jquery.js" charset="utf-8"></script>
-    <!-- Library: Bootstrap -->
-    <script type="application/javascript" src="lib/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
-    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-theme.css" />
-    <!-- Library: Bootstrap typeahead -->
-    <script type="application/javascript" src="lib/typeahead/bootstrap3-typeahead.min.js" charset="utf-8"></script>
-    <!-- Library: Color picker -->
-    <script type="application/javascript" src="lib/colorpicker/js/bootstrap-colorselector.js" charset="utf-8"></script>
-    <link rel="stylesheet" type="text/css" href="lib/colorpicker/css/bootstrap-colorselector.css" />
+	<title>RPG cards</title>
+	<meta charset="UTF-8">
+	<!-- Library: jQuery -->
+	<script type="application/javascript" src="../node_modules/jquery/dist/jquery.js" charset="utf-8"></script>
+	<!-- Library: Bootstrap -->
+	<script type="application/javascript" src="lib/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-theme.css" />
+	<!-- Library: Bootstrap typeahead -->
+	<script type="application/javascript" src="lib/typeahead/bootstrap3-typeahead.min.js" charset="utf-8"></script>
+	<!-- Library: Color picker -->
+	<script type="application/javascript" src="lib/colorpicker/js/bootstrap-colorselector.js" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="lib/colorpicker/css/bootstrap-colorselector.css" />
 	<!-- Javascript -->
-    <script type="module" src="js/ui.js"></script>
-    <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="css/ui.css" />
-    <link rel="stylesheet" type="text/css" href="css/cards.css" />
-    <link rel="stylesheet" type="text/css" href="css/card-size.css" />
-    <link rel="stylesheet" type="text/css" href="css/icons.css" />
-    <!-- Fonts -->
+	<script type="module" src="js/ui.js"></script>
+	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="css/ui.css" />
+	<link rel="stylesheet" type="text/css" href="css/cards.css" />
+	<link rel="stylesheet" type="text/css" href="css/card-size.css" />
+	<link rel="stylesheet" type="text/css" href="css/icons.css" />
+	<!-- Fonts -->
 	<!-- <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=
-	Noto+Sans:400,700,400italic,700italic
-	|Lora:400,700,400italic,700italic
-	|Cutive+Mono:400,700,400italic,700italic
-	|Roboto+Mono:400,700,400italic,700italic
-	|Ubuntu+Mono:400,700,400italic,700italic
-	&display=block"> -->
-</head>
-
-<body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Menu -->
-            <div id="menu-container-wrapper" class="col-md-12 col-lg-3 container-wrapper">
-                <div id="menu-container">
-                    <form id="file-load-form" style="display:none">
-                        <input id="file-import" type="file" name="files[]" multiple class="form-control" style="display:none" />
-                    </form>
-					<a id="file-save-link" href="" download="Cards.json" style="display:none">Hidden download link</a>
-                    <!-- Main buttons -->
-                    <div id="main-buttons" class="col-sm-12">
-                        <form role="form" class="form-horizontal">
-                            <div class="form-group">
-                                <div class="col-sm-2">
-                                    <button id="button-help" type="button" class="btn btn-info btn-block"></button>
-                                </div>
-                                <div class="col-sm-2">
-                                    <button id="button-icons" type="button" class="btn btn-info btn-block"></button>
-                                </div>
-                                <div class="col-sm-4">
-                                    <button id="button-language" type="button" class="btn btn-info btn-block"></button>
-                                </div>
-                                <div class="col-sm-2">
-                                    <button id="button-sort" type="button" class="btn btn-default btn-block"></button>
-                                </div>
-                                <div class="col-sm-2">
-                                    <button id="button-filter" type="button" class="btn btn-default btn-block"></button>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-4">
-                                    <button id="button-load-sample" type="button" class="btn btn-default btn-block"></button>
-                                </div>
-                                <div class="col-sm-4">
-									<button id="button-insert-lexical" type="button" class="btn btn-default btn-block"></button>
-                                </div>
-                                <div class="col-sm-4">
-                                    <button id="button-clear" type="button" class="btn btn-danger btn-block"></button>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-4">
-                                    <button id="button-import" type="button" class="btn btn-primary btn-block"></button>
-                                </div>
-                                <div class="col-sm-4">
-                                    <button id="button-save" type="button" class="btn btn-primary btn-block"></button>
-                                </div>
-                                <div class="col-sm-4">
-                                    <button id="button-generate" type="button" class="btn btn-success btn-block"></button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <p id="file-name"><b>File:</b> ...</p>
-                    <!-- Deck settings -->
-                    <div id="deck-settings" class="col-sm-12">
-                        <h3 id="deck-settings-title" class="btn-fold-block" for="deck-settings-block"></h3>
-                        <form id="deck-settings-block" role="form" class="form-horizontal">
-                            <div class="form-group">
-                                <label id="page-size-label" class="col-sm-2 control-label" for="page-size"></label>
-                                <div class="col-sm-3">
-                                    <select id="page-size" class="form-control" data-property="pageSize">
-                                        <option value="A4" selected>A4</option>
-                                        <option value="Letter">US letter</option>
-                                        <option value="25x35">2.5&quot; x 3.5&quot;</option>
-                                    </select>
-                                </div>
-                                <label id="cards-page-label" class="col-sm-4 control-label" for="page-rows"></label>
-                                <div class="col-sm-1">
-                                    <input id="page-rows" type="text" class="form-control" data-property="pageRows" value="3">
-                                </div>
-                                <div class="col-sm-1">
-                                    <p class="form-control-static" style="text-align:center">x</p>
-                                </div>
-                                <div class="col-sm-1">
-                                    <input id="page-columns" type="text" class="form-control" data-property="pageColumns" value="3">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label id="card-arrangement-label" class="col-sm-2 control-label" for="card-arrangement"></label>
-                                <div class="col-sm-4">
-                                    <select id="card-arrangement" class="form-control" data-property="cardsArrangement">
-                                        <option value="doublesided"></option>
-                                        <option value="front_only" selected></option>
-                                        <option value="side_by_side"></option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-6">
-                                    <select id="card-size" class="form-control" data-property="cardsSize">
-                                        <option value="225x35">2.25&quot; x 3.5&quot; (Bridge)</option>
-                                        <option value="25x35" selected>2.5&quot; x 3.5&quot; (Poker)</option>
-                                        <option value="35x50">3.5&quot; x 5.0&quot;</option>
-                                        <option value="75x50">7.5&quot; x 5.0&quot;</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-6 checkbox">
-									<label id="round-corners-label" for="round-corners"></label>
-									<input id="round-corners" type="checkbox" data-property="roundCorners">
-                                </div>
-                                <div class="col-sm-6 checkbox">
-									<label id="small-icons-label" for="small-icons"></label>
-                                    <input id="small-icons" type="checkbox" data-property="smallIcons">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label id="title-size-label" class="col-sm-2 control-label" for="title-size"></label>
-                                <div class="col-sm-4">
-                                    <select id="title-size" class="form-control" data-property="titleSize">
-                                        <option value="16">16pt</option>
-                                        <option value="15">15pt</option>
-                                        <option value="14">14pt</option>
-                                        <option value="13" selected>13pt</option>
-                                        <option value="12">12pt</option>
-                                        <option value="11">11pt</option>
-                                        <option value="10">10pt</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-6 checkbox">
-									<label id="spell-classes-label" for="spell-classes"></label>
-									<input id="spell-classes" type="checkbox" data-property="showSpellClasses">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- Default values -->
-                    <div id="default-block" class="col-sm-12">
-                        <form role="form" class="form-horizontal">
-							<div id="default-block-title" class="form-group">
-								<h3 class="btn-fold-block" for="default-values-block"></h3>
-								<select id="default-card-type" class="form-control" data-property="type">
-									<option value="Card" selected></option>
-									<option value="CreatureCard"></option>
-									<option value="ItemCard"></option>
-									<option value="SpellCard"></option>
-									<option value="PowerCard"></option>
-								</select>
-							</div>
-                        </form>
-                        <form id="default-values-block" role="form" class="form-horizontal">
-                            <div class="form-group">
-                                <label id="default-color-label" class="col-sm-3 control-label" for="default-color"></label>
-                                <div class="col-sm-4">
-                                    <div class="input-group">
-                                        <select id="default-color-selector" class="colorselector-data"></select>
-                                        <input id="default-color" type="text" class="form-control" data-property="color">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label id="default-color-front-label" class="col-sm-3 control-label" for="default-color-front"></label>
-                                <div class="col-sm-4">
-                                    <div class="input-group">
-                                        <select id="default-color-front-selector" class="colorselector-data"></select>
-                                        <input id="default-color-front" type="text" class="form-control" data-property="color_front">
-                                    </div>
-                                </div>
-                                <div class="col-sm-5">
-                                    <div class="input-group">
-                                        <input id="default-icon" type="text" class="form-control icon-list" data-property="icon">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label id="default-color-back-label" class="col-sm-3 control-label" for="default-color-back"></label>
-                                <div class="col-sm-4">
-                                    <div class="input-group">
-                                        <select id="default-color-back-selector" class="colorselector-data"></select>
-                                        <input id="default-color-back" type="text" class="form-control" data-property="color_back">
-                                    </div>
-                                </div>
-                                <div class="col-sm-5">
-                                    <div class="input-group">
-                                        <input id="default-icon-back" type="text" class="form-control icon-list" data-property="icon_back">
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- Cards list -->
-                    <div class="col-sm-12">
-                        <form role="form" class="form-horizontal">
-                            <div id="cards-list-title" class="form-group">
-                                <h3 class="btn-fold-block col-sm-6" for="cards-list"></h3>
-                                <p id="total_cards_count" class="form-control-static"></p>
-                            </div>
-                            <div id="cards-list-buttons" class="form-group">
-                                <div class="col-sm-1">
-									<button id="button-card-up" type="button" class="btn btn-primary btn-block">/\</button>
+		Noto+Sans:400,700,400italic,700italic
+		|Lora:400,700,400italic,700italic
+		|Cutive+Mono:400,700,400italic,700italic
+		|Roboto+Mono:400,700,400italic,700italic
+		|Ubuntu+Mono:400,700,400italic,700italic
+		&display=block"> -->
+	</head>
+	
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<!-- Menu -->
+				<div id="menu-container-wrapper" class="col-md-12 col-lg-3 container-wrapper">
+					<div id="menu-container">
+						<form id="file-load-form" style="display:none">
+							<input id="file-import" type="file" name="files[]" multiple class="form-control" style="display:none" />
+						</form>
+						<a id="file-save-link" href="" download="Cards.json" style="display:none">Hidden download link</a>
+						<!-- Main buttons -->
+						<div id="main-buttons" class="col-sm-12">
+							<form role="form" class="form-horizontal">
+								<div class="form-group">
+									<div class="col-sm-2">
+										<button id="button-help" type="button" class="btn btn-info btn-block"></button>
+									</div>
+									<div class="col-sm-3">
+										<button id="button-language" type="button" class="btn btn-info btn-block"></button>
+									</div>
+									<div class="col-sm-2">
+										<button id="button-load-sample" type="button" class="btn btn-info btn-block"></button>
+									</div>
+									<div class="col-sm-2">
+										<button id="button-insert-lexical" type="button" class="btn btn-info btn-block"></button>
+									</div>
+									<div class="col-sm-3">
+										<button id="button-generate-all" type="button" class="btn btn-success btn-block"></button>
+									</div>
 								</div>
-								<div class="col-sm-1">
-									<button id="button-card-down" type="button" class="btn btn-primary btn-block">\/</button>
-                                </div>
-                                <div class="col-sm-2">
-                                    <button id="button-card-delete" type="button" class="btn btn-danger btn-block">Delete</button>
-                                </div>
-                                <div class="col-sm-2">
-                                    <button id="button-card-duplicate" type="button" class="btn btn-success btn-block">Copy</button>
-                                </div>
-                                <div class="col-sm-2">
-                                    <button id="button-card-add" type="button" class="btn btn-primary btn-block">New :</button>
-                                </div>
-                                <div class="col-sm-4">
-                                    <select id="card-type" class="form-control" data-property="type">
-                                        <option value="Card" selected></option>
-                                        <option value="CreatureCard"></option>
-                                        <option value="ItemCard"></option>
-                                        <option value="SpellCard"></option>
-                                        <option value="PowerCard"></option>
-                                    </select>
-                                </div>
-                            </div>
-                        </form>
-                        <form id="cards-list" role="form" class="form-horizontal">
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <button id="button-fold-menu" type="button" class="btn-fold-section btn-fold-section-left" for="menu-container-wrapper"></button>
-
-            <!-- Card forms -->
-            <div id="card-form-container-wrapper" class="col-md-12 col-lg-5 container-wrapper">
-                <div id="card-form-container">
-                    <h3 id="card-form-container-title" class="hide-when-large" style="clear:both;padding-top:10px;"></h3>
-                    <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <label id="card-title-label" for="card-title" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-7">
-                                <input id="card-title" type="text" class="form-control">
-                            </div>
-							<div class="col-sm-3 checkbox">
-								<label id="card-title-multiline-label" for="card-title-multiline"></label>
-								<input id="card-title-multiline" type="checkbox" data-property="title_multiline">
-							</div>
-                        </div>
-                        <div class="form-group creature-hide spell-hide">
-                            <label id="card-subtitle-label" for="card-subtitle" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
-                                <input id="card-subtitle" type="text" class="form-control" data-property="subtitle">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label id="card-icon-label" for="card-icon" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-4">
-                                <div class="input-group">
-                                    <input id="card-icon" type="text" class="form-control icon-list" data-property="icon">
-                                </div>
-                            </div>
-                            <label id="card-color-label" for="card-color" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-5">
-                                <div class="input-group">
-                                    <select id="card-color-selector" class="colorselector-data"></select>
-                                    <input id="card-color" type="text" class="form-control" data-property="color">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group creature-hide">
-                            <label id="card-icon-back-label" for="card-icon-back" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-4">
-                                <div class="input-group">
-                                    <input id="card-icon-back" type="text" class="form-control icon-list" data-property="icon_back">
-                                </div>
-                            </div>
-                            <label id="card-background-label" for="card-background" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-4">
-                                <input id="card-background" type="text" class="form-control" data-property="background_image">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label id="card-description-label" for="card-description" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
-                                <textarea id="card-description" class="form-control" rows="3" data-property="description"></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Creature forms -->
-                        <div class="form-group creature-only">
-                            <label id="card-creature-cr-label" for="card-creature-cr" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-1">
-                                <input id="card-creature-cr" type="text" class="form-control" data-property="cr">
-                            </div>
-                            <label id="card-creature-size-label" for="card-creature-size" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-1">
-                                <input id="card-creature-size" type="text" class="form-control" data-property="size">
-                            </div>
-                            <label id="card-creature-alignment-label" for="card-creature-alignment" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-2">
-                                <!-- <select id="card-creature-alignment" class="form-control" data-property="alignment"></select> -->
-                                <input id="card-creature-alignment" type="text" class="form-control" data-property="alignment">
-                            </div>
-                            <label id="card-creature-type-label" for="card-creature-type" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-3">
-                                <input id="card-creature-type" type="text" class="form-control" data-property="type">
-                            </div>
-                        </div>
-                        <div class="form-group creature-only">
-                            <label id="card-creature-ac-label" for="card-creature-ac" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-5">
-                                <input id="card-creature-ac" type="text" class="form-control" data-property="ac">
-                            </div>
-                            <label id="card-creature-hp-label" for="card-creature-hp" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-4">
-                                <input id="card-creature-hp" type="text" class="form-control" data-property="hp">
-                            </div>
-                        </div>
-                        <div class="form-group creature-only">
-                            <label id="card-creature-speed-label" for="card-creature-speed" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-5">
-                                <input id="card-creature-speed" type="text" class="form-control" data-property="speed">
-                            </div>
-                            <label id="card-creature-perception-label" for="card-creature-perception" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-4">
-                                <input id="card-creature-perception" type="text" class="form-control" data-property="perception">
-                            </div>
-                        </div>
-                        <div class="form-group creature-only">
-                            <label id="card-creature-strength-label" for="card-creature-strength" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-1">
-                                <input id="card-creature-strength" type="text" class="form-control" data-index="0">
-                            </div>
-                            <label id="card-creature-dexterity-label" for="card-creature-dexterity" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-1">
-                                <input id="card-creature-dexterity" type="text" class="form-control" data-index="1">
-                            </div>
-                            <label id="card-creature-constitution-label" for="card-creature-constitution" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-1">
-                                <input id="card-creature-constitution" type="text" class="form-control" data-index="2">
-                            </div>
-                            <label id="card-creature-intelligence-label" for="card-creature-intelligence" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-1">
-                                <input id="card-creature-intelligence" type="text" class="form-control" data-index="3">
-                            </div>
-                            <label id="card-creature-wisdom-label" for="card-creature-wisdom" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-1">
-                                <input id="card-creature-wisdom" type="text" class="form-control" data-index="4">
-                            </div>
-                            <label id="card-creature-charisma-label" for="card-creature-charisma" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-1">
-                                <input id="card-creature-charisma" type="text" class="form-control" data-index="5">
-                            </div>
-                        </div>
-                        <div class="form-group creature-only">
-                            <label id="card-creature-resistances-label" for="card-resistances" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
-                                <input id="card-creature-resistances" type="text" class="form-control" data-property="resistances">
-                            </div>
-                        </div>
-                        <div class="form-group creature-only">
-                            <label id="card-creature-vulnerabilities-label" for="card-vulnerabilities" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
-                                <input id="card-creature-vulnerabilities" type="text" class="form-control" data-property="vulnerabilities">
-                            </div>
-                        </div>
-                        <div class="form-group creature-only">
-                            <label id="card-creature-immunities-label" for="card-immunities" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
-                                <input id="card-creature-immunities" type="text" class="form-control" data-property="immunities">
-                            </div>
-                        </div>
-
-                        <!-- Item forms -->
-
-                        <!-- Spell forms -->
-                        <div class="form-group spell-only">
-                            <label id="card-spell-level-label" for="card-spell-level" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-1">
-                                <input id="card-spell-level" type="number" class="form-control" value="1" min="0" max="9" data-property="level">
-                            </div>
-							<div class="col-sm-2 checkbox">
-								<label id="card-spell-ritual-label" for="card-spell-ritual"></label>
-								<input id="card-spell-ritual" type="checkbox" data-property="ritual">
-							</div>
-                            <label id="card-spell-type-label" for="card-spell-type" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-6">
-                                <input id="card-spell-type" type="text" class="form-control" data-property="type">
-                            </div>
-                        </div>
-                        <div class="form-group spell-only">
-                            <label id="card-spell-materials-label" for="card-spell-materials" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-6">
-                                <input id="card-spell-materials" type="text" class="form-control" data-property="materials">
-                            </div>
-							<div class="col-sm-2 checkbox">
-								<label id="card-spell-verbal-label" for="card-spell-verbal"></label>
-								<input id="card-spell-verbal" type="checkbox" data-property="verbal">
-							</div>
-							<div class="col-sm-2 checkbox">
-								<label id="card-spell-somatic-label" for="card-spell-somatic"></label>
-								<input id="card-spell-somatic" type="checkbox" data-property="somatic">
-							</div>
-                        </div>
-                        <div class="form-group spell-only">
-                            <label id="card-spell-range-label" for="card-spell-range" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-2">
-                                <input id="card-spell-range" type="text" class="form-control" data-property="range">
-                            </div>
-                            <label id="card-spell-casting-time-label" for="card-spell-casting-time" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-2">
-                                <input id="card-spell-casting-time" type="text" class="form-control" data-property="casting_time">
-                            </div>
-                            <label id="card-spell-duration-label" for="card-spell-duration" class="col-sm-1 control-label"></label>
-                            <div class="col-sm-3">
-                                <input id="card-spell-duration" type="text" class="form-control" data-property="duration">
-                            </div>
-                        </div>
-
-                        <!-- Power forms -->
-
-                        <!-- Common forms -->
-                        <div class="form-group">
-                            <label id="card-contents-label" for="card-contents" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
-                                <textarea id="card-contents" class="form-control" rows="18"></textarea>
-                            </div>
-                        </div>
-                        
-                        <!-- Spell bottom forms -->
-                        <div class="form-group spell-only">
-                            <label id="card-spell-higher-levels-label" for="card-spell-higher-levels" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
-                                <textarea id="card-spell-higher-levels" class="form-control" rows="3" data-property="higherLevels"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group spell-only">
-                            <label id="card-spell-classes-label" for="card-spell-classes" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
-                                <input id="card-spell-classes" type="text" class="form-control" data-property="classes"/>
-                            </div>
-                        </div>
-
-                        <!-- Common bottom forms -->
-                        <div class="form-group">
-                            <label id="card-tags-label" for="card-tags" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
-                                <input id="card-tags" type="text" class="form-control"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label id="card-reference-label" for="card-reference" class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
-                                <input id="card-reference" type="text" class="form-control" data-property="reference"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-							<div class="col-sm-offset-9 col-sm-3 checkbox">
-								<label id="card-compact-label" for="card-compact"></label>
-								<input id="card-compact" type="checkbox" data-property="compact">
-							</div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Preview -->
-            <button id="button-fold-preview" type="button" class="btn-fold-section btn-fold-section-right" for="preview-container-wrapper"></button>
-            <div id="preview-container-wrapper" class="col-md-12 col-lg-4 container-wrapper">
-                <div id="preview-container">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal (Print) -->
-    <div id="print-modal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">Printing generated cards</h4>
-                </div>
-                <div class="modal-body">
-                    <ul>
-                        <li>The generated cards open in a new tab or window. If you don't see any new tab or window, check your popup and script blockers. If that does not help, try disabling all addons.</li>
-                        <li>Make sure you enable the printing of background images and colors in your browser.</li>
-                        <li>Make sure your printer uses the correct paper size (same as in the editor).</li>
-                        <li>Enable double sided printing (flip on long edge).</li>
-                        <li>Do not scale the document to fit the page. Print at original size.</li>
-                        <li>Some printers are not very precise (pages print slightly shifted or rotated) and the cards will not line up with the card backs. If this is the case, there's not much you can do. Try making the page background the same color as the cards, so that you won't get any white edges on the card. If that does not help, try a different printer or print single-sided.</li>
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok, got it</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal (Help)-->
-    <div id="help-modal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">RGP card generator</h4>
-                </div>
-                <div class="modal-body">
-                    <ul>
-                        <li>Some RPG systems are protected by copyright. Even if some spell/item data is freely available, it does not mean you may redistribute cards containing such data.</li>
-                        <li>If you find a bug or have a feature request, post them at the <a href="https://github.com/crobi/rpg-cards/issues">Github project site</a>.</li>
-                        <li>The user interface consists of three columns:<img alt="help" src="help.png" style="max-width:95%; display:block; padding: 5px; margin: 10px 0 10px 0; border: 1px solid #ebebeb; box-shadow: 0 0 5px #ebebeb;"/> The left column contains the menu and global settings. In the middle menu, you can select and edit individual cards. The right column contains a preview of the selected card.</li>
-                        <li>To use the generator, either load the sample card deck ("Load sample"), load a card deck from a file ("Load from file"), or manually add some cards. When you're done, click on "Generate" to generate a document with all your cards, which can then be printed.</li>
-                        <li>Shortcut
-                            <ul>
-                                <li>Ctrl+S: Save to file</li>
-                                <li>Ctrl+G: Generate</li>
-                                <li>Pg Down: Previous card</li>
-                                <li>Pg Up: Next card</li>
-                                <li>In the <i>Contents</i> area: 
-                                    <ul>
-                                        <li>Ctrl+S: Save to file</li>
-                                        <li>Ctrl+G: Generate</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>To learn about what features are available to define a card, inspect the sample deck or read some basic documentation at the <a href="http://crobi.github.io/rpg-cards/">project site</a>.</li>
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal (Language) -->
-    <div id="language-modal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">Language</h4>
-                </div>
-                <div class="modal-body">
-					<div id="language-list">
-						<button type="button" class="btn btn-default" data-lang="fr">Français</button>
-						<button type="button" class="btn btn-default" data-lang="en">English</button>
+							</form>
+						</div>
+						<div id="decks" class="col-sm-12">
+							<form role="form" class="form-horizontal">
+								<div class="form-group">
+									<div class="col-sm-9">
+										<select id="decks-list" class="form-control">
+										</select>
+									</div>
+									<div class="col-sm-3">
+										<button id="button-generate" type="button" class="btn btn-success btn-block"></button>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-2">
+										<button id="button-sort" type="button" class="btn btn-default btn-block"></button>
+									</div>
+									<div class="col-sm-2">
+										<button id="button-filter" type="button" class="btn btn-default btn-block"></button>
+									</div>
+									<div class="col-sm-2">
+										<button id="button-new" type="button" class="btn btn-default btn-block"></button>
+									</div>
+									<div class="col-sm-2">
+										<button id="button-import" type="button" class="btn btn-primary btn-block"></button>
+									</div>
+									<div class="col-sm-2">
+										<button id="button-delete" type="button" class="btn btn-danger btn-block"></button>
+									</div>
+									<div class="col-sm-2">
+										<button id="button-save" type="button" class="btn btn-primary btn-block"></button>
+									</div>
+								</div>
+							</form>
+						</div>
+						<!-- Deck settings -->
+						<div id="deck-settings" class="col-sm-12">
+							<h3 id="deck-settings-title" class="btn-fold-block" for="deck-settings-block"></h3>
+							<form id="deck-settings-block" role="form" class="form-horizontal">
+								<div class="form-group">
+									<label id="deck-name-label" class="col-sm-2 control-label" for="deck-name"></label>
+									<div class="col-sm-10">
+										<input id="deck-name" type="text" class="form-control" data-property="name">
+									</div>
+								</div>
+								<div class="form-group">
+									<label id="page-size-label" class="col-sm-2 control-label" for="page-size"></label>
+									<div class="col-sm-3">
+										<select id="page-size" class="form-control" data-property="pageSize">
+											<option value="A4" selected>A4</option>
+											<option value="Letter">US letter</option>
+											<option value="25x35">2.5&quot; x 3.5&quot;</option>
+										</select>
+									</div>
+									<label id="cards-page-label" class="col-sm-4 control-label" for="page-rows"></label>
+									<div class="col-sm-1">
+										<input id="page-rows" type="text" class="form-control" data-property="pageRows">
+									</div>
+									<div class="col-sm-1">
+										<p class="form-control-static" style="text-align:center">x</p>
+									</div>
+									<div class="col-sm-1">
+										<input id="page-columns" type="text" class="form-control" data-property="pageColumns">
+									</div>
+								</div>
+								<div class="form-group">
+									<label id="card-arrangement-label" class="col-sm-2 control-label" for="card-arrangement"></label>
+									<div class="col-sm-4">
+										<select id="card-arrangement" class="form-control" data-property="cardsArrangement">
+											<option value="doublesided"></option>
+											<option value="front_only" selected></option>
+											<option value="side_by_side"></option>
+										</select>
+									</div>
+									<div class="col-sm-6">
+										<select id="card-size" class="form-control" data-property="cardsSize">
+											<option value="225x35">2.25&quot; x 3.5&quot; (Bridge)</option>
+											<option value="25x35" selected>2.5&quot; x 3.5&quot; (Poker)</option>
+											<option value="35x50">3.5&quot; x 5.0&quot;</option>
+											<option value="75x50">7.5&quot; x 5.0&quot;</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-6 checkbox">
+										<label id="round-corners-label" for="round-corners"></label>
+										<input id="round-corners" type="checkbox" data-property="roundCorners">
+									</div>
+									<div class="col-sm-6 checkbox">
+										<label id="small-icons-label" for="small-icons"></label>
+										<input id="small-icons" type="checkbox" data-property="smallIcons">
+									</div>
+								</div>
+								<div class="form-group">
+									<label id="title-size-label" class="col-sm-2 control-label" for="title-size"></label>
+									<div class="col-sm-4">
+										<select id="title-size" class="form-control" data-property="titleSize">
+											<option value="16">16pt</option>
+											<option value="15">15pt</option>
+											<option value="14">14pt</option>
+											<option value="13" selected>13pt</option>
+											<option value="12">12pt</option>
+											<option value="11">11pt</option>
+											<option value="10">10pt</option>
+										</select>
+									</div>
+									<div class="col-sm-6 checkbox">
+										<label id="spell-classes-label" for="spell-classes"></label>
+										<input id="spell-classes" type="checkbox" data-property="showSpellClasses">
+									</div>
+								</div>
+							</form>
+						</div>
+						<!-- Default values -->
+						<div id="default-block" class="col-sm-12">
+							<form role="form" class="form-horizontal">
+								<div id="default-block-title" class="form-group">
+									<h3 class="btn-fold-block" for="default-values-block"></h3>
+									<select id="default-card-type" class="form-control" data-property="type">
+										<option value="Card" selected></option>
+										<option value="CreatureCard"></option>
+										<option value="ItemCard"></option>
+										<option value="SpellCard"></option>
+										<option value="PowerCard"></option>
+									</select>
+								</div>
+							</form>
+							<form id="default-values-block" role="form" class="form-horizontal">
+								<div class="form-group">
+									<label id="default-color-label" class="col-sm-3 control-label" for="default-color"></label>
+									<div class="col-sm-4">
+										<div class="input-group">
+											<select id="default-color-selector" class="colorselector-data"></select>
+											<input id="default-color" type="text" class="form-control" data-property="color">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label id="default-color-front-label" class="col-sm-3 control-label" for="default-color-front"></label>
+									<div class="col-sm-4">
+										<div class="input-group">
+											<select id="default-color-front-selector" class="colorselector-data"></select>
+											<input id="default-color-front" type="text" class="form-control" data-property="color_front">
+										</div>
+									</div>
+									<div class="col-sm-5">
+										<div class="input-group">
+											<input id="default-icon" type="text" class="form-control icon-list" data-property="icon">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label id="default-color-back-label" class="col-sm-3 control-label" for="default-color-back"></label>
+									<div class="col-sm-4">
+										<div class="input-group">
+											<select id="default-color-back-selector" class="colorselector-data"></select>
+											<input id="default-color-back" type="text" class="form-control" data-property="color_back">
+										</div>
+									</div>
+									<div class="col-sm-5">
+										<div class="input-group">
+											<input id="default-icon-back" type="text" class="form-control icon-list" data-property="icon_back">
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+						<!-- Cards list -->
+						<div class="col-sm-12">
+							<form role="form" class="form-horizontal">
+								<div id="cards-list-title" class="form-group">
+									<h3 class="btn-fold-block col-sm-6" for="cards-list"></h3>
+									<p id="total_cards_count" class="form-control-static"></p>
+								</div>
+								<div id="cards-list-buttons" class="form-group">
+									<div class="col-sm-1">
+										<button id="button-card-up" type="button" class="btn btn-primary btn-block">/\</button>
+									</div>
+									<div class="col-sm-1">
+										<button id="button-card-down" type="button" class="btn btn-primary btn-block">\/</button>
+									</div>
+									<div class="col-sm-2">
+										<button id="button-card-delete" type="button" class="btn btn-danger btn-block">Delete</button>
+									</div>
+									<div class="col-sm-2">
+										<button id="button-card-duplicate" type="button" class="btn btn-success btn-block">Copy</button>
+									</div>
+									<div class="col-sm-2">
+										<button id="button-card-add" type="button" class="btn btn-primary btn-block">New :</button>
+									</div>
+									<div class="col-sm-4">
+										<select id="card-type" class="form-control" data-property="type">
+											<option value="Card" selected></option>
+											<option value="CreatureCard"></option>
+											<option value="ItemCard"></option>
+											<option value="SpellCard"></option>
+											<option value="PowerCard"></option>
+										</select>
+									</div>
+								</div>
+							</form>
+							<form id="cards-list" role="form" class="form-horizontal">
+							</form>
+						</div>
 					</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal (Clear)-->
-    <div id="clear-confirmation-modal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">Confirm clear</h4>
-                </div>
-                <div class="modal-body">
-                    <p>All cards will be removed.<br/>Revert won't be possible.<br/>Are you sure ?</p>
-                </div>
-                <div class="modal-footer">
-                    <button id="clear-modal-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button id="clear-modal-confirm" type="button" class="btn btn-danger" data-dismiss="modal">Delete all</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal (Sort)-->
-    <div id="sort-modal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">Sort cards</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Enter the comparison function below. The comparison function is a block of javascript code. Return -1 if card_a should appear before card_b.</p>
-                    <textarea id="sort-function" class="form-control" rows="10" wrap="off">
-if (card_a.type < card_b.type) {
-    return -1;
-}
-if (card_a.type > card_b.type) {
-    return 1;
-}
-if (card_a.title < card_b.title) {
-    return -1;
-}
-if (card_a.title > card_b.title) {
-    return 1;
-}
-return 0;
-                    </textarea>
-                </div>
-                <div class="modal-footer">
-                    <button id="sort-execute" type="button" class="btn btn-default">Sort</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal (Filter)-->
-    <div id="filter-modal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">Filter/map cards</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Enter code below that will be executed for each card in the deck. Return false to remove the current card from the deck.</p>
-                    <textarea id="filter-function" class="form-control" rows="10" wrap="off">
-// Color all spell cards yellow
-if (card.hasTag("spell")) {
-    card.color = "yellow";
-}
-
-// Remove all creature cards
-if (card.hasTag("creature")) {
-    return false;
-}
-                    </textarea>
-                </div>
-                <div class="modal-footer">
-                    <button id="filter-execute" type="button" class="btn btn-default">Filter</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-
-</html>
+				</div>
+				<button id="button-fold-menu" type="button" class="btn-fold-section btn-fold-section-left" for="menu-container-wrapper"></button>
+				
+				<!-- Card forms -->
+				<div id="card-form-container-wrapper" class="col-md-12 col-lg-5 container-wrapper">
+					<div id="card-form-container">
+						<h3 id="card-form-container-title" class="hide-when-large" style="clear:both;padding-top:10px;"></h3>
+						<form class="form-horizontal" role="form">
+							<div class="form-group">
+								<label id="card-title-label" for="card-title" class="col-sm-2 control-label"></label>
+								<div class="col-sm-7">
+									<input id="card-title" type="text" class="form-control">
+								</div>
+								<div class="col-sm-3 checkbox">
+									<label id="card-title-multiline-label" for="card-title-multiline"></label>
+									<input id="card-title-multiline" type="checkbox" data-property="title_multiline">
+								</div>
+							</div>
+							<div class="form-group creature-hide spell-hide">
+								<label id="card-subtitle-label" for="card-subtitle" class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<input id="card-subtitle" type="text" class="form-control" data-property="subtitle">
+								</div>
+							</div>
+							<div class="form-group">
+								<label id="card-icon-label" for="card-icon" class="col-sm-2 control-label"></label>
+								<div class="col-sm-4">
+									<div class="input-group">
+										<input id="card-icon" type="text" class="form-control icon-list" data-property="icon">
+									</div>
+								</div>
+								<label id="card-color-label" for="card-color" class="col-sm-1 control-label"></label>
+								<div class="col-sm-5">
+									<div class="input-group">
+										<select id="card-color-selector" class="colorselector-data"></select>
+										<input id="card-color" type="text" class="form-control" data-property="color">
+									</div>
+								</div>
+							</div>
+							<div class="form-group creature-hide">
+								<label id="card-icon-back-label" for="card-icon-back" class="col-sm-2 control-label"></label>
+								<div class="col-sm-4">
+									<div class="input-group">
+										<input id="card-icon-back" type="text" class="form-control icon-list" data-property="icon_back">
+									</div>
+								</div>
+								<label id="card-background-label" for="card-background" class="col-sm-2 control-label"></label>
+								<div class="col-sm-4">
+									<input id="card-background" type="text" class="form-control" data-property="background_image">
+								</div>
+							</div>
+							<div class="form-group">
+								<label id="card-description-label" for="card-description" class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<textarea id="card-description" class="form-control" rows="3" data-property="description"></textarea>
+								</div>
+							</div>
+							
+							<!-- Creature forms -->
+							<div class="form-group creature-only">
+								<label id="card-creature-cr-label" for="card-creature-cr" class="col-sm-1 control-label"></label>
+								<div class="col-sm-1">
+									<input id="card-creature-cr" type="text" class="form-control" data-property="cr">
+								</div>
+								<label id="card-creature-size-label" for="card-creature-size" class="col-sm-1 control-label"></label>
+								<div class="col-sm-1">
+									<input id="card-creature-size" type="text" class="form-control" data-property="size">
+								</div>
+								<label id="card-creature-alignment-label" for="card-creature-alignment" class="col-sm-2 control-label"></label>
+								<div class="col-sm-2">
+									<!-- <select id="card-creature-alignment" class="form-control" data-property="alignment"></select> -->
+									<input id="card-creature-alignment" type="text" class="form-control" data-property="alignment">
+								</div>
+								<label id="card-creature-type-label" for="card-creature-type" class="col-sm-1 control-label"></label>
+								<div class="col-sm-3">
+									<input id="card-creature-type" type="text" class="form-control" data-property="type">
+								</div>
+							</div>
+							<div class="form-group creature-only">
+								<label id="card-creature-ac-label" for="card-creature-ac" class="col-sm-1 control-label"></label>
+								<div class="col-sm-5">
+									<input id="card-creature-ac" type="text" class="form-control" data-property="ac">
+								</div>
+								<label id="card-creature-hp-label" for="card-creature-hp" class="col-sm-2 control-label"></label>
+								<div class="col-sm-4">
+									<input id="card-creature-hp" type="text" class="form-control" data-property="hp">
+								</div>
+							</div>
+							<div class="form-group creature-only">
+								<label id="card-creature-speed-label" for="card-creature-speed" class="col-sm-1 control-label"></label>
+								<div class="col-sm-5">
+									<input id="card-creature-speed" type="text" class="form-control" data-property="speed">
+								</div>
+								<label id="card-creature-perception-label" for="card-creature-perception" class="col-sm-2 control-label"></label>
+								<div class="col-sm-4">
+									<input id="card-creature-perception" type="text" class="form-control" data-property="perception">
+								</div>
+							</div>
+							<div class="form-group creature-only">
+								<label id="card-creature-strength-label" for="card-creature-strength" class="col-sm-1 control-label"></label>
+								<div class="col-sm-1">
+									<input id="card-creature-strength" type="text" class="form-control" data-index="0">
+								</div>
+								<label id="card-creature-dexterity-label" for="card-creature-dexterity" class="col-sm-1 control-label"></label>
+								<div class="col-sm-1">
+									<input id="card-creature-dexterity" type="text" class="form-control" data-index="1">
+								</div>
+								<label id="card-creature-constitution-label" for="card-creature-constitution" class="col-sm-1 control-label"></label>
+								<div class="col-sm-1">
+									<input id="card-creature-constitution" type="text" class="form-control" data-index="2">
+								</div>
+								<label id="card-creature-intelligence-label" for="card-creature-intelligence" class="col-sm-1 control-label"></label>
+								<div class="col-sm-1">
+									<input id="card-creature-intelligence" type="text" class="form-control" data-index="3">
+								</div>
+								<label id="card-creature-wisdom-label" for="card-creature-wisdom" class="col-sm-1 control-label"></label>
+								<div class="col-sm-1">
+									<input id="card-creature-wisdom" type="text" class="form-control" data-index="4">
+								</div>
+								<label id="card-creature-charisma-label" for="card-creature-charisma" class="col-sm-1 control-label"></label>
+								<div class="col-sm-1">
+									<input id="card-creature-charisma" type="text" class="form-control" data-index="5">
+								</div>
+							</div>
+							<div class="form-group creature-only">
+								<label id="card-creature-resistances-label" for="card-resistances" class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<input id="card-creature-resistances" type="text" class="form-control" data-property="resistances">
+								</div>
+							</div>
+							<div class="form-group creature-only">
+								<label id="card-creature-vulnerabilities-label" for="card-vulnerabilities" class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<input id="card-creature-vulnerabilities" type="text" class="form-control" data-property="vulnerabilities">
+								</div>
+							</div>
+							<div class="form-group creature-only">
+								<label id="card-creature-immunities-label" for="card-immunities" class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<input id="card-creature-immunities" type="text" class="form-control" data-property="immunities">
+								</div>
+							</div>
+							
+							<!-- Item forms -->
+							
+							<!-- Spell forms -->
+							<div class="form-group spell-only">
+								<label id="card-spell-level-label" for="card-spell-level" class="col-sm-2 control-label"></label>
+								<div class="col-sm-1">
+									<input id="card-spell-level" type="number" class="form-control" value="1" min="0" max="9" data-property="level">
+								</div>
+								<div class="col-sm-2 checkbox">
+									<label id="card-spell-ritual-label" for="card-spell-ritual"></label>
+									<input id="card-spell-ritual" type="checkbox" data-property="ritual">
+								</div>
+								<label id="card-spell-type-label" for="card-spell-type" class="col-sm-1 control-label"></label>
+								<div class="col-sm-6">
+									<input id="card-spell-type" type="text" class="form-control" data-property="type">
+								</div>
+							</div>
+							<div class="form-group spell-only">
+								<label id="card-spell-materials-label" for="card-spell-materials" class="col-sm-2 control-label"></label>
+								<div class="col-sm-6">
+									<input id="card-spell-materials" type="text" class="form-control" data-property="materials">
+								</div>
+								<div class="col-sm-2 checkbox">
+									<label id="card-spell-verbal-label" for="card-spell-verbal"></label>
+									<input id="card-spell-verbal" type="checkbox" data-property="verbal">
+								</div>
+								<div class="col-sm-2 checkbox">
+									<label id="card-spell-somatic-label" for="card-spell-somatic"></label>
+									<input id="card-spell-somatic" type="checkbox" data-property="somatic">
+								</div>
+							</div>
+							<div class="form-group spell-only">
+								<label id="card-spell-range-label" for="card-spell-range" class="col-sm-2 control-label"></label>
+								<div class="col-sm-2">
+									<input id="card-spell-range" type="text" class="form-control" data-property="range">
+								</div>
+								<label id="card-spell-casting-time-label" for="card-spell-casting-time" class="col-sm-2 control-label"></label>
+								<div class="col-sm-2">
+									<input id="card-spell-casting-time" type="text" class="form-control" data-property="casting_time">
+								</div>
+								<label id="card-spell-duration-label" for="card-spell-duration" class="col-sm-1 control-label"></label>
+								<div class="col-sm-3">
+									<input id="card-spell-duration" type="text" class="form-control" data-property="duration">
+								</div>
+							</div>
+							
+							<!-- Power forms -->
+							
+							<!-- Common forms -->
+							<div class="form-group">
+								<label id="card-contents-label" for="card-contents" class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<textarea id="card-contents" class="form-control" rows="18"></textarea>
+								</div>
+							</div>
+							
+							<!-- Spell bottom forms -->
+							<div class="form-group spell-only">
+								<label id="card-spell-higher-levels-label" for="card-spell-higher-levels" class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<textarea id="card-spell-higher-levels" class="form-control" rows="3" data-property="higherLevels"></textarea>
+								</div>
+							</div>
+							<div class="form-group spell-only">
+								<label id="card-spell-classes-label" for="card-spell-classes" class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<input id="card-spell-classes" type="text" class="form-control" data-property="classes"/>
+								</div>
+							</div>
+							
+							<!-- Common bottom forms -->
+							<div class="form-group">
+								<label id="card-tags-label" for="card-tags" class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<input id="card-tags" type="text" class="form-control"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label id="card-reference-label" for="card-reference" class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<input id="card-reference" type="text" class="form-control" data-property="reference"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-9 col-sm-3 checkbox">
+									<label id="card-compact-label" for="card-compact"></label>
+									<input id="card-compact" type="checkbox" data-property="compact">
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				
+				<!-- Preview -->
+				<button id="button-fold-preview" type="button" class="btn-fold-section btn-fold-section-right" for="preview-container-wrapper"></button>
+				<div id="preview-container-wrapper" class="col-md-12 col-lg-4 container-wrapper">
+					<div id="preview-container">
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal (Print) -->
+		<div id="print-modal" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">Printing generated cards</h4>
+					</div>
+					<div class="modal-body">
+						<ul>
+							<li>The generated cards open in a new tab or window. If you don't see any new tab or window, check your popup and script blockers. If that does not help, try disabling all addons.</li>
+							<li>Make sure you enable the printing of background images and colors in your browser.</li>
+							<li>Make sure your printer uses the correct paper size (same as in the editor).</li>
+							<li>Enable double sided printing (flip on long edge).</li>
+							<li>Do not scale the document to fit the page. Print at original size.</li>
+							<li>Some printers are not very precise (pages print slightly shifted or rotated) and the cards will not line up with the card backs. If this is the case, there's not much you can do. Try making the page background the same color as the cards, so that you won't get any white edges on the card. If that does not help, try a different printer or print single-sided.</li>
+						</ul>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Ok, got it</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal (Help)-->
+		<div id="help-modal" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">RGP card generator</h4>
+					</div>
+					<div class="modal-body">
+						<ul>
+							<li>Some RPG systems are protected by copyright. Even if some spell/item data is freely available, it does not mean you may redistribute cards containing such data.</li>
+							<li>If you find a bug or have a feature request, post them at the <a href="https://github.com/crobi/rpg-cards/issues">Github project site</a>.</li>
+							<li>The user interface consists of three columns:<img alt="help" src="help.png" style="max-width:95%; display:block; padding: 5px; margin: 10px 0 10px 0; border: 1px solid #ebebeb; box-shadow: 0 0 5px #ebebeb;"/> The left column contains the menu and global settings. In the middle menu, you can select and edit individual cards. The right column contains a preview of the selected card.</li>
+							<li>To use the generator, either load the sample card deck ("Load sample"), load a card deck from a file ("Load from file"), or manually add some cards. When you're done, click on "Generate" to generate a document with all your cards, which can then be printed.</li>
+							<li>Shortcut
+								<ul>
+									<li>Ctrl+S: Save to file</li>
+									<li>Ctrl+G: Generate</li>
+									<li>Pg Down: Previous card</li>
+									<li>Pg Up: Next card</li>
+									<li>In the <i>Contents</i> area: 
+										<ul>
+											<li>Ctrl+S: Save to file</li>
+											<li>Ctrl+G: Generate</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li>To learn about what features are available to define a card, inspect the sample deck or read some basic documentation at the <a href="http://crobi.github.io/rpg-cards/">project site</a>.</li>
+							<li id="icons"></li>
+						</ul>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal (Language) -->
+		<div id="language-modal" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">Language</h4>
+					</div>
+					<div class="modal-body">
+						<div id="language-list">
+							<button type="button" class="btn btn-default" data-lang="fr">Français</button>
+							<button type="button" class="btn btn-default" data-lang="en">English</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal (Delete)-->
+		<div id="delete-confirmation-modal" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">Confirm delete</h4>
+					</div>
+					<div class="modal-body">
+						<p>All cards will be removed.<br/>Revert won't be possible.<br/>Are you sure ?</p>
+					</div>
+					<div class="modal-footer">
+						<button id="delete-modal-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button id="delete-modal-confirm" type="button" class="btn btn-danger" data-dismiss="modal">Delete all</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal (Sort)-->
+		<div id="sort-modal" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">Sort cards</h4>
+					</div>
+					<div class="modal-body">
+						<p>Enter the comparison function below. The comparison function is a block of javascript code. Return -1 if card_a should appear before card_b.</p>
+						<textarea id="sort-function" class="form-control" rows="10" wrap="off">
+							if (card_a.type < card_b.type) {
+								return -1;
+							}
+							if (card_a.type > card_b.type) {
+								return 1;
+							}
+							if (card_a.title < card_b.title) {
+								return -1;
+							}
+							if (card_a.title > card_b.title) {
+								return 1;
+							}
+							return 0;
+						</textarea>
+					</div>
+					<div class="modal-footer">
+						<button id="sort-execute" type="button" class="btn btn-default">Sort</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal (Filter)-->
+		<div id="filter-modal" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">Filter/map cards</h4>
+					</div>
+					<div class="modal-body">
+						<p>Enter code below that will be executed for each card in the deck. Return false to remove the current card from the deck.</p>
+						<textarea id="filter-function" class="form-control" rows="10" wrap="off">
+							// Color all spell cards yellow
+							if (card.hasTag("spell")) {
+								card.color = "yellow";
+							}
+							
+							// Remove all creature cards
+							if (card.hasTag("creature")) {
+								return false;
+							}
+						</textarea>
+					</div>
+					<div class="modal-footer">
+						<button id="filter-execute" type="button" class="btn btn-default">Filter</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	
+	</html>

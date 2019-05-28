@@ -1,7 +1,7 @@
 
 import { is_storage_available } from './storage.js';
 
-let local = 'en';
+let local = 'fr';
 export let I18N = {};
 
 export function updateLang(value) {

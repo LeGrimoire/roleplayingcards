@@ -10,21 +10,21 @@ import { I18N, updateLang } from './i18n.js';
 import { icon_names } from './icons.js';
 import { is_storage_available } from './storage.js';
 
-// Ugly global variable holding the current card deck
-let g_deck = null;
+
+/** @type {Deck[]} */
+let g_decks = [];
 
 let g_ui = {
 	foldedSections: {},
 	foldedBlocks: {},
-	selectedCardIdx: 0,
-	filename: [],
-	saveTime: '-',
+	deckIdx: 0,
+	cardIdx: 0,
 	generateModalShown: false
 };
-let g_previousCardIdx;
+let g_previousCardIdx = 0;
 let g_dontRenderSelectedCard = false;
-let g_isSmallLayout;
-let g_canSave;
+let g_isSmallLayout = false;
+let g_canSave = false;
 
 
 
@@ -32,10 +32,12 @@ let g_canSave;
 // Data save/load
 // ============================================================================
 
-function local_store_cards_save() {
+function local_store_current_deck_save() {
 	if (g_canSave && is_storage_available('localStorage') && window.localStorage) {
 		try {
-			localStorage.setItem('deck', g_deck.stringify(false));
+			localStorage.setItem('nbDecks', g_decks.length);
+			if (g_ui.deckIdx < g_decks.length)
+				localStorage.setItem('deck' + g_ui.deckIdx, g_decks[g_ui.deckIdx].stringify(false));
 		} catch (e) {
 			// TODO GREGOIRE: If the local store save failed notify the user that the data has not been saved
 			console.error(e.stack);
@@ -43,12 +45,31 @@ function local_store_cards_save() {
 	}
 }
 
-function local_store_cards_load() {
+function local_store_decks_save() {
+	if (g_canSave && is_storage_available('localStorage') && window.localStorage) {
+		try {
+			localStorage.setItem('nbDecks', g_decks.length);
+			for (let i = 0; i < g_decks.length; i++) {
+				localStorage.setItem('deck' + i, g_decks[i].stringify(false));
+			}
+		} catch (e) {
+			// TODO GREGOIRE: If the local store save failed notify the user that the data has not been saved
+			console.error(e.stack);
+		}
+	}
+}
+
+function local_store_decks_load() {
 	if (is_storage_available('localStorage') && window.localStorage) {
 		try {
-			g_deck.clear();
-			g_deck.load(JSON.parse(localStorage.getItem('deck')));
-			card_list_update();
+			const nbDecks = localStorage.getItem('nbDecks');
+			for (let i = 0; i < nbDecks; i++) {
+				if (g_decks[i])
+					g_decks[i].clear();
+				else
+					g_decks[i] = new Deck();
+				g_decks[i].load(JSON.parse(localStorage.getItem('deck' + i)));
+			}
 		} catch (e) {
 			// TODO GREGOIRE: If the local store load failed notify the user that the loading failed
 			console.error(e.stack);
@@ -91,114 +112,41 @@ function update_lang() {
 	location.reload();
 }
 
-function sort_execute() {
-	$('#sort-modal').modal('hide');
 
-	let fn_code = $('#sort-function').val().toString();
-
-	g_deck.sort(fn_code);
-
-	card_list_update();
-}
-
-function filter_execute() {
-	$('#filter-modal').modal('hide');
-
-	let fn_code = $('#filter-function').val().toString();
-
-	g_deck.filter(fn_code);
-
-	card_list_update();
-}
-
+/**
+ * Insert a new deck with the sample cards.
+ */
 function load_sample() {
-	let deckLength = g_deck.cards.length;
+	let deck = new Deck(I18N.get('UI.SAMPLE'));
+	deck.addCards(0, CardExamples());
+	g_decks = [deck].concat(g_decks);
 
-	g_deck.addCards(deckLength, CardExamples());
+	deck_list_update();
+	deck_select_by_index(0);
 
-	card_list_update(true);
-	select_card_by_index(deckLength);
-	
-	local_store_cards_save();
+	local_store_current_deck_save();
 }
 
+/**
+ * Insert a new deck with the lexicals cards.
+ */
 function insert_lexical() {
-	let cardIdx = g_ui.selectedCardIdx;
-	let deckLength = g_deck.cards.length;
+	let deck = new Deck(I18N.get('UI.LEXICAL'));
+	deck.addCards(0, CardLexicals());
+	g_decks = [deck].concat(g_decks);
 
-	g_deck.addCards(-1, CardLexicals());
+	deck_list_update();
+	deck_select_by_index(0);
 
-	card_list_update(true);
-	select_card_by_index(cardIdx + g_deck.cards.length - deckLength);
-	
-	local_store_cards_save();
+	local_store_current_deck_save();
 }
 
-function clear_all() {
-	g_deck.clear();
-	g_ui.filename.length = 0;
-	card_list_update();
-}
-
-function load_deck_to_file(evt) {
-	let files = evt.target.files;
-
-	for (let i = 0; i < files.length; i++) {
-		let f = files[i];
-		g_ui.filename.push(f.name);
-
-		let reader = new FileReader();
-		reader.onload = function () {
-			let parsedObj = JSON.parse(this.result ? this.result.toString() : '');
-			if (parsedObj.cards)
-				g_deck.load(parsedObj);
-			else
-				g_deck.loadCards(parsedObj);
-			card_list_update();
-
-			let previouslySelectedIdx = g_ui.selectedCardIdx;
-			g_previousCardIdx = g_ui.selectedCardIdx;
-			for (g_ui.selectedCardIdx = 0; g_ui.selectedCardIdx < g_deck.cards.length; g_ui.selectedCardIdx++) {
-				card_update_selected();
-				g_previousCardIdx = g_ui.selectedCardIdx;
-			}
-			select_card_by_index(previouslySelectedIdx);
-		};
-		reader.readAsText(f);
-	}
-
-	// Reset file input
-	$('#file-load-form')[0].reset();
-	$('#file-name').html('<b>' + I18N.get('UI.FILE') + ':</b> ' + g_ui.filename.join(', ') + '<br/><b>Last save:</b> ' + g_ui.saveTime);
-	local_store_ui_save();
-}
-
-function save_deck_to_file() {
-	let parts = [g_deck.stringify(true)];
-	let blob = new Blob(parts, { type: 'application/json' });
-	let url = URL.createObjectURL(blob);
-
-	let a = $('#file-save-link')[0];
-	a.href = url;
-	g_ui.filename = g_ui.filename[0] || 'Cards.json';
-	a.download = prompt('Filename:', g_ui.filename);
-	if (a.download && a.download !== 'null') {
-		g_ui.filename = [a.download];
-
-		let d = new Date();
-		g_ui.saveTime = d.getDate() + '/' + d.getMonth() + '/' + (d.getFullYear() % 100) + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
-
-		$('#file-name').html('<b>' + I18N.get('UI.FILE') + ':</b> ' + g_ui.filename.join(', ') + '<br/><b>Last save:</b> ' + g_ui.saveTime);
-		local_store_ui_save();
-		a.click();
-	}
-
-	setTimeout(function () { URL.revokeObjectURL(url); }, 500);
-}
-
-function generate() {
-	if (g_deck.cards.length === 0) {
-		alert('Your deck is empty. Please define some cards first, or load the sample deck.');
+/**
+ * Open the output page with printed cards of all decks.
+ */
+function generate_decks() {
+	if (g_decks.length === 0) {
+		alert('You have no deck or load the sample deck.');
 		return;
 	}
 
@@ -207,8 +155,13 @@ function generate() {
 		g_ui.generateModalShown = true;
 	}
 
-	// Generate output HTML
-	let card_html = g_deck.generatePagesHtml();
+	let card_html = '';
+	for (let i = 0; i < g_decks.length; i++) {
+		let deck = g_decks[i];
+	
+		// Generate output HTML
+		card_html += deck.generatePagesHtml();
+	}
 
 	// Open a new window for the output
 	// Use a separate window to avoid CSS conflicts
@@ -221,92 +174,441 @@ function generate() {
 
 
 // ============================================================================
+// Decks helpers
+// ============================================================================
+
+/**
+ * Select a deck upon list select event.
+ */
+function deck_select() {
+	const couldSave = g_canSave;
+	g_canSave = false;
+
+	let decksList = $('#decks-list');
+	if (g_ui.deckIdx < g_decks.length)
+		decksList[0].children[g_ui.deckIdx].classList.remove('selected-deck');
+
+	g_ui.deckIdx = this.value;
+
+	if (!g_ui.deckIdx)
+		g_ui.deckIdx = 0;
+	
+	if (g_ui.deckIdx < g_decks.length)
+		decksList[0].children[g_ui.deckIdx].classList.add('selected-deck');
+
+	local_store_ui_save();
+
+	deck_update_ui();
+
+	g_previousCardIdx = 0;
+	card_list_update();
+	
+	card_select_by_index(0);
+	g_canSave = couldSave;
+}
+
+/**
+ * @param {number} index
+ */
+function deck_select_by_index(index) {
+	if (index < 0)
+		index = 0;
+	else if (index >= g_decks.length)
+		index = g_decks.length - 1;
+
+	$('#decks-list').val(index).change();
+}
+
+/**
+ * Empty the cards list and add an option for each card in the selected deck.
+ */
+function deck_list_update() {
+	let decksList = $('#decks-list');
+	decksList.empty();
+	for (let i in g_decks) {
+		let deck = g_decks[i];
+
+		let deckOption = $('<option></option>');
+		deckOption.attr('value', i).text(deck.options.name);
+		deckOption.removeClass('selected-deck');
+
+		decksList.append(deckOption);
+	}
+	deck_select_by_index(g_ui.deckIdx);
+}
+
+/**
+ * Add a deck at the end of the list after loading it from a file.
+ * @param {JQuery.Event} evt
+ */
+function deck_load_from_file(evt) {
+	let files = evt.target.files;
+
+	for (let i = 0; i < files.length; i++) {
+		let reader = new FileReader();
+		let file = files[i];
+		let deck = new Deck();
+		reader.onload = function () {
+			let parsedObj = JSON.parse(this.result ? this.result.toString() : '');
+			deck.options.filename = file.name;
+			if (parsedObj.cards)
+				deck.load(parsedObj);
+			else
+				deck.loadCards(parsedObj);
+
+			g_decks.push(deck);
+
+			deck_list_update();
+			deck_select_by_index(g_decks.length - 1);
+		};
+		reader.readAsText(files[i]);
+	}
+
+	// Reset file input
+	$('#file-load-form')[0].reset();
+	local_store_ui_save();
+}
+
+/**
+ * Save the current deck to a file.
+ */
+function deck_save_to_file() {
+	let deck = g_decks[g_ui.deckIdx];
+	let parts = [deck.stringify(true)];
+	let blob = new Blob(parts, { type: 'application/json' });
+	let url = URL.createObjectURL(blob);
+
+	let a = $('#file-save-link')[0];
+	a.href = url;
+	deck.options.filename = deck.options.filename || deck.options.name + '.json';
+	a.download = prompt('Filename:', deck.options.filename);
+	if (a.download && a.download !== 'null') {
+		deck.options.filename = [a.download];
+
+		local_store_ui_save();
+		a.click();
+	}
+
+	setTimeout(function () { URL.revokeObjectURL(url); }, 500);
+}
+
+/**
+ * Add a new deck at the end of the list.
+ */
+function deck_new() {
+	let newDeck = new Deck('Deck' + g_decks.length + 1);
+	g_decks.push(newDeck);
+
+	deck_list_update();
+	deck_select_by_index(g_decks.length - 1);
+
+	local_store_current_deck_save();
+}
+
+/**
+ * Remove the current deck from the list.
+ */
+function deck_delete() {
+	g_decks.splice(g_ui.deckIdx, 1);
+
+	let selectedIdx = g_ui.deckIdx - 1;
+	if (selectedIdx < 0)
+		selectedIdx = 0;
+		
+	deck_list_update();
+	deck_select_by_index(selectedIdx);
+
+	local_store_current_deck_save();
+}
+
+/**
+ * Sort cards in the deck.
+ */
+function deck_sort_execute() {
+	$('#sort-modal').modal('hide');
+
+	let code = $('#sort-function').val().toString();
+
+	g_decks[g_ui.deckIdx].sort(code);
+
+	card_list_update();
+	card_update_ui();
+}
+
+/**
+ * Remove cards which does not corresponds to the filtering code.
+ */
+function deck_filter_execute() {
+	$('#filter-modal').modal('hide');
+
+	let code = $('#filter-function').val().toString();
+
+	g_decks[g_ui.deckIdx].filter(code);
+
+	card_list_update();
+	card_update_ui();
+}
+
+/**
+ * Open the output page with printed cards of the current deck.
+ */
+function deck_generate() {
+	let deck = g_decks[g_ui.deckIdx];
+	if (deck.cards.length === 0) {
+		alert('Your deck is empty. Please define some cards first, or load the sample deck.');
+		return;
+	}
+
+	if (g_ui.generateModalShown === false) {
+		$('#print-modal').modal('show');
+		g_ui.generateModalShown = true;
+	}
+
+	// Generate output HTML
+	let card_html = deck.generatePagesHtml();
+
+	// Open a new window for the output
+	// Use a separate window to avoid CSS conflicts
+	let tab = window.open('output.html', 'rpg-cards-output');
+
+	// Send the generated HTML to the new window
+	// Use a delay to give the new window time to set up a message listener
+	setTimeout(function () { tab.postMessage(card_html, '*'); }, 500);
+}
+
+/**
+ * Change an option of the selected deck. The element which has this change function must have a 'data-property' attribute. 
+ */
+function deck_option_change() {
+	let deck = g_decks[g_ui.deckIdx];
+	let value;
+	if ($(this).attr('type') === 'checkbox')
+		value = $(this).is(':checked');
+	else
+		value = $(this).val();
+	
+	let property = $(this).attr('data-property');
+	deck.options[property] = value;
+	card_render();
+}
+
+/**
+ * Change the title of selected deck and update it in the decks list.
+ */
+function deck_name_change() {
+	let deck = g_decks[g_ui.deckIdx];
+
+	deck.options.name = $(this).val();
+	
+	let decksList = $('#decks-list');
+	decksList[0].children[g_ui.deckIdx].text = deck.options.name;
+
+	card_render();
+}
+
+/**
+ * Change a property of the default type in the selected deck. The element which has this change function must have a 'data-property' attribute. 
+ */
+function deck_default_property_change() {
+	let deck = g_decks[g_ui.deckIdx];
+	let value;
+	if ($(this).attr('type') === 'checkbox')
+		value = $(this).is(':checked');
+	else
+		value = $(this).val();
+
+	let cardType = $('#default-card-type').val();
+	let property = $(this).attr('data-property');
+	deck.options.cardsDefault[cardType][property] = value;
+	card_render();
+}
+
+/**
+ * Update a color-selector and call deck_default_color_set with the corresponding property. The element must have the 'data-property' attribute.
+ */
+function deck_default_color_change() {
+	let color = $(this).val();
+
+	if ($('#' + this.id + '-selector option[value=\'' + color + '\']').length > 0) {
+		// Update the color selector to the entered value
+		$('#' + this.id + '-selector').colorselector('setColor', color);
+	} else {
+		let property = $(this).attr('data-property');
+		deck_default_color_set(color, property);
+	}
+}
+
+/**
+ * Update a color property of the default type in the selected deck.
+ * @param {string} color In the format '#RRGGBB'
+ * @param {string} property
+ */
+function deck_default_color_set(color, property) {
+	let deck = g_decks[g_ui.deckIdx];
+	let cardType = $('#default-card-type').val();
+	deck.options.cardsDefault[cardType][property] = color;
+	card_list_update();
+	card_update_ui();
+}
+
+/**
+ * Update ui with the selected default type.
+ */
+function deck_default_type_select() {
+	const couldSave = g_canSave;
+	g_canSave = false;
+	let deck = g_decks[g_ui.deckIdx];
+	let cardType = $('#default-card-type').val();
+	$('#default-color-selector').colorselector('setColor', deck.options.cardsDefault[cardType].color);
+	$('#default-color-front-selector').colorselector('setColor', deck.options.cardsDefault[cardType].color_front);
+	$('#default-icon').val(deck.options.cardsDefault['Card'].icon);
+	$('#default-color-back-selector').colorselector('setColor', deck.options.cardsDefault[cardType].color_back);
+	$('#default-icon-back').val(deck.options.cardsDefault['Card'].icon_back);
+	g_canSave = couldSave;
+}
+
+/**
+ * Update forms with the selected deck values.
+ */
+function deck_update_ui() {
+	let deck = g_decks[g_ui.deckIdx];
+	$('#deck-name').val(deck.options.name);
+	$('#page-size').val(deck.options.pageSize);
+	$('#page-rows').val(deck.options.pageRows);
+	$('#page-columns').val(deck.options.pageColumns);
+	$('#card-arrangement').val(deck.options.cardsArrangement);
+	$('#card-size').val(deck.options.cardsSize);
+	$('#round-corners').prop('checked', deck.options.roundCorners);
+	$('#spell-classes').prop('checked', deck.options.showSpellClasses);
+	$('#small-icons').prop('checked', deck.options.smallIcons);
+	$('#title-size').val(deck.options.titleSize);
+}
+
+
+// ============================================================================
 // Cards helpers
 // ============================================================================
 
-function select_card_by_index(index) {
+/**
+ * @param {number} index
+ */
+function card_select_by_index(index) {
+	let deck = g_decks[g_ui.deckIdx];
+	if (!deck)
+		return;
 	const couldSave = g_canSave;
 	g_canSave = false;
-	if (index >= 0 && index < g_deck.cards.length) {
-		let card = g_deck.cards[index];
+
+	if (index >= 0 && index < deck.cards.length) {
+		let card = deck.cards[index];
 		if (card.title === 'SEPARATOR') {
-			if (index < g_ui.selectedCardIdx) {
+			if (index < g_ui.cardIdx) {
 				index--;
 			} else {
 				index++;
 			}
 		}
 	}
-	index = Math.min(index, g_deck.cards.length - 1);
-	g_previousCardIdx = g_ui.selectedCardIdx;
-	g_ui.selectedCardIdx = index;
+
+	index = Math.min(index, deck.cards.length - 1);
+	g_previousCardIdx = g_ui.cardIdx;
+	g_ui.cardIdx = index;
 
 	local_store_ui_save();
 
-	let card = g_deck.cards[g_ui.selectedCardIdx];
-	let previousCard = g_deck.cards[g_previousCardIdx];
-	if (!previousCard || previousCard.constructor !== card.constructor)
-	{
+	let card = deck.cards[g_ui.cardIdx];
+	let previousCard = g_previousCardIdx < deck.cards.length ? deck.cards[g_previousCardIdx] : null;
+	if (!previousCard || previousCard.constructor !== card.constructor) {
 		$('#default-card-type').val(card ? card.constructor.name : 'Card').change();
 	}
 
-	card_update_selected();
+	card_update_ui();
 	g_canSave = couldSave;
 }
 
-function card_add_new() {
-	let cardIdx = g_ui.selectedCardIdx;
+/**
+ * Add a new card just after the current one.
+ */
+function card_new() {
+	let deck = g_decks[g_ui.deckIdx];
+	let cardIdx = g_ui.cardIdx;
 	let cardType = $('#card-type').val();
-	g_deck.addCard(cardIdx, cardType);
-	card_list_update(true);
-	select_card_by_index(cardIdx + 1);
-	
-	local_store_cards_save();
+
+	deck.addCard(cardIdx, cardType);
+	card_list_update();
+	card_select_by_index(cardIdx + 1);
+
+	local_store_decks_save();
 
 	$('#card-title').select();
 }
 
+/**
+ * Duplicate the current card and select it.
+ */
 function card_duplicate() {
-	let cardIdx = g_ui.selectedCardIdx;
-	g_deck.duplicateCard(cardIdx);
-	card_list_update(true);
-	select_card_by_index(cardIdx + 1);
-	
-	local_store_cards_save();
+	let deck = g_decks[g_ui.deckIdx];
+	let cardIdx = g_ui.cardIdx;
+
+	deck.duplicateCard(cardIdx);
+	card_list_update();
+	card_select_by_index(cardIdx + 1);
+
+	local_store_decks_save();
 
 	$('#card-title').select();
 }
 
+/**
+ * Delete the current card and select the next one.
+ */
 function card_delete() {
-	let cardIdx = g_ui.selectedCardIdx;
-	g_deck.deleteCard(cardIdx);
-	card_list_update(true);
-	select_card_by_index(cardIdx);
-	
-	local_store_cards_save();
+	let deck = g_decks[g_ui.deckIdx];
+	let cardIdx = g_ui.cardIdx;
+
+	deck.deleteCard(cardIdx);
+	card_list_update();
+	card_select_by_index(cardIdx);
+
+	local_store_decks_save();
 }
 
+/**
+ * Move the selected card up in the list.
+ */
 function card_list_up() {
-	let cardIdx = g_ui.selectedCardIdx;
-	g_deck.moveCardUp(cardIdx);
-	card_list_update(true);
-	select_card_by_index(cardIdx - 1);
-	
-	local_store_cards_save();
+	let deck = g_decks[g_ui.deckIdx];
+	let cardIdx = g_ui.cardIdx;
+
+	deck.moveCardUp(cardIdx);
+	card_list_update();
+	card_select_by_index(cardIdx - 1);
+
+	local_store_decks_save();
 }
 
+/**
+ * Move the selected card down in the list.
+ */
 function card_list_down() {
-	let cardIdx = g_ui.selectedCardIdx;
-	g_deck.moveCardDown(cardIdx);
-	card_list_update(true);
-	select_card_by_index(cardIdx + 1);
-	
-	local_store_cards_save();
+	let deck = g_decks[g_ui.deckIdx];
+	let cardIdx = g_ui.cardIdx;
+
+	deck.moveCardDown(cardIdx);
+	card_list_update();
+	card_select_by_index(cardIdx + 1);
+
+	local_store_decks_save();
 }
 
+/**
+ * Decrease the count of the selected card.
+ */
 function card_count_decrease() {
+	let deck = g_decks[g_ui.deckIdx];
 	let idx = $(this)[0].parentElement.parentElement.attributes.index.value;
-	let card = g_deck.cards[idx];
+	let card = deck.cards[idx];
+
 	if (!card.count || card.count === 0)
 		card.count = 0;
 	else
@@ -319,12 +621,17 @@ function card_count_decrease() {
 	// Update card count
 	let cardCount = $(this)[0].parentElement.children[1];
 	cardCount.innerText = card.count;
-	local_store_cards_save();
+	local_store_decks_save();
 }
 
+/**
+ * Increase the count of the selected card.
+ */
 function card_count_increase() {
+	let deck = g_decks[g_ui.deckIdx];
 	let idx = $(this)[0].parentElement.parentElement.attributes.index.value;
-	let card = g_deck.cards[idx];
+	let card = deck.cards[idx];
+
 	if (!card.count)
 		card.count = 1;
 	else
@@ -336,11 +643,15 @@ function card_count_increase() {
 	// Update card count
 	let cardCount = $(this)[0].parentElement.children[1];
 	cardCount.innerText = card.count;
-	local_store_cards_save();
+	local_store_decks_save();
 }
 
-function card_change_property() {
-	let card = g_deck.cards[g_ui.selectedCardIdx];
+/**
+ * Change a property of the selected card. The element which has this change function must have a 'data-property' attribute. 
+ */
+function card_property_change() {
+	let deck = g_decks[g_ui.deckIdx];
+	let card = deck.cards[g_ui.cardIdx];
 	if (card) {
 		let property = $(this).attr('data-property');
 		if ($(this).attr('type') === 'checkbox') {
@@ -348,22 +659,29 @@ function card_change_property() {
 		} else {
 			card[property] = $(this).val();
 		}
-		card_render_selected();
+		card_render();
 	}
 }
 
-function card_change_title() {
-	let card = g_deck.cards[g_ui.selectedCardIdx];
+/**
+ * Change the title of selected card and update it in the cards list.
+ */
+function card_title_change() {
+	let deck = g_decks[g_ui.deckIdx];
+	let card = deck.cards[g_ui.cardIdx];
 	if (card) {
 		card.title = $('#card-title').val();
-		if (g_ui.selectedCardIdx || g_ui.selectedCardIdx === 0) {
-			$('#cards-list')[0].children[g_ui.selectedCardIdx].children[0].innerText = card.title;
+		if (g_ui.cardIdx || g_ui.cardIdx === 0) {
+			$('#cards-list')[0].children[g_ui.cardIdx].children[0].innerText = card.title;
 		}
-		card_render_selected();
+		card_render();
 	}
 }
 
-function card_change_color() {
+/**
+ * Update a color-selector and call card_color_set with the corresponding property. The element must have the 'data-property' attribute.
+ */
+function card_color_change() {
 	let color = $(this).val();
 
 	if ($('#' + this.id + '-selector option[value=\'' + color + '\']').length > 0) {
@@ -371,46 +689,64 @@ function card_change_color() {
 		$('#' + this.id + '-selector').colorselector('setColor', color);
 	} else {
 		let property = $(this).attr('data-property');
-		card_set_color(color, property);
+		card_color_set(color, property);
 	}
 }
 
-function card_set_color(color, property) {
-	let card = g_deck.cards[g_ui.selectedCardIdx];
+/**
+ * Update a color property of the selected card.
+ * @param {string} color In the format '#RRGGBB'
+ * @param {string} property
+ */
+function card_color_set(color, property) {
+	let deck = g_decks[g_ui.deckIdx];
+	let card = deck.cards[g_ui.cardIdx];
 	if (card) {
 		if (color) {
 			card[property] = color;
 		} else {
-			card[property] = g_deck.options.cardsDefault[card.constructor.name][property];
+			card[property] = deck.options.cardsDefault[card.constructor.name][property];
 		}
 
-		if (g_ui.selectedCardIdx || g_ui.selectedCardIdx === 0)
-			$('#cards-list')[0].children[g_ui.selectedCardIdx].style.backgroundColor = card[property] + '29';
+		if (g_ui.cardIdx || g_ui.cardIdx === 0)
+			$('#cards-list')[0].children[g_ui.cardIdx].style.backgroundColor = card[property] + '29';
 
-		card_render_selected();
+		card_render();
 	}
 }
 
-function creature_change_stats() {
-	let card = g_deck.cards[g_ui.selectedCardIdx];
+/**
+ * Change a stat for the selected creature. The element must have 'data-index' attribute.
+ */
+function creature_stats_change() {
+	let deck = g_decks[g_ui.deckIdx];
+	let card = deck.cards[g_ui.cardIdx];
 	if (card) {
 		let property = $(this).attr('data-index');
 		card.stats[property] = $(this).val();
-		card_render_selected();
+		card_render();
 	}
 }
 
-function card_change_contents() {
-	let card = g_deck.cards[g_ui.selectedCardIdx];
+/**
+ * Update content of the selected card and remove successive spaces.
+ */
+function card_contents_change() {
+	let deck = g_decks[g_ui.deckIdx];
+	let card = deck.cards[g_ui.cardIdx];
 	if (card) {
 		let value = $(this).val().toString();
 		card.contents = value.replace(/[\u202F\u00A0 ]+/g, ' ').split('\n');
-		card_render_selected();
+		card_render();
 	}
 }
 
-function card_change_tags() {
-	let card = g_deck.cards[g_ui.selectedCardIdx];
+/**
+ * Update tags array of the selected card by spliting the input with ','.
+ */
+function card_tags_change() {
+	let deck = g_decks[g_ui.deckIdx];
+	let card = deck.cards[g_ui.cardIdx];
 	if (card) {
 		let value = $(this).val().toString().trim();
 		if (value.length === 0) {
@@ -420,66 +756,79 @@ function card_change_tags() {
 				return val.trim().toLowerCase();
 			});
 		}
-		card_render_selected();
+		card_render();
 	}
 }
 
+/**
+ * Select a card based on the 'index' attribute of the element.
+ */
 function card_list_select_card() {
 	let idx = $(this).parent().attr('index');
-	select_card_by_index(parseInt(idx));
+	card_select_by_index(parseInt(idx));
 }
 
-function card_list_update(doNotUpdateSelectedCard) {
-	$('#total_card_count').text('(' + g_deck.cards.length + ' ' + I18N.get('UI.UNIQUE') + ')');
+/**
+ * Empty the cards list and add an option for each card in the selected deck.
+ */
+function card_list_update() {
+	let deck = g_decks[g_ui.deckIdx];
+	if (deck)
+		$('#total_card_count').text('(' + deck.cards.length + ' ' + I18N.get('UI.UNIQUE') + ')');
+	else
+		$('#total_card_count').text('');
 
-	if (g_ui.selectedCardIdx < 0 || g_ui.selectedCardIdx >= g_deck.cards.length)
-		g_ui.selectedCardIdx = 0;
+	if (!deck || g_ui.cardIdx < 0 || g_ui.cardIdx >= deck.cards.length)
+		g_ui.cardIdx = 0;
 
 	let cardsList = $('#cards-list');
 	cardsList.empty();
-	for (let i in g_deck.cards) {
-		let card = g_deck.cards[i];
-
-		let newCardInList = $('<div class="card-name"></div>').attr('index', i);
-		let cardElt = $('<h4></h4>');
-		cardElt.text(card.title);
-		newCardInList.append(cardElt);
-
-		if (card.title !== 'SEPARATOR') {
-			cardElt.click(card_list_select_card);
-
-			let countBlock = $('<div class="card-count"></div>');
-			let buttonDecrease = $('<button type="button" class="btn btn-default card-count-less">-</button>').click(card_count_decrease);
-			let count;
-			if (card.count === 0) {
-				buttonDecrease[0].disabled = true;
-				count = $('<span></span>').text(0);
+	if (deck) {
+		for (let i in deck.cards) {
+			let card = deck.cards[i];
+	
+			let newCardInList = $('<div class="card-name"></div>').attr('index', i);
+			let cardElt = $('<h4></h4>');
+			cardElt.text(card.title);
+			newCardInList.append(cardElt);
+	
+			if (card.title !== 'SEPARATOR') {
+				cardElt.click(card_list_select_card);
+	
+				let countBlock = $('<div class="card-count"></div>');
+				let buttonDecrease = $('<button type="button" class="btn btn-default card-count-less">-</button>').click(card_count_decrease);
+				let count;
+				if (card.count === 0) {
+					buttonDecrease[0].disabled = true;
+					count = $('<span></span>').text(0);
+				} else {
+					count = $('<span></span>').text(card.count || 1);
+				}
+				countBlock.append(buttonDecrease);
+				countBlock.append(count);
+				countBlock.append($('<button type="button" class="btn btn-default card-count-more">+</button>').click(card_count_increase));
+				newCardInList.append(countBlock);
+				if (card.color)
+					newCardInList.css('background-color', card.color + '29');
+				if (card.error)
+					newCardInList.addClass('card-error');
+				else
+					newCardInList.removeClass('card-error');
 			} else {
-				count = $('<span></span>').text(card.count || 1);
+				cardElt.addClass('separator');
 			}
-			countBlock.append(buttonDecrease);
-			countBlock.append(count);
-			countBlock.append($('<button type="button" class="btn btn-default card-count-more">+</button>').click(card_count_increase));
-			newCardInList.append(countBlock);
-			if (card.color)
-				newCardInList.css('background-color', card.color + '29');
-			if (card.error)
-				newCardInList.addClass('card-error');
-			else
-				newCardInList.removeClass('card-error');
-		} else {
-			cardElt.addClass('separator');
+			cardsList.append(newCardInList);
 		}
-		cardsList.append(newCardInList);
 	}
-
-	if (!doNotUpdateSelectedCard)
-		card_update_selected();
 }
 
-function card_update_selected() {
+/**
+ * Update forms with the selected card values. Also update it's option in the cards list.
+ */
+function card_update_ui() {
 	g_dontRenderSelectedCard = true;
-	let card = g_deck.cards[g_ui.selectedCardIdx];
+	let deck = g_decks[g_ui.deckIdx];
+	let card = deck.cards[g_ui.cardIdx];
 	let cardType = 'Card';
 	if (card) {
 		cardType = card.constructor.name;
@@ -616,37 +965,42 @@ function card_update_selected() {
 	$('#card-form-container').attr('card-type', cardType);
 	$('#card-type').val(cardType);
 
-	if (g_deck.cards.length > 0) {
+	if (deck.cards.length > 0) {
 		let cardsList = $('#cards-list');
-		if ((g_previousCardIdx || g_previousCardIdx === 0) && g_previousCardIdx < g_deck.cards.length) {
-			let oldCard = g_deck.cards[g_previousCardIdx];
+		if ((g_previousCardIdx || g_previousCardIdx === 0) && g_previousCardIdx < deck.cards.length) {
+			let oldCard = deck.cards[g_previousCardIdx];
 			let oldCardElt = cardsList[0].children[g_previousCardIdx];
 			oldCardElt.style.backgroundColor = oldCard.color ? oldCard.color + '29' : '';
 			oldCardElt.classList.remove('selected');
 		}
-		let cardScrollHeight = cardsList[0].children[g_ui.selectedCardIdx].scrollHeight;
-		let scrollPos = g_ui.selectedCardIdx * cardScrollHeight;
+		let cardScrollHeight = cardsList[0].children[g_ui.cardIdx].scrollHeight;
+		let scrollPos = g_ui.cardIdx * cardScrollHeight;
 		if (scrollPos < cardsList[0].scrollTop + cardScrollHeight)
 			cardsList[0].scrollTop = scrollPos - cardScrollHeight;
 		else if (scrollPos >= cardsList[0].scrollTop + cardsList[0].offsetHeight - 2 * cardScrollHeight)
 			cardsList[0].scrollTop = scrollPos - cardsList[0].offsetHeight + 2 * cardScrollHeight;
-		cardsList[0].children[g_ui.selectedCardIdx].classList.add('selected');
+		cardsList[0].children[g_ui.cardIdx].classList.add('selected');
 	}
 
 	g_dontRenderSelectedCard = false;
-	card_render_selected();
+	card_render();
 }
 
-function card_render_selected() {
+/**
+ * Update the preview of the card, generating the html for its front and back.
+ */
+function card_render() {
 	if (g_dontRenderSelectedCard)
 		return;
-	let card = g_deck.cards[g_ui.selectedCardIdx];
+		
+	let deck = g_decks[g_ui.deckIdx];
+	let card = deck.cards[g_ui.cardIdx];
 	$('#preview-container').empty();
 	if (card) {
 		card.update();
 
-		let front = card.generateFront(g_deck.options);
-		let back = card.generateBack(g_deck.options);
+		let front = card.generateFront(deck.options);
+		let back = card.generateBack(deck.options);
 		$('#preview-container').html(front + '\n' + back);
 		let cardContainer = $('.card-content-container');
 		if (cardContainer && cardContainer.length > 0) {
@@ -660,72 +1014,12 @@ function card_render_selected() {
 				card.error = lastCardElement && (lastCardElementBottom - containerBottom) > 3;
 			}
 			if (card.error)
-				cardsList[0].children[g_ui.selectedCardIdx].classList.add('card-error');
+				cardsList[0].children[g_ui.cardIdx].classList.add('card-error');
 			else
-				cardsList[0].children[g_ui.selectedCardIdx].classList.remove('card-error');
+				cardsList[0].children[g_ui.cardIdx].classList.remove('card-error');
 		}
 	}
-	local_store_cards_save();
-}
-
-
-// ============================================================================
-// UI options
-// ============================================================================
-
-function option_change_property() {
-	let property = $(this).attr('data-property');
-	let value;
-	if ($(this).attr('type') === 'checkbox')
-		value = $(this).is(':checked');
-	else
-		value = $(this).val();
-	g_deck.options[property] = value;
-	card_render_selected();
-}
-
-function default_change_type() {
-	const couldSave = g_canSave;
-	g_canSave = false;
-	let cardType = $('#default-card-type').val();
-	$('#default-color-selector').colorselector('setColor', g_deck.options.cardsDefault[cardType].color);
-	$('#default-color-front-selector').colorselector('setColor', g_deck.options.cardsDefault[cardType].color_front);
-	$('#default-icon').val(g_deck.options.cardsDefault['Card'].icon);
-	$('#default-color-back-selector').colorselector('setColor', g_deck.options.cardsDefault[cardType].color_back);
-	$('#default-icon-back').val(g_deck.options.cardsDefault['Card'].icon_back);
-	g_canSave = couldSave;
-}
-
-function default_change_property() {
-	let property = $(this).attr('data-property');
-	let value;
-	if ($(this).attr('type') === 'checkbox')
-		value = $(this).is(':checked');
-	else
-		value = $(this).val();
-
-	let cardType = $('#default-card-type').val();
-	g_deck.options.cardsDefault[cardType][property] = value;
-	card_render_selected();
-}
-
-function default_change_color() {
-	let color = $(this).val();
-
-	if ($('#' + this.id + '-selector option[value=\'' + color + '\']').length > 0) {
-		// Update the color selector to the entered value
-		$('#' + this.id + '-selector').colorselector('setColor', color);
-	} else {
-		let property = $(this).attr('data-property');
-		default_set_color(color, property);
-	}
-}
-
-function default_set_color(color, property) {
-	let cardType = $('#default-card-type').val();
-	g_deck.options.cardsDefault[cardType][property] = color;
-	
-	card_list_update();
+	local_store_decks_save();
 }
 
 
@@ -738,36 +1032,11 @@ function typeahead_matcher(item) {
 	return ~item.toLowerCase().indexOf(words[words.length - 1]);
 }
 
-// eslint-disable-next-line no-unused-vars
-function typeahead_matcher_contents(item) {
-	let selectionStart = this.$element[0].selectionStart;
-	let textBefore = this.query.substring(0, selectionStart);
-	let lastSpaceIdx = textBefore.search(/\n[^\W]*$/);
-	let newWord = textBefore.substring(lastSpaceIdx + 1);
-	if (newWord === '')
-		return false;
-	return item.startsWith(newWord);
-}
-
 function typeahead_updater(item) {
 	let lastSpaceIdx = this.query.lastIndexOf(' ');
 	if (lastSpaceIdx > 0)
 		return this.query.substring(0, lastSpaceIdx) + ' ' + item;
 	return item;
-}
-
-// eslint-disable-next-line no-unused-vars
-function typeahead_updater_contents(item) {
-	let selectionStart = this.$element[0].selectionStart;
-	let textBefore = this.query.substring(0, selectionStart);
-	let lastSpaceIdx = textBefore.search(/\W[^\W]*$/);
-	textBefore = textBefore.substring(0, lastSpaceIdx + 1);
-
-	this.$element[0].selectionStart = (textBefore + item).length;
-	this.$element[0].selectionEnd = this.$element[0].selectionStart;
-
-	let textAfter = this.query.slice(selectionStart);
-	return textBefore + item + ' | ' + textAfter;
 }
 
 function typeahead_render(items) {
@@ -810,11 +1079,37 @@ function typeahead_render_icon(items) {
 	return this;
 }
 
+function typeahead_contents_matcher(item) {
+	let selectionStart = this.$element[0].selectionStart;
+	let textBefore = this.query.substring(0, selectionStart);
+	let lastSpaceIdx = textBefore.search(/\n[^\W]*$/);
+	let newWord = textBefore.substring(lastSpaceIdx + 1);
+	if (newWord === '')
+		return false;
+	return item.startsWith(newWord);
+}
+
+function typeahead_contents_updater(item) {
+	let selectionStart = this.$element[0].selectionStart;
+	let textBefore = this.query.substring(0, selectionStart);
+	let lastSpaceIdx = textBefore.search(/\W[^\W]*$/);
+	textBefore = textBefore.substring(0, lastSpaceIdx + 1);
+
+	this.$element[0].selectionStart = (textBefore + item).length;
+	this.$element[0].selectionEnd = this.$element[0].selectionStart;
+
+	let textAfter = this.query.slice(selectionStart);
+	return textBefore + item + ' | ' + textAfter;
+}
+
 
 // ============================================================================
 // UI setup and change
 // ============================================================================
 
+/**
+ * Update the height of the cards list block.
+ */
 function ui_cards_list_update_height() {
 	let cardsListParents = $('#cards-list').parents();
 	let top = $('#cards-list').position().top;
@@ -825,6 +1120,9 @@ function ui_cards_list_update_height() {
 	$('#cards-list').css('height', ($(window).height() - top) + 'px');
 }
 
+/**
+ * Toggle the folding of one of the two right and left panels.
+ */
 function ui_fold_section() {
 	let shouldSave = false;
 
@@ -901,8 +1199,12 @@ function ui_fold_section() {
 		local_store_ui_save();
 }
 
-function ui_small_layout_fold_all_sections(e) {
-	if (e && e.isDefaultPrevented())
+/**
+ * Hide both panels when with a small layout/screen.
+ * @param {JQuery.Event} evt
+ */
+function ui_small_layout_fold_all_sections(evt) {
+	if (evt && evt.isDefaultPrevented())
 		return;
 	let foldMenuButton = $('#button-fold-menu');
 	if (parseInt(foldMenuButton.css('left')) > 0) {
@@ -914,6 +1216,9 @@ function ui_small_layout_fold_all_sections(e) {
 	}
 }
 
+/**
+ * Toggle the folding of a block like the cards list or the deck settings.
+ */
 function ui_fold_block() {
 	let button = $('#' + this.id);
 
@@ -946,6 +1251,10 @@ function ui_fold_block() {
 	ui_cards_list_update_height();
 }
 
+/**
+ * Trigger the change only after a small time. The timer is reset each time a modification is done.
+ * This function avoid continuous costly card update when typing content.
+ */
 function ui_change_keyup() {
 	clearTimeout(ui_change_keyup.timeout);
 	ui_change_keyup.timeout = setTimeout(function (element) {
@@ -954,60 +1263,69 @@ function ui_change_keyup() {
 }
 ui_change_keyup.timeout = null;
 
-function ui_document_shortcut(e) {
-	if (e.key === 'PageUp') {
-		if (e.preventDefault)
-			e.preventDefault();
-		let idx = g_ui.selectedCardIdx;
+/**
+ * Handle shortcuts on the page.
+ * @param {JQuery.Event} evt
+ */
+function ui_document_shortcut(evt) {
+	if (evt.key === 'PageUp') {
+		if (evt.preventDefault)
+			evt.preventDefault();
+		let idx = g_ui.cardIdx;
 		if (idx > 0)
-			select_card_by_index(idx - 1);
-	} else if (e.key === 'PageDown') {
-		if (e.preventDefault)
-			e.preventDefault();
-		let idx = g_ui.selectedCardIdx;
-		if (idx < g_deck.cards.length - 1)
-			select_card_by_index(idx + 1);
-	} else if (e.ctrlKey) {
-		if (e.key === 's') {
-			if (e.preventDefault)
-				e.preventDefault();
-			save_deck_to_file();
-		} else if (e.key === 'g') {
-			if (e.preventDefault)
-				e.preventDefault();
-			generate();
-		} else if (e.key === '+') {
-			if (e.preventDefault)
-				e.preventDefault();
+			card_select_by_index(idx - 1);
+	} else if (evt.key === 'PageDown') {
+		if (evt.preventDefault)
+			evt.preventDefault();
+		let deck = g_decks[g_ui.deckIdx];
+		let idx = g_ui.cardIdx;
+		if (idx < deck.cards.length - 1)
+			card_select_by_index(idx + 1);
+	} else if (evt.ctrlKey) {
+		if (evt.key === 's') {
+			if (evt.preventDefault)
+				evt.preventDefault();
+			deck_save_to_file();
+		} else if (evt.key === 'g') {
+			if (evt.preventDefault)
+				evt.preventDefault();
+			deck_generate();
+		} else if (evt.key === '+') {
+			if (evt.preventDefault)
+				evt.preventDefault();
 			let cardsMoreButtonList = $('#cards-list .card-count-more');
-			cardsMoreButtonList[g_ui.selectedCardIdx].click();
-		} else if (e.key === '-') {
-			if (e.preventDefault)
-				e.preventDefault();
+			cardsMoreButtonList[g_ui.cardIdx].click();
+		} else if (evt.key === '-') {
+			if (evt.preventDefault)
+				evt.preventDefault();
 			let cardsLessButtonList = $('#cards-list .card-count-less');
-			cardsLessButtonList[g_ui.selectedCardIdx].click();
+			cardsLessButtonList[g_ui.cardIdx].click();
 		}
-	} else if (e.currentTarget.activeElement.nodeName !== 'INPUT' && e.currentTarget.activeElement.nodeName !== 'TEXTAREA') {
-		if (e.key === '+') {
-			if (e.preventDefault)
-				e.preventDefault();
+	} else if (evt.currentTarget.activeElement.nodeName !== 'INPUT' && evt.currentTarget.activeElement.nodeName !== 'TEXTAREA') {
+		if (evt.key === '+') {
+			if (evt.preventDefault)
+				evt.preventDefault();
 			let cardsMoreButtonList = $('#cards-list .card-count-more');
-			cardsMoreButtonList[g_ui.selectedCardIdx].click();
-		} else if (e.key === '-') {
-			if (e.preventDefault)
-				e.preventDefault();
+			cardsMoreButtonList[g_ui.cardIdx].click();
+		} else if (evt.key === '-') {
+			if (evt.preventDefault)
+				evt.preventDefault();
 			let cardsLessButtonList = $('#cards-list .card-count-less');
-			cardsLessButtonList[g_ui.selectedCardIdx].click();
+			cardsLessButtonList[g_ui.cardIdx].click();
 		}
 	} else {
-		if (e.key === 'Escape') {
-			e.currentTarget.activeElement.blur();
+		if (evt.key === 'Escape') {
+			evt.currentTarget.activeElement.blur();
 		}
 	}
 }
 
-function ui_contents_shortcut(e) {
-	if (e.shiftKey && e.key === 'Delete') {
+/**
+ * Handle shortcuts when the content textarea is focused.
+ * @param {JQuery.Event} evt
+ */
+function ui_contents_shortcut(evt) {
+	if (evt.shiftKey && evt.key === 'Delete') {
 		let value = $(this)[0].value;
 
 		let textBefore = value.slice(0, $(this)[0].selectionStart);
@@ -1028,11 +1346,11 @@ function ui_contents_shortcut(e) {
 		$(this)[0].value = textBefore + textAfter;
 		$(this)[0].selectionStart = idxLineFirstChar;
 		$(this)[0].selectionEnd = $(this)[0].selectionStart;
-		if (e.preventDefault)
-			e.preventDefault();
+		if (evt.preventDefault)
+			evt.preventDefault();
 	}
-	if (e.altKey) {
-		if (e.key === 'i') {
+	if (evt.altKey) {
+		if (evt.key === 'i') {
 			let value = $(this)[0].value;
 			let selectionStart = $(this)[0].selectionStart;
 			let selectionEnd = $(this)[0].selectionEnd;
@@ -1045,10 +1363,10 @@ function ui_contents_shortcut(e) {
 			else
 				$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
 			$(this)[0].selectionEnd = $(this)[0].selectionStart;
-			if (e.preventDefault)
-				e.preventDefault();
+			if (evt.preventDefault)
+				evt.preventDefault();
 		}
-		if (e.key === 'b') {
+		if (evt.key === 'b') {
 			let value = $(this)[0].value;
 			let selectionStart = $(this)[0].selectionStart;
 			let selectionEnd = $(this)[0].selectionEnd;
@@ -1061,26 +1379,36 @@ function ui_contents_shortcut(e) {
 			else
 				$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
 			$(this)[0].selectionEnd = $(this)[0].selectionStart;
-			if (e.preventDefault)
-				e.preventDefault();
+			if (evt.preventDefault)
+				evt.preventDefault();
 		}
 	}
 }
 
-function ui_update_lang() {
+/**
+ * Update all the texts in the ui according to the selected language.
+ */
+function ui_update_texts() {
+	let deck = g_decks[g_ui.deckIdx];
+
 	$('#button-help').text(I18N.get('UI.HELP'));
-	$('#button-icons').text(I18N.get('UI.ICONS'));
 	$('#button-language').text(I18N.get('UI.LANGUAGE'));
-	$('#button-sort').text(I18N.get('UI.SORT'));
-	$('#button-filter').text(I18N.get('UI.FILTER'));
 	$('#button-load-sample').text(I18N.get('UI.SAMPLE'));
 	$('#button-insert-lexical').text(I18N.get('UI.LEXICAL'));
-	$('#button-clear').text(I18N.get('UI.CLEAR'));
+	$('#button-generate-all').text(I18N.get('UI.GENERATE_ALL'));
+	
+	$('#icons').html(I18N.get('UI.ICONS'));
+	
+	$('#button-new').text(I18N.get('UI.NEW'));
+	$('#button-delete').text(I18N.get('UI.DELETE'));
 	$('#button-import').text(I18N.get('UI.IMPORT'));
 	$('#button-save').text(I18N.get('UI.SAVE'));
+	$('#button-sort').text(I18N.get('UI.SORT'));
+	$('#button-filter').text(I18N.get('UI.FILTER'));
 	$('#button-generate').text(I18N.get('UI.GENERATE'));
 
 	$('#deck-settings-title').text(I18N.get('UI.DECK_SETTINGS'));
+	$('#deck-name-label').text(I18N.get('UI.DECK_NAME'));
 	$('#page-size-label').text(I18N.get('UI.PAGE'));
 	$('#cards-page-label').text(I18N.get('UI.CARDS_PAGE'));
 	$('#page-rows').attr('placeholder', I18N.get('UI.ROWS'));
@@ -1105,9 +1433,12 @@ function ui_update_lang() {
 	$('#default-color-back-label').text(I18N.get('UI.BACK'));
 	$('#default-icon').attr('placeholder', I18N.get('UI.ICON_NAME'));
 	$('#default-icon-back').attr('placeholder', I18N.get('UI.ICON_NAME'));
-	
+
 	$('#cards-list-title h3').text(I18N.get('UI.CARDS'));
-	$('#total_card_count').text('(' + g_deck.cards.length + ' ' + I18N.get('UI.UNIQUE') + ')');
+	if (deck)
+		$('#total_card_count').text('(' + deck.cards.length + ' ' + I18N.get('UI.UNIQUE') + ')');
+	else
+		$('#total_card_count').text('');
 	$('#button-card-delete').text(I18N.get('UI.DELETE'));
 	$('#button-card-duplicate').text(I18N.get('UI.COPY'));
 	$('#button-card-add').text(I18N.get('UI.NEW'));
@@ -1164,6 +1495,9 @@ function ui_update_lang() {
 	$('#card-compact-label').text(I18N.get('UI.COMPACT'));
 }
 
+/**
+ * Setup the window resize function which update the layout size and panel folding behaviour.
+ */
 function ui_setup_resize() {
 	g_isSmallLayout = $('html').width() < 1200;
 	$(window).resize(function () {
@@ -1197,7 +1531,7 @@ function ui_setup_resize() {
 		}
 
 		if (g_isSmallLayout !== isSmallLayout) {
-			let clean_style = function(styleObj) {
+			let clean_style = function (styleObj) {
 				for (let i = styleObj.length; i--;) {
 					let nameString = styleObj[i];
 					styleObj.removeProperty(nameString);
@@ -1218,6 +1552,9 @@ function ui_setup_resize() {
 	});
 }
 
+/**
+ * Setup the color selectors functions.
+ */
 function ui_setup_color_selector() {
 	// Insert colors
 	$.each(card_colors, function (name, val) {// TODO: Change to a wheel or a line (save as #RRGGBB)
@@ -1232,28 +1569,28 @@ function ui_setup_color_selector() {
 	$('#default-color-selector').colorselector({
 		callback: function (value, color, title) {
 			$('#default-color').val(title);
-			default_set_color(color, 'color');
+			deck_default_color_set(color, 'color');
 		}
 	});
 
 	$('#default-color-front-selector').colorselector({
 		callback: function (value, color, title) {
 			$('#default-color-front').val(title);
-			default_set_color(color, 'color_front');
+			deck_default_color_set(color, 'color_front');
 		}
 	});
 
 	$('#default-color-back-selector').colorselector({
 		callback: function (value, color, title) {
 			$('#default-color-back').val(title);
-			default_set_color(color, 'color_back');
+			deck_default_color_set(color, 'color_back');
 		}
 	});
 
 	$('#card-color-selector').colorselector({
 		callback: function (value, color, title) {
 			$('#card-color').val(title);
-			card_set_color(color, 'color');
+			card_color_set(color, 'color');
 		}
 	});
 
@@ -1275,20 +1612,24 @@ $(async function () {
 				e.preventDefault();
 		}
 	};
-	
-	g_deck = new Deck();
+
 	g_canSave = false;
 
-	ui_update_lang();
+	ui_update_texts();
 
 	$(document).on('keydown', ui_document_shortcut);
 	ui_setup_resize();
 
-	local_store_cards_load();
 	local_store_ui_load();
+	local_store_decks_load();
 
-	if (g_ui.selectedCardIdx >= g_deck.cards.length)
-		g_ui.selectedCardIdx = g_deck.cards.length - 1;
+	if (!g_ui.deckIdx || g_ui.deckIdx >= g_decks.length) 
+		g_ui.deckIdx = g_decks.length - 1;
+	
+	let deck = g_decks[g_ui.deckIdx];
+
+	if (g_ui.cardIdx >= deck.cards.length) 
+		g_ui.cardIdx = deck.cards.length - 1;
 
 	$('.btn-fold-section').click(ui_fold_section);
 	let isSmallLayout = $('html').width() < 1200;
@@ -1321,74 +1662,86 @@ $(async function () {
 	});
 	$('.icon-list').on('keydown', preventPageDownOrUp);
 
+
 	$('#button-help').click(function () { $('#help-modal').modal('show'); });
-	$('#button-icons').click(function () { window.open('http://game-icons.net/', '_blank'); });
 	$('#button-language').click(function () { $('#language-modal').modal('show'); });
 	$('#language-list button').click(update_lang);
-	$('#button-sort').click(function () { $('#sort-modal').modal('show'); });
-	$('#sort-execute').click(sort_execute);
-	$('#button-filter').click(function () { $('#filter-modal').modal('show'); });
-	$('#filter-execute').click(filter_execute);
-
 	$('#button-load-sample').click(load_sample);
-	$('#button-clear').click(function () { $('#clear-confirmation-modal').modal('show'); });
-	$('#clear-modal-confirm').click(clear_all);
-	$('#button-generate').click(generate);
+	$('#button-insert-lexical').click(insert_lexical);
+	$('#button-generate-all').click(generate_decks);
 
+	// ----- Decks list
+
+	$('#decks-list').change(deck_select);
+	$('#button-generate').click(deck_generate);
+
+	$('#button-sort').click(function () { $('#sort-modal').modal('show'); });
+	$('#sort-execute').click(deck_sort_execute);
+	$('#button-filter').click(function () { $('#filter-modal').modal('show'); });
+	$('#filter-execute').click(deck_filter_execute);
+	$('#button-new').click(deck_new);
 	$('#button-import').click(function () { $('#file-import').click(); });
-	$('#file-import').change(load_deck_to_file);
-	$('#button-save').click(save_deck_to_file);
+	$('#file-import').change(deck_load_from_file);
+	$('#button-delete').click(function () { $('#delete-confirmation-modal').modal('show'); });
+	$('#delete-modal-confirm').click(deck_delete);
+	$('#button-save').click(deck_save_to_file);
 
-	if (g_ui.filename)
-		$('#file-name').html('<b>' + I18N.get('UI.FILE') + ':</b> ' + g_ui.filename.join(', ') + '<br/><b>Last save:</b> ' + g_ui.saveTime);
+	deck_list_update();
 
-	// ----- Page settings
 
-	$('#page-size').val(g_deck.options.pageSize).change(option_change_property);
-	$('#page-rows').val(g_deck.options.pageRows).change(option_change_property);
-	$('#page-columns').val(g_deck.options.pageColumns).change(option_change_property);
-	$('#card-arrangement').val(g_deck.options.cardsArrangement).change(option_change_property);
-	$('#card-size').val(g_deck.options.cardsSize).change(option_change_property);
-	$('#round-corners').prop('checked', g_deck.options.roundCorners).change(option_change_property);
-	$('#spell-classes').prop('checked', g_deck.options.showSpellClasses).change(option_change_property);
-	$('#small-icons').prop('checked', g_deck.options.smallIcons).change(option_change_property);
-	$('#title-size').val(g_deck.options.titleSize).change(option_change_property);
+	// ----- Deck settings
+
+	$('#deck-name').change(deck_name_change);
+	$('#page-size').change(deck_option_change);
+	$('#page-rows').change(deck_option_change);
+	$('#page-columns').change(deck_option_change);
+	$('#card-arrangement').change(deck_option_change);
+	$('#card-size').change(deck_option_change);
+	$('#round-corners').change(deck_option_change);
+	$('#spell-classes').change(deck_option_change);
+	$('#small-icons').change(deck_option_change);
+	$('#title-size').change(deck_option_change);
 
 	// ----- Default values
 
-	$('#default-card-type').change(default_change_type).val('Card').change();
-	$('#default-color').change(default_change_color);
-	$('#default-color-front').change(default_change_color);
-	$('#default-icon').change(default_change_property);
-	$('#default-color-back').change(default_change_color);
-	$('#default-icon-back').change(default_change_property);
+	$('#default-card-type').change(deck_default_type_select).val('Card').change();
+	$('#default-color').change(deck_default_color_change);
+	$('#default-color-front').change(deck_default_color_change);
+	$('#default-icon').change(deck_default_property_change);
+	$('#default-color-back').change(deck_default_color_change);
+	$('#default-icon-back').change(deck_default_property_change);
+
+	deck_update_ui();
+
 
 	// ----- Cards list
 
 	$('#button-card-up').click(card_list_up);
 	$('#button-card-down').click(card_list_down);
-	$('#button-insert-lexical').click(insert_lexical);
+
+	$('#button-card-add').click(card_new);
+	$('#button-card-duplicate').click(card_duplicate);
+	$('#button-card-delete').click(card_delete);
+	
+	card_list_update();
+
 
 	// ----- Card
 
-	$('#button-card-add').click(card_add_new);
-	$('#button-card-duplicate').click(card_duplicate);
-	$('#button-card-delete').click(card_delete);
-
 	$('#card-title').on('keyup', ui_change_keyup);
-	$('#card-title').change(card_change_title);
-	$('#card-title-multiline').change(card_change_property);
-	$('#card-subtitle').change(card_change_property);
-	$('#card-icon').change(card_change_property);
-	$('#card-icon-back').change(card_change_property);
-	$('#card-background').change(card_change_property);
-	$('#card-color').change(card_change_color);
-	$('#card-tags').change(card_change_tags);
+	$('#card-title').change(card_title_change);
+	$('#card-title-multiline').change(card_property_change);
+	$('#card-subtitle').change(card_property_change);
+	$('#card-icon').change(card_property_change);
+	$('#card-icon-back').change(card_property_change);
+	$('#card-background').change(card_property_change);
+	$('#card-color').change(card_color_change);
+	$('#card-tags').change(card_tags_change);
 	$('#card-reference').on('keyup', ui_change_keyup);
-	$('#card-reference').change(card_change_property);
+	$('#card-reference').change(card_property_change);
 
 	$('#card-description').on('keyup', ui_change_keyup);
-	$('#card-description').change(card_change_property);
+	$('#card-description').change(card_property_change);
 	/* $("#card-contents").typeahead({
 		source: Object.keys(card_element_generators),
 		items: 'all',
@@ -1398,15 +1751,15 @@ $(async function () {
 		render: typeahead_render
 	}); */
 	$('#card-contents').on('keyup', ui_change_keyup);
-	$('#card-contents').change(card_change_contents);
+	$('#card-contents').change(card_contents_change);
 	$('#card-contents').on('keydown', ui_contents_shortcut);
 
-	$('#card-compact').change(card_change_property);
+	$('#card-compact').change(card_property_change);
 
 	// ----- Creature
 
-	$('#card-creature-cr').change(card_change_property);
-	$('#card-creature-size').change(card_change_property);
+	$('#card-creature-cr').change(card_property_change);
+	$('#card-creature-size').change(card_property_change);
 	$('#card-creature-alignment').typeahead({
 		source: Object.values(I18N.get('CREATURE.ALIGNMENTS')),
 		items: 'all',
@@ -1414,37 +1767,37 @@ $(async function () {
 		render: typeahead_render
 	});
 	$('#card-creature-alignment').on('keydown', preventPageDownOrUp);
-	$('#card-creature-alignment').change(card_change_property);
-	$('#card-creature-type').change(card_change_property);
+	$('#card-creature-alignment').change(card_property_change);
+	$('#card-creature-type').change(card_property_change);
 
-	$('#card-creature-ac').change(card_change_property);
-	$('#card-creature-hp').change(card_change_property);
-	$('#card-creature-perception').change(card_change_property);
-	$('#card-creature-speed').change(card_change_property);
+	$('#card-creature-ac').change(card_property_change);
+	$('#card-creature-hp').change(card_property_change);
+	$('#card-creature-perception').change(card_property_change);
+	$('#card-creature-speed').change(card_property_change);
 
-	$('#card-creature-strength').change(creature_change_stats);
-	$('#card-creature-dexterity').change(creature_change_stats);
-	$('#card-creature-constitution').change(creature_change_stats);
-	$('#card-creature-intelligence').change(creature_change_stats);
-	$('#card-creature-wisdom').change(creature_change_stats);
-	$('#card-creature-charisma').change(creature_change_stats);
+	$('#card-creature-strength').change(creature_stats_change);
+	$('#card-creature-dexterity').change(creature_stats_change);
+	$('#card-creature-constitution').change(creature_stats_change);
+	$('#card-creature-intelligence').change(creature_stats_change);
+	$('#card-creature-wisdom').change(creature_stats_change);
+	$('#card-creature-charisma').change(creature_stats_change);
 
-	$('#card-creature-resistances').change(card_change_property);
-	$('#card-creature-vulnerabilities').change(card_change_property);
-	$('#card-creature-immunities').change(card_change_property);
+	$('#card-creature-resistances').change(card_property_change);
+	$('#card-creature-vulnerabilities').change(card_property_change);
+	$('#card-creature-immunities').change(card_property_change);
 
 	// ----- Spell
 
-	$('#card-spell-level').change(card_change_property);
-	$('#card-spell-ritual').change(card_change_property);
-	$('#card-spell-casting-time').change(card_change_property);
+	$('#card-spell-level').change(card_property_change);
+	$('#card-spell-ritual').change(card_property_change);
+	$('#card-spell-casting-time').change(card_property_change);
 	$('#card-spell-casting-time').on('keyup', ui_change_keyup);
-	$('#card-spell-range').change(card_change_property);
+	$('#card-spell-range').change(card_property_change);
 	$('#card-spell-range').on('keyup', ui_change_keyup);
-	$('#card-spell-verbal').change(card_change_property);
-	$('#card-spell-somatic').change(card_change_property);
-	$('#card-spell-materials').change(card_change_property);
-	$('#card-spell-duration').change(card_change_property);
+	$('#card-spell-verbal').change(card_property_change);
+	$('#card-spell-somatic').change(card_property_change);
+	$('#card-spell-materials').change(card_property_change);
+	$('#card-spell-duration').change(card_property_change);
 	$('#card-spell-duration').on('keyup', ui_change_keyup);
 	$('#card-spell-type').typeahead({
 		source: Object.values(I18N.get('SPELL.SPELL_TYPES')),
@@ -1455,9 +1808,9 @@ $(async function () {
 		render: typeahead_render
 	});
 	$('#card-spell-type').on('keydown', preventPageDownOrUp);
-	$('#card-spell-type').change(card_change_property);
+	$('#card-spell-type').change(card_property_change);
 	$('#card-spell-higher-levels').on('keyup', ui_change_keyup);
-	$('#card-spell-higher-levels').change(card_change_property);
+	$('#card-spell-higher-levels').change(card_property_change);
 	$('#card-spell-classes').typeahead({
 		source: Object.values(I18N.get('CLASSES')),
 		items: 'all',
@@ -1467,9 +1820,10 @@ $(async function () {
 		render: typeahead_render
 	});
 	$('#card-spell-classes').on('keydown', preventPageDownOrUp);
-	$('#card-spell-classes').change(card_change_property);
+	$('#card-spell-classes').change(card_property_change);
 
-	card_list_update();
+	card_update_ui();
+
 
 	g_canSave = true;
 
