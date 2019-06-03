@@ -555,15 +555,18 @@ export class Card {
 		let styleInnerRect = '';
 		let align = '';
 		let double = false;
+
 		if (params[2]) {
 			if (params[2].indexOf('dash') > -1) {
 				styleDash = 'stroke-dasharray:11,14;stroke-dashoffset:5.5;opacity:0.5;';
 				styleInnerRect = 'stroke-dasharray:11,13;stroke-dashoffset:5.5;opacity:0.5;';
 			}
+
 			if (params[2].indexOf('center') > -1)
 				align = 'text-align:center;';
 			else if (params[2].indexOf('right') > -1)
 				align = 'text-align:right;';
+
 			double = params[2].indexOf('double') > -1;
 		}
 
@@ -608,6 +611,7 @@ export class Card {
 		if (params[2]) {
 			if (params[2].indexOf('dash') > -1)
 				styleDash = 'stroke-dasharray:11,14;stroke-dashoffset:5.5;opacity:0.5;';
+
 			if (params[2].indexOf('center') > -1)
 				align = 'text-align:center;';
 			else if (params[2].indexOf('right') > -1)
@@ -722,7 +726,7 @@ export class Card {
 	// eslint-disable-next-line no-unused-vars
 	generateElement_picture(params, options) {
 		let url = params[0] || '';
-		let sizes = params[1].split('x');
+		let sizes = params[1].split('X');
 		let height = '';
 		let width = '';
 		if (sizes[1]) {

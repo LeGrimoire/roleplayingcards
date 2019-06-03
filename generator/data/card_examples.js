@@ -16,6 +16,7 @@ export function CardExamples() {
 	card.contents = [
 		'comment | icon | name | size | align',
 		'icon | oak-leaf | 15 | right',
+		'line | 1',
 		'comment | picture | url | height',
 		'picture | ./img/3d-hammer.png | 15',
 		'ruler',

@@ -531,3 +531,8 @@ p#file-name {
 #help-modal *:last-child {
 	margin-bottom: 0;
 }
+
+#contents-elements-description ul {
+	list-style-type: none;
+	padding-inline-start: 15px;
+}

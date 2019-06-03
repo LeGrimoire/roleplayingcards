@@ -1629,7 +1629,7 @@ function ui_document_shortcut(evt) {
 
 			let cardsLessButtonList = $('#cards-list .card-count-less');
 			cardsLessButtonList[g_ui.cardIdx].click();
-		} else if (evt.key === '²') {
+		} else if (evt.key === '²' && evt.type === 'keyup') {
 			if (evt.preventDefault)
 				evt.preventDefault();
 
@@ -1725,6 +1725,7 @@ function ui_update_texts() {
 	
 	$('#help-modal .modal-title').text(I18N.get('UI.PROJECT_TITLE'));
 	$('#project-description').html(I18N.get('UI.PROJECT_DESCRIPTION').join(''));
+	$('#contents-elements-description').html(I18N.get('UI.CONTENTS_ELEMENTS_DESCRIPTION').join(''));
 	$('#shortcuts').html(I18N.get('UI.SHORTCUTS').join(''));
 	$('#licenses').html(I18N.get('UI.LICENSES').join(''));
 	
@@ -1941,6 +1942,7 @@ $(async function () {
 	ui_update_texts();
 
 	$(document).on('keydown', ui_document_shortcut);
+	$(document).on('keyup', ui_document_shortcut);
 	ui_setup_resize();
 
 	local_store_ui_load();
