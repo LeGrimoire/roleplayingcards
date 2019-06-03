@@ -260,7 +260,7 @@ export const I18N = {
 		DECKS_LIST: 'Decks',
 		SORT: 'Trier',
 		FILTER: 'Filtrer',
-		SAMPLE: 'Examples',
+		SAMPLE: 'Exemples',
 		LEXICAL: 'Lexique',
 		IMPORT: 'Charger',
 		SAVE: 'Enregistrer',
@@ -322,7 +322,7 @@ export const I18N = {
 			'<h3>État du projet</h3>',
 			'<p>Ce site est toujours en cours de dévelopement. Si vous trouvez un bug ou souhaitez voir implémenter un nouvel élément vous pouvez poster sur la page du <a href="https://github.com/radnap/rpg-deck/issues">projet Github</a> ou m\'envoyer un mp <a href="https://twitter.com/Grimo_">@Grimo_</a>.</p>',
 			'<h3>Usage</h3>',
-			'<p>Pour utiliser ce générateur vous pouvez démarrer avec le deck d\'<i>Examples</i>. Vous pouvez aussi en créer un <i>Nouveau</i> et ajouter des cartes manuellement. Quand vous voulez imprimer votre deck, cliquez sur <i>Générer</i>.</p>'
+			'<p>Pour utiliser ce générateur vous pouvez démarrer avec le deck d\'<i>Exemples</i>. Vous pouvez aussi en créer un <i>Nouveau</i> et ajouter des cartes manuellement. Quand vous voulez imprimer votre deck, cliquez sur <i>Générer</i>.</p>'
 		],
 		CONTENTS_ELEMENTS_DESCRIPTION: [
 			'<h4>Balises de contenus</h4>',

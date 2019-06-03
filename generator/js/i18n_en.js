@@ -245,7 +245,7 @@ export const I18N = {
 		DECKS_LIST: 'Decks',
 		SORT: 'Sort',
 		FILTER: 'Filter',
-		SAMPLE: 'Sample',
+		SAMPLE: 'Examples',
 		LEXICAL: 'Lexical',
 		CLEAR: 'Delete all',
 		IMPORT: 'Load',
@@ -308,7 +308,7 @@ export const I18N = {
 			'<h3>Status of the project</h3>',
 			'<p>This site is still in active development. If you find a bug or have a feature request, post them at the <a href="https://github.com/radnap/rpg-deck/issues">Github project site</a> or send me a pm <a href="https://twitter.com/Grimo_">@Grimo_</a>.</p>',
 			'<h3>How to</h3>',
-			'<p>To use this generator, you can start with the <i>Sample</i> deck. You can also create a <i>New</i> one and manually add cards. When you want to print your deck, click on <i>Generate</i>.</p>'
+			'<p>To use this generator, you can start with the <i>Examples</i> deck. You can also create a <i>New</i> one and manually add cards. When you want to print your deck, click on <i>Generate</i>.</p>'
 		],
 		CONTENTS_ELEMENTS_DESCRIPTION: [
 			'<h4>Contents elements</h4>',
