@@ -11,7 +11,7 @@ RPG spell/item/monster card generator, based on the [crobi rpg-cards](https://gi
 ## Status of the project
 =====================
 
-In active development. I have a list of stuffs i would like to improve/add, but you can always create an issue or send me a message on twitter [@Grimo_](https://twitter.com/Grimo_).
+In active development, may contain bugs. I have a list of stuffs i would like to improve/add, but you can always create an issue or send me a message on twitter [@Grimo_](https://twitter.com/Grimo_).
 
 ## FAQ
 =====================
@@ -43,7 +43,7 @@ To download these new icons:
   - `node ./resources/tools/update-icons.js`
 
 
-## License
+## Licenses
 =======
 
 This generator is provided under the terms of the MIT License and is hugely based on the one made by Robert ['crobi'](https://github.com/crobi) Autenrieth at [https://github.com/crobi/rpg-cards](https://github.com/crobi/rpg-cards).

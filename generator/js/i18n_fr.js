@@ -256,15 +256,17 @@ export const I18N = {
 
 	UI: {
 		HELP: 'Aide',
-		ICONS: 'Icônes de <a href="http://game-icons.net/">Games-icons.net</a>',
 		LANGUAGE: 'Français',
+		DECKS_LIST: 'Decks',
 		SORT: 'Trier',
 		FILTER: 'Filtrer',
 		SAMPLE: 'Examples',
 		LEXICAL: 'Lexique',
 		IMPORT: 'Charger',
 		SAVE: 'Enregistrer',
-		GENERATE: 'Génerer',
+		GENERATE: 'Générer',
+		LOAD_ALL: 'Charger rpgd',
+		SAVE_ALL: 'Enregistrer rpgd',
 		GENERATE_ALL: 'Générer tout',
 		FILE: 'Fichier',
 		DECK_SETTINGS: 'Paramètres',
@@ -312,6 +314,36 @@ export const I18N = {
 		CLASSES: 'Classes',
 		TAGS: 'Tags',
 		REFERENCE: 'Reférence',
-		COMPACT: 'Compacte'
-	}
+		COMPACT: 'Compacte',
+	
+		PROJECT_TITLE: 'RPG Deck',
+		PROJECT_DESCRIPTION: [
+			'<p>Certains jeux sont protégés par copyright. Même si certains éléments comme les objets, les sorts, sont accessibles gratuitement, <b>vérifiez que vous disposez du droit de les redistribuer</b> avant de les partager.</p>',
+			'<h3>État du projet</h3>',
+			'<p>Ce site est toujours en cours de dévelopement. Si vous trouvez un bug ou souhaitez voir implémenter un nouvel élément vous pouvez poster sur la page du <a href="https://github.com/radnap/rpg-deck/issues">projet Github</a> ou m\'envoyer un mp <a href="https://twitter.com/Grimo_">@Grimo_</a>.</p>',
+			'<h3>Usage</h3>',
+			'<p>Pour utiliser ce générateur vous pouvez démarrer avec le deck d\'<i>Example</i>. Vous pouvez aussi en créer un <i>Nouveau</i> et ajouter des cartes manuellement. Quand vous voulez imprimer votre deck, cliquez sur <i>Générer</i>.</p>'
+		],
+		SHORTCUTS: [
+			'<h3>Raccourcis</h3>',
+			'<ul>',
+			'<li><b>Ctrl+S:</b> Enregistrer le deck courrant</li>',
+			'<li><b>Ctrl+G:</b> Générer le deck courrant</li>',
+			'<li><b>Pg Up:</b> Carte précédente</li>',
+			'<li><b>Pg Down:</b> Prochaine carte</li>',
+			'<li><b>²:</b> Affiche cette aide</li>',
+			'</ul>',
+			'<p>Dans la zone <i>Contenus</i> :</p>',
+			'<ul>',
+			'<li><b>Maj+Suppr:</b> Supprime la ligne</li>',
+			'<li><b>Alt+i:</b> Insère des balises italiques</li>',
+			'<li><b>Alt+b:</b> Insère des balises grasses</li>',
+			'</ul>'
+		],
+		LICENSES: [
+			'<h3>Licences</h3>',
+			'<p>Ce générateur est fourni sous licence MIT et se base sur celui de Robert <a herf="https://github.com/crobi">\'crobi\'</a> Autenrieth disponible sur <a herf="https://github.com/crobi/rpg-cards">https://github.com/crobi/rpg-cards</a>.</p>',
+			'<p>Les icônes sont faites par plusieurs artistes et sont disponibles sur <a href="https://game-icons.net/">https://game-icons.net</a>. Elles sont fournis sous licence Creative Commons 3.0 BY.</p>'
+		]
+	},
 };

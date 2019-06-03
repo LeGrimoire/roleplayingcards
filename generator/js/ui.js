@@ -36,7 +36,7 @@ function local_store_current_deck_save() {
 	if (g_canSave && is_storage_available('localStorage') && window.localStorage) {
 		try {
 			localStorage.setItem('nbDecks', g_decks.length);
-			if (g_ui.deckIdx < g_decks.length)
+			if (g_ui.deckIdx >= 0 && g_ui.deckIdx < g_decks.length)
 				localStorage.setItem('deck' + g_ui.deckIdx, g_decks[g_ui.deckIdx].stringify(false));
 		} catch (e) {
 			// TODO GREGOIRE: If the local store save failed notify the user that the data has not been saved
@@ -112,6 +112,17 @@ function update_lang() {
 	location.reload();
 }
 
+/**
+ * Event function that stop its progresion if it's a page up or page down key.
+ * @param {JQuery.Event} evt
+ */
+function preventPageDownOrUp(evt) {
+	if (evt.key === 'PageUp' || evt.key === 'PageDown') { // Pg up or down
+		if (evt.preventDefault)
+			evt.preventDefault();
+	}
+}
+
 
 /**
  * Insert a new deck with the sample cards.
@@ -144,7 +155,7 @@ function insert_lexical() {
 /**
  * Open the output page with printed cards of all decks.
  */
-function generate_decks() {
+function decks_generate() {
 	if (g_decks.length === 0) {
 		alert('You have no deck or load the sample deck.');
 		return;
@@ -172,6 +183,59 @@ function generate_decks() {
 	setTimeout(function () { tab.postMessage(card_html, '*'); }, 500);
 }
 
+/**
+ * Add all deck at the end of the list after loading it from a rpgd.
+ * @param {JQuery.Event} evt
+ */
+function decks_load_from_file(evt) {
+	let files = evt.target.files;
+
+	for (let i = 0; i < files.length; i++) {
+		let reader = new FileReader();
+		reader.onload = function () {
+			let parsedObj = JSON.parse(this.result ? this.result.toString() : '');
+			
+			for (const deckJson of parsedObj) {
+				let deck = new Deck();
+				deck.load(deckJson);
+				deck.options.filename = deck.options.name + '.json';
+				g_decks.push(deck);
+			}
+
+			deck_list_update();
+			deck_select_by_index(g_decks.length - 1);
+		};
+		reader.readAsText(files[i]);
+	}
+
+	// Reset file input
+	$('#file-load-form')[0].reset();
+	local_store_ui_save();
+}
+
+/**
+ * Save the current deck to a file.
+ */
+function decks_save_to_file() {
+	let decks = [];
+	for (let i = 0; i < g_decks.length; i++) {
+		decks.push(g_decks[i].stringify(true));
+	}
+
+	let parts = ['[\n', decks, ']'];
+	let blob = new Blob(parts, { type: 'application/json' });
+	let url = URL.createObjectURL(blob);
+
+	let a = $('#file-save-link')[0];
+	a.href = url;
+	a.download = 'Decks.rpgd';
+	if (a.download && a.download !== 'null') {
+		a.click();
+	}
+
+	setTimeout(function () { URL.revokeObjectURL(url); }, 500);
+}
+
 
 // ============================================================================
 // Decks helpers
@@ -185,15 +249,12 @@ function deck_select() {
 	g_canSave = false;
 
 	let decksList = $('#decks-list');
-	if (g_ui.deckIdx < g_decks.length)
+	if (g_ui.deckIdx >= 0 && g_ui.deckIdx < g_decks.length)
 		decksList[0].children[g_ui.deckIdx].classList.remove('selected-deck');
 
-	g_ui.deckIdx = this.value;
-
-	if (!g_ui.deckIdx)
-		g_ui.deckIdx = 0;
+	g_ui.deckIdx = this.value ? this.value : g_ui.deckIdx;
 	
-	if (g_ui.deckIdx < g_decks.length)
+	if (g_ui.deckIdx >= 0 && g_ui.deckIdx < g_decks.length)
 		decksList[0].children[g_ui.deckIdx].classList.add('selected-deck');
 
 	local_store_ui_save();
@@ -201,7 +262,7 @@ function deck_select() {
 	deck_update_ui();
 
 	g_previousCardIdx = 0;
-	card_list_update();
+	card_list_update_ui();
 	
 	card_select_by_index(0);
 	g_canSave = couldSave;
@@ -220,24 +281,6 @@ function deck_select_by_index(index) {
 }
 
 /**
- * Empty the cards list and add an option for each card in the selected deck.
- */
-function deck_list_update() {
-	let decksList = $('#decks-list');
-	decksList.empty();
-	for (let i in g_decks) {
-		let deck = g_decks[i];
-
-		let deckOption = $('<option></option>');
-		deckOption.attr('value', i).text(deck.options.name);
-		deckOption.removeClass('selected-deck');
-
-		decksList.append(deckOption);
-	}
-	deck_select_by_index(g_ui.deckIdx);
-}
-
-/**
  * Add a deck at the end of the list after loading it from a file.
  * @param {JQuery.Event} evt
  */
@@ -247,9 +290,10 @@ function deck_load_from_file(evt) {
 	for (let i = 0; i < files.length; i++) {
 		let reader = new FileReader();
 		let file = files[i];
-		let deck = new Deck();
 		reader.onload = function () {
 			let parsedObj = JSON.parse(this.result ? this.result.toString() : '');
+
+			let deck = new Deck();
 			deck.options.filename = file.name;
 			if (parsedObj.cards)
 				deck.load(parsedObj);
@@ -273,6 +317,9 @@ function deck_load_from_file(evt) {
  * Save the current deck to a file.
  */
 function deck_save_to_file() {
+	if (g_ui.deckIdx < 0 || g_ui.deckIdx >= g_decks.length)
+		return;
+
 	let deck = g_decks[g_ui.deckIdx];
 	let parts = [deck.stringify(true)];
 	let blob = new Blob(parts, { type: 'application/json' });
@@ -296,7 +343,7 @@ function deck_save_to_file() {
  * Add a new deck at the end of the list.
  */
 function deck_new() {
-	let newDeck = new Deck('Deck' + g_decks.length + 1);
+	let newDeck = new Deck('Deck ' + (g_decks.length + 1));
 	g_decks.push(newDeck);
 
 	deck_list_update();
@@ -331,7 +378,7 @@ function deck_sort_execute() {
 
 	g_decks[g_ui.deckIdx].sort(code);
 
-	card_list_update();
+	card_list_update_ui();
 	card_update_ui();
 }
 
@@ -345,7 +392,7 @@ function deck_filter_execute() {
 
 	g_decks[g_ui.deckIdx].filter(code);
 
-	card_list_update();
+	card_list_update_ui();
 	card_update_ui();
 }
 
@@ -447,8 +494,34 @@ function deck_default_color_set(color, property) {
 	let deck = g_decks[g_ui.deckIdx];
 	let cardType = $('#default-card-type').val();
 	deck.options.cardsDefault[cardType][property] = color;
-	card_list_update();
+	card_list_update_ui();
 	card_update_ui();
+}
+
+/**
+ * Empty the cards list and add an option for each card in the selected deck.
+ */
+function deck_list_update() {
+	let decksList = $('#decks-list');
+	decksList.empty();
+
+	for (let i in g_decks) {
+		let deck = g_decks[i];
+
+		let deckOption = $('<option></option>');
+		deckOption.attr('value', i).text(deck.options.name);
+		deckOption.removeClass('selected-deck');
+
+		decksList.append(deckOption);
+	}
+	
+	if (g_decks.length === 0) {
+		$('#decks-list').attr('disabled', true);
+		g_ui.deckIdx = 0;
+	} else {
+		$('#decks-list').attr('disabled', false);
+		deck_select_by_index(g_ui.deckIdx);
+	}
 }
 
 /**
@@ -457,13 +530,27 @@ function deck_default_color_set(color, property) {
 function deck_default_type_select() {
 	const couldSave = g_canSave;
 	g_canSave = false;
-	let deck = g_decks[g_ui.deckIdx];
-	let cardType = $('#default-card-type').val();
-	$('#default-color-selector').colorselector('setColor', deck.options.cardsDefault[cardType].color);
-	$('#default-color-front-selector').colorselector('setColor', deck.options.cardsDefault[cardType].color_front);
-	$('#default-icon').val(deck.options.cardsDefault['Card'].icon);
-	$('#default-color-back-selector').colorselector('setColor', deck.options.cardsDefault[cardType].color_back);
-	$('#default-icon-back').val(deck.options.cardsDefault['Card'].icon_back);
+	if (g_ui.deckIdx >= 0 && g_ui.deckIdx < g_decks.length) {
+		let deck = g_decks[g_ui.deckIdx];
+		let cardType = $('#default-card-type').val();
+		$('#default-color').attr('disabled', false);
+		$('#default-color-selector').attr('disabled', false).colorselector('setColor', deck.options.cardsDefault[cardType].color);
+		$('#default-color-front').attr('disabled', false);
+		$('#default-color-front-selector').attr('disabled', false).colorselector('setColor', deck.options.cardsDefault[cardType].color_front);
+		$('#default-icon').attr('disabled', false).val(deck.options.cardsDefault['Card'].icon);
+		$('#default-color-back').attr('disabled', false);
+		$('#default-color-back-selector').attr('disabled', false).colorselector('setColor', deck.options.cardsDefault[cardType].color_back);
+		$('#default-icon-back').attr('disabled', false).val(deck.options.cardsDefault['Card'].icon_back);
+	} else {
+		$('#default-color').attr('disabled', true);
+		$('#default-color-selector').attr('disabled', true);
+		$('#default-color-front').attr('disabled', true);
+		$('#default-color-front-selector').attr('disabled', true);
+		$('#default-icon').attr('disabled', true);
+		$('#default-color-back').attr('disabled', true);
+		$('#default-color-back-selector').attr('disabled', true);
+		$('#default-icon-back').attr('disabled', true);
+	}
 	g_canSave = couldSave;
 }
 
@@ -471,17 +558,103 @@ function deck_default_type_select() {
  * Update forms with the selected deck values.
  */
 function deck_update_ui() {
-	let deck = g_decks[g_ui.deckIdx];
-	$('#deck-name').val(deck.options.name);
-	$('#page-size').val(deck.options.pageSize);
-	$('#page-rows').val(deck.options.pageRows);
-	$('#page-columns').val(deck.options.pageColumns);
-	$('#card-arrangement').val(deck.options.cardsArrangement);
-	$('#card-size').val(deck.options.cardsSize);
-	$('#round-corners').prop('checked', deck.options.roundCorners);
-	$('#spell-classes').prop('checked', deck.options.showSpellClasses);
-	$('#small-icons').prop('checked', deck.options.smallIcons);
-	$('#title-size').val(deck.options.titleSize);
+	if (g_ui.deckIdx >= 0 && g_ui.deckIdx < g_decks.length) {
+		let deck = g_decks[g_ui.deckIdx];
+		
+		$('#button-save-all').attr('disabled', false);
+		$('#button-generate-all').attr('disabled', false);
+
+		$('#button-generate').attr('disabled', false);
+		$('#button-sort').attr('disabled', false);
+		$('#button-filter').attr('disabled', false);
+		$('#button-delete').attr('disabled', false);
+		$('#button-save').attr('disabled', false);
+
+		$('#deck-name').attr('disabled', false).val(deck.options.name);
+		$('#page-size').attr('disabled', false).val(deck.options.pageSize);
+		$('#page-rows').attr('disabled', false).val(deck.options.pageRows);
+		$('#page-columns').attr('disabled', false).val(deck.options.pageColumns);
+		$('#card-arrangement').attr('disabled', false).val(deck.options.cardsArrangement);
+		$('#card-size').attr('disabled', false).val(deck.options.cardsSize);
+		$('#round-corners').attr('disabled', false).prop('checked', deck.options.roundCorners);
+		$('#spell-classes').attr('disabled', false).prop('checked', deck.options.showSpellClasses);
+		$('#small-icons').attr('disabled', false).prop('checked', deck.options.smallIcons);
+		$('#title-size').attr('disabled', false).val(deck.options.titleSize);
+		
+		$('#default-card-type').attr('disabled', false);
+	} else {
+		$('#button-save-all').attr('disabled', true);
+		$('#button-generate-all').attr('disabled', true);
+
+		$('#button-generate').attr('disabled', true);
+		$('#button-sort').attr('disabled', true);
+		$('#button-filter').attr('disabled', true);
+		$('#button-delete').attr('disabled', true);
+		$('#button-save').attr('disabled', true);
+
+		$('#deck-name').attr('disabled', true).val('');
+		$('#page-size').attr('disabled', true).val('');
+		$('#page-rows').attr('disabled', true).val('');
+		$('#page-columns').attr('disabled', true).val('');
+		$('#card-arrangement').attr('disabled', true).val('');
+		$('#card-size').attr('disabled', true).val('');
+		$('#round-corners').attr('disabled', true).prop('checked', false);
+		$('#spell-classes').attr('disabled', true).prop('checked', false);
+		$('#small-icons').attr('disabled', true).prop('checked', false);
+		$('#title-size').attr('disabled', true).val('');
+		
+		$('#default-card-type').attr('disabled', true);
+	}
+
+	deck_default_type_select();
+}
+
+/**
+ * Setup ui element event functions and update values.
+ */
+function deck_setup_ui() {
+
+	// ----- Decks list
+
+	$('#decks-list').change(deck_select);
+
+	deck_list_update();
+
+	$('#button-generate').click(deck_generate);
+	$('#button-sort').click(function () { $('#sort-modal').modal('show'); });
+	$('#sort-execute').click(deck_sort_execute);
+	$('#button-filter').click(function () { $('#filter-modal').modal('show'); });
+	$('#filter-execute').click(deck_filter_execute);
+	$('#button-new').click(deck_new);
+	$('#button-import').click(function () { $('#file-import').click(); });
+	$('#file-import').change(deck_load_from_file);
+	$('#button-delete').click(function () { $('#delete-confirmation-modal').modal('show'); });
+	$('#delete-modal-confirm').click(deck_delete);
+	$('#button-save').click(deck_save_to_file);
+
+	// ----- Deck settings
+
+	$('#deck-name').change(deck_name_change);
+	$('#page-size').change(deck_option_change);
+	$('#page-rows').change(deck_option_change);
+	$('#page-columns').change(deck_option_change);
+	$('#card-arrangement').change(deck_option_change);
+	$('#card-size').change(deck_option_change);
+	$('#round-corners').change(deck_option_change);
+	$('#spell-classes').change(deck_option_change);
+	$('#small-icons').change(deck_option_change);
+	$('#title-size').change(deck_option_change);
+
+	// ----- Default values
+
+	$('#default-card-type').change(deck_default_type_select);
+	$('#default-color').change(deck_default_color_change);
+	$('#default-color-front').change(deck_default_color_change);
+	$('#default-icon').change(deck_default_property_change);
+	$('#default-color-back').change(deck_default_color_change);
+	$('#default-icon-back').change(deck_default_property_change);
+
+	deck_update_ui();
 }
 
 
@@ -535,7 +708,7 @@ function card_new() {
 	let cardType = $('#card-type').val();
 
 	deck.addCard(cardIdx, cardType);
-	card_list_update();
+	card_list_update_ui();
 	card_select_by_index(cardIdx + 1);
 
 	local_store_decks_save();
@@ -551,7 +724,7 @@ function card_duplicate() {
 	let cardIdx = g_ui.cardIdx;
 
 	deck.duplicateCard(cardIdx);
-	card_list_update();
+	card_list_update_ui();
 	card_select_by_index(cardIdx + 1);
 
 	local_store_decks_save();
@@ -567,7 +740,7 @@ function card_delete() {
 	let cardIdx = g_ui.cardIdx;
 
 	deck.deleteCard(cardIdx);
-	card_list_update();
+	card_list_update_ui();
 	card_select_by_index(cardIdx);
 
 	local_store_decks_save();
@@ -581,7 +754,7 @@ function card_list_up() {
 	let cardIdx = g_ui.cardIdx;
 
 	deck.moveCardUp(cardIdx);
-	card_list_update();
+	card_list_update_ui();
 	card_select_by_index(cardIdx - 1);
 
 	local_store_decks_save();
@@ -595,7 +768,7 @@ function card_list_down() {
 	let cardIdx = g_ui.cardIdx;
 
 	deck.moveCardDown(cardIdx);
-	card_list_update();
+	card_list_update_ui();
 	card_select_by_index(cardIdx + 1);
 
 	local_store_decks_save();
@@ -699,17 +872,17 @@ function card_color_change() {
  * @param {string} property
  */
 function card_color_set(color, property) {
-	let deck = g_decks[g_ui.deckIdx];
-	let card = deck.cards[g_ui.cardIdx];
-	if (card) {
+	if (g_ui.deckIdx >= 0 && g_ui.deckIdx < g_decks.length && g_ui.cardIdx >= 0 && g_ui.cardIdx < g_decks[g_ui.deckIdx].cards.length) {
+		let deck = g_decks[g_ui.deckIdx];
+		let card = deck.cards[g_ui.cardIdx];
+
 		if (color) {
 			card[property] = color;
 		} else {
 			card[property] = deck.options.cardsDefault[card.constructor.name][property];
 		}
 
-		if (g_ui.cardIdx || g_ui.cardIdx === 0)
-			$('#cards-list')[0].children[g_ui.cardIdx].style.backgroundColor = card[property] + '29';
+		$('#cards-list')[0].children[g_ui.cardIdx].style.backgroundColor = card[property] + '29';
 
 		card_render();
 	}
@@ -769,21 +942,63 @@ function card_list_select_card() {
 }
 
 /**
+ * Update the preview of the card, generating the html for its front and back.
+ */
+function card_render() {
+	if (g_dontRenderSelectedCard)
+		return;
+		
+	$('#preview-container').empty();
+	if (g_ui.deckIdx >= 0 && g_ui.deckIdx < g_decks.length && g_ui.cardIdx >= 0 && g_ui.cardIdx < g_decks[g_ui.deckIdx].cards.length) {
+		let deck = g_decks[g_ui.deckIdx];
+		let card = deck.cards[g_ui.cardIdx];
+		card.update();
+
+		let front = card.generateFront(deck.options);
+		let back = card.generateBack(deck.options);
+		$('#preview-container').html(front + '\n' + back);
+		let cardContainer = $('.card-content-container');
+		if (cardContainer && cardContainer.length > 0) {
+			card.error = false;
+
+			let cardsList = $('#cards-list');
+			let lastCardElement = cardContainer.children().last();
+			if (lastCardElement && lastCardElement.length > 0) {
+				let lastCardElementBottom = lastCardElement.offset().top + lastCardElement.height();
+				let containerBottom = cardContainer.offset().top + cardContainer.height();
+				card.error = lastCardElement && (lastCardElementBottom - containerBottom) > 3;
+			}
+			if (card.error)
+				cardsList[0].children[g_ui.cardIdx].classList.add('card-error');
+			else
+				cardsList[0].children[g_ui.cardIdx].classList.remove('card-error');
+		}
+	}
+	local_store_decks_save();
+}
+
+/**
  * Empty the cards list and add an option for each card in the selected deck.
  */
-function card_list_update() {
-	let deck = g_decks[g_ui.deckIdx];
-	if (deck)
-		$('#total_card_count').text('(' + deck.cards.length + ' ' + I18N.get('UI.UNIQUE') + ')');
-	else
-		$('#total_card_count').text('');
-
-	if (!deck || g_ui.cardIdx < 0 || g_ui.cardIdx >= deck.cards.length)
-		g_ui.cardIdx = 0;
-
+function card_list_update_ui() {
 	let cardsList = $('#cards-list');
 	cardsList.empty();
-	if (deck) {
+
+	if (g_ui.deckIdx >= 0 && g_ui.deckIdx < g_decks.length) {
+		let deck = g_decks[g_ui.deckIdx];
+
+		if (g_ui.cardIdx < 0 || g_ui.cardIdx >= deck.cards.length)
+			g_ui.cardIdx = 0;
+
+		$('#total_card_count').text('(' + deck.cards.length + ' ' + I18N.get('UI.UNIQUE') + ')');
+
+		$('#button-card-up').attr('disabled', false);
+		$('#button-card-down').attr('disabled', false);
+
+		$('#button-card-add').attr('disabled', false);
+		$('#button-card-duplicate').attr('disabled', false);
+		$('#button-card-delete').attr('disabled', false);
+
 		for (let i in deck.cards) {
 			let card = deck.cards[i];
 	
@@ -819,6 +1034,17 @@ function card_list_update() {
 			}
 			cardsList.append(newCardInList);
 		}
+	} else {
+		g_ui.cardIdx = 0;
+
+		$('#total_card_count').text('');
+
+		$('#button-card-up').attr('disabled', true);
+		$('#button-card-down').attr('disabled', true);
+
+		$('#button-card-add').attr('disabled', true);
+		$('#button-card-duplicate').attr('disabled', true);
+		$('#button-card-delete').attr('disabled', true);
 	}
 }
 
@@ -827,27 +1053,25 @@ function card_list_update() {
  */
 function card_update_ui() {
 	g_dontRenderSelectedCard = true;
-	let deck = g_decks[g_ui.deckIdx];
-	let card = deck.cards[g_ui.cardIdx];
-	let cardType = 'Card';
-	if (card) {
-		cardType = card.constructor.name;
+	if (g_ui.deckIdx >= 0 && g_ui.deckIdx < g_decks.length && g_ui.cardIdx >= 0 && g_ui.cardIdx < g_decks[g_ui.deckIdx].cards.length) {
+		let deck = g_decks[g_ui.deckIdx];
+		let card = deck.cards[g_ui.cardIdx];
 
-		$('#card-title').val(card.title);
-		$('#card-title-multiline').prop('checked', card.title_multiline);
-		$('#card-subtitle').val(card.subtitle);
-		$('#card-color').val(card.color).change();
-		$('#card-icon').val(card.icon);
-		$('#card-icon-back').val(card.icon_back);
-		$('#card-background').val(card.background_image);
-		$('#card-description').val(card.description);
-		$('#card-contents').val(card.contents.join('\n'));
-		if (card.tags)
-			$('#card-tags').val(card.tags.join(', '));
-		else
-			$('#card-tags').val('');
-		$('#card-reference').val(card.reference);
-		$('#card-compact').prop('checked', card.compact);
+		$('#card-form-container').attr('card-type', card.constructor.name);
+		$('#card-type').attr('disabled', false).val(card.constructor.name);
+
+		$('#card-title').attr('disabled', false).val(card.title);
+		$('#card-title-multiline').attr('disabled', false).prop('checked', card.title_multiline);
+		$('#card-subtitle').attr('disabled', false).val(card.subtitle);
+		$('#card-color').attr('disabled', false).val(card.color).change();
+		$('#card-icon').attr('disabled', false).val(card.icon);
+		$('#card-icon-back').attr('disabled', false).val(card.icon_back);
+		$('#card-background').attr('disabled', false).val(card.background_image);
+		$('#card-description').attr('disabled', false).val(card.description);
+		$('#card-contents').attr('disabled', false).val(card.contents.join('\n'));
+		$('#card-tags').attr('disabled', false).val(card.tags ? card.tags.join(', ') : '');
+		$('#card-reference').attr('disabled', false).val(card.reference);
+		$('#card-compact').attr('disabled', false).prop('checked', card.compact);
 
 		if (card.constructor === CreatureCard) {
 			$('.creature-hide').hide();
@@ -943,29 +1167,7 @@ function card_update_ui() {
 
 			$('#card-contents').attr('rows', 27);
 		}
-	} else {
-		$('#card-title').val('');
-		$('#card-title-multiline').prop('checked', false);
-		$('#card-subtitle').val('');
-		$('#card-color').val('').change();
-		$('#card-icon').val('');
-		$('#card-icon-back').val('');
-		$('#card-background').val('');
-		$('#card-description').val('');
-		$('#card-contents').val('');
-		$('#card-tags').val('');
-		$('#card-reference').val('');
-		$('#card-compact').prop('checked', false);
 
-		$('.creature-only').hide();
-		$('.item-only').hide();
-		$('.spell-only').hide();
-		$('.power-only').hide();
-	}
-	$('#card-form-container').attr('card-type', cardType);
-	$('#card-type').val(cardType);
-
-	if (deck.cards.length > 0) {
 		let cardsList = $('#cards-list');
 		if ((g_previousCardIdx || g_previousCardIdx === 0) && g_previousCardIdx < deck.cards.length) {
 			let oldCard = deck.cards[g_previousCardIdx];
@@ -980,6 +1182,34 @@ function card_update_ui() {
 		else if (scrollPos >= cardsList[0].scrollTop + cardsList[0].offsetHeight - 2 * cardScrollHeight)
 			cardsList[0].scrollTop = scrollPos - cardsList[0].offsetHeight + 2 * cardScrollHeight;
 		cardsList[0].children[g_ui.cardIdx].classList.add('selected');
+	} else {
+		$('#card-form-container').removeAttr('card-type');
+		$('#card-type').attr('disabled', true).val('Card');
+
+		$('#card-title').attr('disabled', true).val('');
+		$('#card-title-multiline').attr('disabled', true).prop('checked', false);
+		$('#card-subtitle').attr('disabled', true).val('');
+		$('#card-color').attr('disabled', true).val('').change();
+		$('#card-icon').attr('disabled', true).val('');
+		$('#card-icon-back').attr('disabled', true).val('');
+		$('#card-background').attr('disabled', true).val('');
+		$('#card-description').attr('disabled', true).val('');
+		$('#card-contents').attr('disabled', true).val('');
+		$('#card-tags').attr('disabled', true).val('');
+		$('#card-reference').attr('disabled', true).val('');
+		$('#card-compact').attr('disabled', true).prop('checked', false);
+
+		$('.creature-hide').hide();
+		$('.item-hide').hide();
+		$('.spell-hide').hide();
+		$('.power-hide').hide();
+
+		$('.creature-only').hide();
+		$('.item-only').hide();
+		$('.spell-only').hide();
+		$('.power-only').hide();
+		
+		$('#card-contents').attr('disabled', true).attr('rows', 27);
 	}
 
 	g_dontRenderSelectedCard = false;
@@ -987,39 +1217,118 @@ function card_update_ui() {
 }
 
 /**
- * Update the preview of the card, generating the html for its front and back.
+ * Setup ui element event functions and update values.
  */
-function card_render() {
-	if (g_dontRenderSelectedCard)
-		return;
-		
-	let deck = g_decks[g_ui.deckIdx];
-	let card = deck.cards[g_ui.cardIdx];
-	$('#preview-container').empty();
-	if (card) {
-		card.update();
+function card_setup_ui() {
+	
+	// ----- Cards list
 
-		let front = card.generateFront(deck.options);
-		let back = card.generateBack(deck.options);
-		$('#preview-container').html(front + '\n' + back);
-		let cardContainer = $('.card-content-container');
-		if (cardContainer && cardContainer.length > 0) {
-			card.error = false;
+	$('#button-card-up').click(card_list_up);
+	$('#button-card-down').click(card_list_down);
 
-			let cardsList = $('#cards-list');
-			let lastCardElement = cardContainer.children().last();
-			if (lastCardElement && lastCardElement.length > 0) {
-				let lastCardElementBottom = lastCardElement.offset().top + lastCardElement.height();
-				let containerBottom = cardContainer.offset().top + cardContainer.height();
-				card.error = lastCardElement && (lastCardElementBottom - containerBottom) > 3;
-			}
-			if (card.error)
-				cardsList[0].children[g_ui.cardIdx].classList.add('card-error');
-			else
-				cardsList[0].children[g_ui.cardIdx].classList.remove('card-error');
-		}
-	}
-	local_store_decks_save();
+	$('#button-card-add').click(card_new);
+	$('#button-card-duplicate').click(card_duplicate);
+	$('#button-card-delete').click(card_delete);
+	
+	card_list_update_ui();
+
+	// ----- Card
+
+	$('#card-title').on('keyup', ui_change_keyup);
+	$('#card-title').change(card_title_change);
+	$('#card-title-multiline').change(card_property_change);
+	$('#card-subtitle').change(card_property_change);
+	$('#card-icon').change(card_property_change);
+	$('#card-icon-back').change(card_property_change);
+	$('#card-background').change(card_property_change);
+	$('#card-color').change(card_color_change);
+	$('#card-tags').change(card_tags_change);
+	$('#card-reference').on('keyup', ui_change_keyup);
+	$('#card-reference').change(card_property_change);
+
+	$('#card-description').on('keyup', ui_change_keyup);
+	$('#card-description').change(card_property_change);
+	/* $("#card-contents").typeahead({
+		source: Object.keys(card_element_generators),
+		items: 'all',
+		minLength: 0,
+		matcher: typeahead_contents_matcher,
+		updater: typeahead_contents_updater,
+		render: typeahead_render
+	}); */
+	$('#card-contents').on('keyup', ui_change_keyup);
+	$('#card-contents').change(card_contents_change);
+	$('#card-contents').on('keydown', ui_contents_shortcut);
+
+	$('#card-compact').change(card_property_change);
+
+	// ----- Creature
+
+	$('#card-creature-cr').change(card_property_change);
+	$('#card-creature-size').change(card_property_change);
+	$('#card-creature-alignment').typeahead({
+		source: Object.values(I18N.get('CREATURE.ALIGNMENTS')),
+		items: 'all',
+		minLength: 0,
+		render: typeahead_render
+	});
+	$('#card-creature-alignment').on('keydown', preventPageDownOrUp);
+	$('#card-creature-alignment').change(card_property_change);
+	$('#card-creature-type').change(card_property_change);
+
+	$('#card-creature-ac').change(card_property_change);
+	$('#card-creature-hp').change(card_property_change);
+	$('#card-creature-perception').change(card_property_change);
+	$('#card-creature-speed').change(card_property_change);
+
+	$('#card-creature-strength').change(creature_stats_change);
+	$('#card-creature-dexterity').change(creature_stats_change);
+	$('#card-creature-constitution').change(creature_stats_change);
+	$('#card-creature-intelligence').change(creature_stats_change);
+	$('#card-creature-wisdom').change(creature_stats_change);
+	$('#card-creature-charisma').change(creature_stats_change);
+
+	$('#card-creature-resistances').change(card_property_change);
+	$('#card-creature-vulnerabilities').change(card_property_change);
+	$('#card-creature-immunities').change(card_property_change);
+
+	// ----- Spell
+
+	$('#card-spell-level').change(card_property_change);
+	$('#card-spell-ritual').change(card_property_change);
+	$('#card-spell-casting-time').change(card_property_change);
+	$('#card-spell-casting-time').on('keyup', ui_change_keyup);
+	$('#card-spell-range').change(card_property_change);
+	$('#card-spell-range').on('keyup', ui_change_keyup);
+	$('#card-spell-verbal').change(card_property_change);
+	$('#card-spell-somatic').change(card_property_change);
+	$('#card-spell-materials').change(card_property_change);
+	$('#card-spell-duration').change(card_property_change);
+	$('#card-spell-duration').on('keyup', ui_change_keyup);
+	$('#card-spell-type').typeahead({
+		source: Object.values(I18N.get('SPELL.SPELL_TYPES')),
+		items: 'all',
+		minLength: 0,
+		matcher: typeahead_matcher,
+		updater: typeahead_updater,
+		render: typeahead_render
+	});
+	$('#card-spell-type').on('keydown', preventPageDownOrUp);
+	$('#card-spell-type').change(card_property_change);
+	$('#card-spell-higher-levels').on('keyup', ui_change_keyup);
+	$('#card-spell-higher-levels').change(card_property_change);
+	$('#card-spell-classes').typeahead({
+		source: Object.values(I18N.get('CLASSES')),
+		items: 'all',
+		minLength: 0,
+		matcher: typeahead_matcher,
+		updater: typeahead_updater,
+		render: typeahead_render
+	});
+	$('#card-spell-classes').on('keydown', preventPageDownOrUp);
+	$('#card-spell-classes').change(card_property_change);
+
+	card_update_ui();
 }
 
 
@@ -1271,12 +1580,14 @@ function ui_document_shortcut(evt) {
 	if (evt.key === 'PageUp') {
 		if (evt.preventDefault)
 			evt.preventDefault();
+			
 		let idx = g_ui.cardIdx;
 		if (idx > 0)
 			card_select_by_index(idx - 1);
 	} else if (evt.key === 'PageDown') {
 		if (evt.preventDefault)
 			evt.preventDefault();
+
 		let deck = g_decks[g_ui.deckIdx];
 		let idx = g_ui.cardIdx;
 		if (idx < deck.cards.length - 1)
@@ -1285,19 +1596,23 @@ function ui_document_shortcut(evt) {
 		if (evt.key === 's') {
 			if (evt.preventDefault)
 				evt.preventDefault();
+
 			deck_save_to_file();
 		} else if (evt.key === 'g') {
 			if (evt.preventDefault)
 				evt.preventDefault();
+
 			deck_generate();
 		} else if (evt.key === '+') {
 			if (evt.preventDefault)
 				evt.preventDefault();
+
 			let cardsMoreButtonList = $('#cards-list .card-count-more');
 			cardsMoreButtonList[g_ui.cardIdx].click();
 		} else if (evt.key === '-') {
 			if (evt.preventDefault)
 				evt.preventDefault();
+
 			let cardsLessButtonList = $('#cards-list .card-count-less');
 			cardsLessButtonList[g_ui.cardIdx].click();
 		}
@@ -1305,13 +1620,20 @@ function ui_document_shortcut(evt) {
 		if (evt.key === '+') {
 			if (evt.preventDefault)
 				evt.preventDefault();
+
 			let cardsMoreButtonList = $('#cards-list .card-count-more');
 			cardsMoreButtonList[g_ui.cardIdx].click();
 		} else if (evt.key === '-') {
 			if (evt.preventDefault)
 				evt.preventDefault();
+
 			let cardsLessButtonList = $('#cards-list .card-count-less');
 			cardsLessButtonList[g_ui.cardIdx].click();
+		} else if (evt.key === '²') {
+			if (evt.preventDefault)
+				evt.preventDefault();
+
+			$('#help-modal').modal('toggle');
 		}
 	} else {
 		if (evt.key === 'Escape') {
@@ -1327,7 +1649,6 @@ function ui_document_shortcut(evt) {
 function ui_contents_shortcut(evt) {
 	if (evt.shiftKey && evt.key === 'Delete') {
 		let value = $(this)[0].value;
-
 		let textBefore = value.slice(0, $(this)[0].selectionStart);
 		let idxLineFirstChar = textBefore.lastIndexOf('\n');
 		if (idxLineFirstChar === -1) {
@@ -1346,10 +1667,10 @@ function ui_contents_shortcut(evt) {
 		$(this)[0].value = textBefore + textAfter;
 		$(this)[0].selectionStart = idxLineFirstChar;
 		$(this)[0].selectionEnd = $(this)[0].selectionStart;
+
 		if (evt.preventDefault)
 			evt.preventDefault();
-	}
-	if (evt.altKey) {
+	} else if (evt.altKey) {
 		if (evt.key === 'i') {
 			let value = $(this)[0].value;
 			let selectionStart = $(this)[0].selectionStart;
@@ -1357,28 +1678,31 @@ function ui_contents_shortcut(evt) {
 			let textBefore = value.slice(0, selectionStart);
 			let textBetween = value.slice(selectionStart, selectionEnd);
 			let textAfter = value.slice(selectionEnd);
+
 			$(this)[0].value = textBefore + '<i>' + textBetween + '</i>' + textAfter;
 			if (textBetween.length === 0)
 				$(this)[0].selectionStart = selectionStart + 3;
 			else
 				$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
 			$(this)[0].selectionEnd = $(this)[0].selectionStart;
+
 			if (evt.preventDefault)
 				evt.preventDefault();
-		}
-		if (evt.key === 'b') {
+		} else if (evt.key === 'b') {
 			let value = $(this)[0].value;
 			let selectionStart = $(this)[0].selectionStart;
 			let selectionEnd = $(this)[0].selectionEnd;
 			let textBefore = value.slice(0, selectionStart);
 			let textBetween = value.slice(selectionStart, selectionEnd);
 			let textAfter = value.slice(selectionEnd);
+
 			$(this)[0].value = textBefore + '<b>' + textBetween + '</b>' + textAfter;
 			if (textBetween.length === 0)
 				$(this)[0].selectionStart = selectionStart + 3;
 			else
 				$(this)[0].selectionStart = selectionStart + textBetween.length + 7;
 			$(this)[0].selectionEnd = $(this)[0].selectionStart;
+
 			if (evt.preventDefault)
 				evt.preventDefault();
 		}
@@ -1395,10 +1719,16 @@ function ui_update_texts() {
 	$('#button-language').text(I18N.get('UI.LANGUAGE'));
 	$('#button-load-sample').text(I18N.get('UI.SAMPLE'));
 	$('#button-insert-lexical').text(I18N.get('UI.LEXICAL'));
+	$('#button-load-all').text(I18N.get('UI.LOAD_ALL'));
+	$('#button-save-all').text(I18N.get('UI.SAVE_ALL'));
 	$('#button-generate-all').text(I18N.get('UI.GENERATE_ALL'));
 	
-	$('#icons').html(I18N.get('UI.ICONS'));
+	$('#help-modal .modal-title').text(I18N.get('UI.PROJECT_TITLE'));
+	$('#project-description').html(I18N.get('UI.PROJECT_DESCRIPTION').join(''));
+	$('#shortcuts').html(I18N.get('UI.SHORTCUTS').join(''));
+	$('#licenses').html(I18N.get('UI.LICENSES').join(''));
 	
+	$('#decks-list-label').text(I18N.get('UI.DECKS_LIST'));
 	$('#button-new').text(I18N.get('UI.NEW'));
 	$('#button-delete').text(I18N.get('UI.DELETE'));
 	$('#button-import').text(I18N.get('UI.IMPORT'));
@@ -1606,13 +1936,6 @@ function ui_setup_color_selector() {
 $(async function () {
 	await import('./i18n.js');
 
-	let preventPageDownOrUp = function (e) {
-		if (e.key === 'PageUp' || e.key === 'PageDown') { // Pg up or down
-			if (e.preventDefault)
-				e.preventDefault();
-		}
-	};
-
 	g_canSave = false;
 
 	ui_update_texts();
@@ -1624,12 +1947,16 @@ $(async function () {
 	local_store_decks_load();
 
 	if (!g_ui.deckIdx || g_ui.deckIdx >= g_decks.length) 
-		g_ui.deckIdx = g_decks.length - 1;
+		g_ui.deckIdx = 0;
 	
 	let deck = g_decks[g_ui.deckIdx];
 
-	if (g_ui.cardIdx >= deck.cards.length) 
-		g_ui.cardIdx = deck.cards.length - 1;
+	if (deck) {
+		if (g_ui.cardIdx >= deck.cards.length) 
+			g_ui.cardIdx = deck.cards.length - 1;
+	} else {
+		g_ui.cardIdx = 0;
+	}
 
 	$('.btn-fold-section').click(ui_fold_section);
 	let isSmallLayout = $('html').width() < 1200;
@@ -1668,161 +1995,15 @@ $(async function () {
 	$('#language-list button').click(update_lang);
 	$('#button-load-sample').click(load_sample);
 	$('#button-insert-lexical').click(insert_lexical);
-	$('#button-generate-all').click(generate_decks);
-
-	// ----- Decks list
-
-	$('#decks-list').change(deck_select);
-	$('#button-generate').click(deck_generate);
-
-	$('#button-sort').click(function () { $('#sort-modal').modal('show'); });
-	$('#sort-execute').click(deck_sort_execute);
-	$('#button-filter').click(function () { $('#filter-modal').modal('show'); });
-	$('#filter-execute').click(deck_filter_execute);
-	$('#button-new').click(deck_new);
-	$('#button-import').click(function () { $('#file-import').click(); });
-	$('#file-import').change(deck_load_from_file);
-	$('#button-delete').click(function () { $('#delete-confirmation-modal').modal('show'); });
-	$('#delete-modal-confirm').click(deck_delete);
-	$('#button-save').click(deck_save_to_file);
-
-	deck_list_update();
+	$('#button-load-all').click(function () { $('#file-load-all').click(); });
+	$('#file-load-all').change(decks_load_from_file);
+	$('#button-save-all').click(decks_save_to_file);
+	$('#button-generate-all').click(decks_generate);
 
 
-	// ----- Deck settings
+	deck_setup_ui();
 
-	$('#deck-name').change(deck_name_change);
-	$('#page-size').change(deck_option_change);
-	$('#page-rows').change(deck_option_change);
-	$('#page-columns').change(deck_option_change);
-	$('#card-arrangement').change(deck_option_change);
-	$('#card-size').change(deck_option_change);
-	$('#round-corners').change(deck_option_change);
-	$('#spell-classes').change(deck_option_change);
-	$('#small-icons').change(deck_option_change);
-	$('#title-size').change(deck_option_change);
-
-	// ----- Default values
-
-	$('#default-card-type').change(deck_default_type_select).val('Card').change();
-	$('#default-color').change(deck_default_color_change);
-	$('#default-color-front').change(deck_default_color_change);
-	$('#default-icon').change(deck_default_property_change);
-	$('#default-color-back').change(deck_default_color_change);
-	$('#default-icon-back').change(deck_default_property_change);
-
-	deck_update_ui();
-
-
-	// ----- Cards list
-
-	$('#button-card-up').click(card_list_up);
-	$('#button-card-down').click(card_list_down);
-
-	$('#button-card-add').click(card_new);
-	$('#button-card-duplicate').click(card_duplicate);
-	$('#button-card-delete').click(card_delete);
-	
-	card_list_update();
-
-
-	// ----- Card
-
-	$('#card-title').on('keyup', ui_change_keyup);
-	$('#card-title').change(card_title_change);
-	$('#card-title-multiline').change(card_property_change);
-	$('#card-subtitle').change(card_property_change);
-	$('#card-icon').change(card_property_change);
-	$('#card-icon-back').change(card_property_change);
-	$('#card-background').change(card_property_change);
-	$('#card-color').change(card_color_change);
-	$('#card-tags').change(card_tags_change);
-	$('#card-reference').on('keyup', ui_change_keyup);
-	$('#card-reference').change(card_property_change);
-
-	$('#card-description').on('keyup', ui_change_keyup);
-	$('#card-description').change(card_property_change);
-	/* $("#card-contents").typeahead({
-		source: Object.keys(card_element_generators),
-		items: 'all',
-		minLength: 0,
-		matcher: typeahead_contents_matcher,
-		updater: typeahead_contents_updater,
-		render: typeahead_render
-	}); */
-	$('#card-contents').on('keyup', ui_change_keyup);
-	$('#card-contents').change(card_contents_change);
-	$('#card-contents').on('keydown', ui_contents_shortcut);
-
-	$('#card-compact').change(card_property_change);
-
-	// ----- Creature
-
-	$('#card-creature-cr').change(card_property_change);
-	$('#card-creature-size').change(card_property_change);
-	$('#card-creature-alignment').typeahead({
-		source: Object.values(I18N.get('CREATURE.ALIGNMENTS')),
-		items: 'all',
-		minLength: 0,
-		render: typeahead_render
-	});
-	$('#card-creature-alignment').on('keydown', preventPageDownOrUp);
-	$('#card-creature-alignment').change(card_property_change);
-	$('#card-creature-type').change(card_property_change);
-
-	$('#card-creature-ac').change(card_property_change);
-	$('#card-creature-hp').change(card_property_change);
-	$('#card-creature-perception').change(card_property_change);
-	$('#card-creature-speed').change(card_property_change);
-
-	$('#card-creature-strength').change(creature_stats_change);
-	$('#card-creature-dexterity').change(creature_stats_change);
-	$('#card-creature-constitution').change(creature_stats_change);
-	$('#card-creature-intelligence').change(creature_stats_change);
-	$('#card-creature-wisdom').change(creature_stats_change);
-	$('#card-creature-charisma').change(creature_stats_change);
-
-	$('#card-creature-resistances').change(card_property_change);
-	$('#card-creature-vulnerabilities').change(card_property_change);
-	$('#card-creature-immunities').change(card_property_change);
-
-	// ----- Spell
-
-	$('#card-spell-level').change(card_property_change);
-	$('#card-spell-ritual').change(card_property_change);
-	$('#card-spell-casting-time').change(card_property_change);
-	$('#card-spell-casting-time').on('keyup', ui_change_keyup);
-	$('#card-spell-range').change(card_property_change);
-	$('#card-spell-range').on('keyup', ui_change_keyup);
-	$('#card-spell-verbal').change(card_property_change);
-	$('#card-spell-somatic').change(card_property_change);
-	$('#card-spell-materials').change(card_property_change);
-	$('#card-spell-duration').change(card_property_change);
-	$('#card-spell-duration').on('keyup', ui_change_keyup);
-	$('#card-spell-type').typeahead({
-		source: Object.values(I18N.get('SPELL.SPELL_TYPES')),
-		items: 'all',
-		minLength: 0,
-		matcher: typeahead_matcher,
-		updater: typeahead_updater,
-		render: typeahead_render
-	});
-	$('#card-spell-type').on('keydown', preventPageDownOrUp);
-	$('#card-spell-type').change(card_property_change);
-	$('#card-spell-higher-levels').on('keyup', ui_change_keyup);
-	$('#card-spell-higher-levels').change(card_property_change);
-	$('#card-spell-classes').typeahead({
-		source: Object.values(I18N.get('CLASSES')),
-		items: 'all',
-		minLength: 0,
-		matcher: typeahead_matcher,
-		updater: typeahead_updater,
-		render: typeahead_render
-	});
-	$('#card-spell-classes').on('keydown', preventPageDownOrUp);
-	$('#card-spell-classes').change(card_property_change);
-
-	card_update_ui();
+	card_setup_ui();
 
 
 	g_canSave = true;

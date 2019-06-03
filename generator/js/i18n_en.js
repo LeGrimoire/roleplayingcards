@@ -241,8 +241,8 @@ export const I18N = {
 
 	UI: {
 		HELP: 'Help',
-		ICONS: 'Icons from <a href="http://game-icons.net/">Games-icons.net</a>',
 		LANGUAGE: 'English',
+		DECKS_LIST: 'Decks',
 		SORT: 'Sort',
 		FILTER: 'Filter',
 		SAMPLE: 'Sample',
@@ -251,6 +251,8 @@ export const I18N = {
 		IMPORT: 'Load',
 		SAVE: 'Save as',
 		GENERATE: 'Generate',
+		LOAD_ALL: 'Load rpgd',
+		SAVE_ALL: 'Save rpgd',
 		GENERATE_ALL: 'Generate all',
 		FILE: 'File',
 		DECK_SETTINGS: 'Deck settings',
@@ -298,6 +300,36 @@ export const I18N = {
 		CLASSES: 'Classes',
 		TAGS: 'Tags',
 		REFERENCE: 'Reference',
-		COMPACT: 'Compact'
+		COMPACT: 'Compact',
+	
+		PROJECT_TITLE: 'RPG Deck',
+		PROJECT_DESCRIPTION: [
+			'<p>Some games and systems are protected by copyright. Even if some elements like spells or items are freely available, <i>please check that you have the right to redistribute</i> before sharing those cards.</p>',
+			'<h3>Status of the project</h3>',
+			'<p>This site is still in active development. If you find a bug or have a feature request, post them at the <a href="https://github.com/radnap/rpg-deck/issues">Github project site</a> or send me a pm <a href="https://twitter.com/Grimo_">@Grimo_</a>.</p>',
+			'<h3>How to</h3>',
+			'<p>To use this generator, you can start with the <i>Sample</i> deck. You can also create a <i>New</i> one and manually add cards. When you want to print your deck, click on <i>Generate</i>.</p>'
+		],
+		SHORTCUTS: [
+			'<h4>Shortcuts</h4>',
+			'<ul>',
+			'<li><b>Ctrl+S:</b> Save current deck</li>',
+			'<li><b>Ctrl+G:</b> Generate current deck</li>',
+			'<li><b>Pg Up:</b> Previous card</li>',
+			'<li><b>Pg Down:</b> Next card</li>',
+			'<li><b>²:</b> Toggle this help</li>',
+			'</ul>',
+			'<p>In the <i>Contents</i> area:</p>',
+			'<ul>',
+			'<li><b>Shift+Del:</b> Delete the line</li>',
+			'<li><b>Alt+i:</b> Insert italic tags</li>',
+			'<li><b>Alt+b:</b> Insert bold tags</li>',
+			'</ul>'
+		],
+		LICENSES: [
+			'<h4>Licenses</h4>',
+			'<p>This generator is provided under the terms of the MIT License and is hugely based on the one made by Robert <a herf="https://github.com/crobi">\'crobi\'</a> Autenrieth at <a herf="https://github.com/crobi/rpg-cards">https://github.com/crobi/rpg-cards</a>.</p>',
+			'<p>Icons are made by various artists, available at <a href="https://game-icons.net/">https://game-icons.net</a>. They are provided under the terms of the Creative Commons 3.0 BY license.</p>'
+		]
 	}
 };
