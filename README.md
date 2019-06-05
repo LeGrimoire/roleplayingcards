@@ -1,4 +1,4 @@
-# rpg-cards
+# RolePlayingCards
 =========
 
 RPG spell/item/monster card generator, based on the [crobi rpg-cards](https://github.com/crobi/rpg-cards). It has been upgraded with D&D 5e in mind.
@@ -6,7 +6,7 @@ RPG spell/item/monster card generator, based on the [crobi rpg-cards](https://gi
 ## Preview
 =======
 
-[TODO GREGOIRE]
+\[TODO\]
 
 ## Status of the project
 =====================
@@ -28,11 +28,12 @@ In active development, may contain bugs. I have a list of stuffs i would like to
 ## Setup
 =====
 
-[TODO GREGOIRE]
+\[TODO\]
 
 ## Updating icons
 ==============
 
+Process to be updated
 This project includes a copy of icons from the [game-icons](https://game-icons.net) project,
 which regularly publishes new icons.
 To download these new icons:
@@ -40,7 +41,7 @@ To download these new icons:
 - Install Imagemagick
 - Run the following commands from the root of the project:
   - `npm install`
-  - `node ./resources/tools/update-icons.js`
+  - `node ./resources/tools/update-icons.js` or `update-icons-no-dl.js` if you just want to copy+transfrom assets from _resources_ folder to _generator/img_ or `update-icons-no-dl-no-transform.js` if you just want the copy.
 
 
 ## Licenses
@@ -50,3 +51,5 @@ This generator is provided under the terms of the MIT License and is hugely base
 
 Icons are made by various artists, available at [https://game-icons.net](https://game-icons.net).
 They are provided under the terms of the Creative Commons 3.0 BY license.
+
+Unofficial site for Dragons created by Grégoire André. Uses contents protected by the intelectual property © Agate RPG, with the kind autorisation of the editor as part of the license CUVD. Join the community : www.dragons-rpg.com/

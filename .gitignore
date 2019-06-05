@@ -3,6 +3,7 @@
 /generator/js/*.d.ts
 /temp
 /temp.zip
+/resources/*.png
 TODO.md
 TODO.html
 README.html

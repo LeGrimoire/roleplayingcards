@@ -176,7 +176,7 @@ function decks_generate() {
 
 	// Open a new window for the output
 	// Use a separate window to avoid CSS conflicts
-	let tab = window.open('output.html', 'rpg-cards-output');
+	let tab = window.open('output.html', 'roleplayingcards-output');
 
 	// Send the generated HTML to the new window
 	// Use a delay to give the new window time to set up a message listener
@@ -184,7 +184,7 @@ function decks_generate() {
 }
 
 /**
- * Add all deck at the end of the list after loading it from a rpgd.
+ * Add all deck at the end of the list after loading it from a rpc.
  * @param {JQuery.Event} evt
  */
 function decks_load_from_file(evt) {
@@ -228,7 +228,7 @@ function decks_save_to_file() {
 
 	let a = $('#file-save-link')[0];
 	a.href = url;
-	a.download = 'Decks.rpgd';
+	a.download = 'Decks.rpc';
 	if (a.download && a.download !== 'null') {
 		a.click();
 	}
@@ -416,7 +416,7 @@ function deck_generate() {
 
 	// Open a new window for the output
 	// Use a separate window to avoid CSS conflicts
-	let tab = window.open('output.html', 'rpg-cards-output');
+	let tab = window.open('output.html', 'roleplayingcards-output');
 
 	// Send the generated HTML to the new window
 	// Use a delay to give the new window time to set up a message listener

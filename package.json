@@ -1,17 +1,17 @@
 {
-  "name": "rpg-cards",
+  "name": "roleplayingcards",
   "version": "1.0.0",
-  "description": "RPG card generator",
+  "description": "RolePlayingCards",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Radnap/crobi-rpg-cards.git"
+    "url": "git+https://github.com/Grimo0/roleplayingcards.git"
   },
   "author": "Grégoire André",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Radnap/crobi-rpg-cards/issues"
+    "url": "https://github.com/Grimo0/roleplayingcards/issues"
   },
-  "homepage": "https://github.com/Radnap/crobi-rpg-cards#readme",
+  "homepage": "https://github.com/Grimo0/roleplayingcards#readme",
   "main": "generator/generate.html",
   "devDependencies": {
     "babel-eslint": "^10.0.1",

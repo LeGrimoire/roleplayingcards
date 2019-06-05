@@ -265,8 +265,8 @@ export const I18N = {
 		IMPORT: 'Charger',
 		SAVE: 'Enregistrer',
 		GENERATE: 'Générer',
-		LOAD_ALL: 'Charger rpgd',
-		SAVE_ALL: 'Enregistrer rpgd',
+		LOAD_ALL: 'Charger rpc',
+		SAVE_ALL: 'Enregistrer rpc',
 		GENERATE_ALL: 'Générer tout',
 		FILE: 'Fichier',
 		DECK_SETTINGS: 'Paramètres',
@@ -320,7 +320,7 @@ export const I18N = {
 		PROJECT_DESCRIPTION: [
 			'<p>Certains jeux sont protégés par copyright. Même si certains éléments comme les objets, les sorts, sont accessibles gratuitement, <b>vérifiez que vous disposez du droit de les redistribuer</b> avant de les partager.</p>',
 			'<h3>État du projet</h3>',
-			'<p>Ce site est toujours en cours de dévelopement. Si vous trouvez un bug ou souhaitez voir implémenter un nouvel élément vous pouvez poster sur la page du <a href="https://github.com/radnap/rpg-deck/issues">projet Github</a> ou m\'envoyer un mp <a href="https://twitter.com/Grimo_">@Grimo_</a>.</p>',
+			'<p>Ce site est toujours en cours de dévelopement. Si vous trouvez un bug ou souhaitez voir implémenter un nouvel élément vous pouvez poster sur la page du <a href="https://github.com/grimo0/rpg-deck/issues">projet Github</a> ou m\'envoyer un mp <a href="https://twitter.com/Grimo_">@Grimo_</a>.</p>',
 			'<h3>Usage</h3>',
 			'<p>Pour utiliser ce générateur vous pouvez démarrer avec le deck d\'<i>Exemples</i>. Vous pouvez aussi en créer un <i>Nouveau</i> et ajouter des cartes manuellement. Quand vous voulez imprimer votre deck, cliquez sur <i>Générer</i>.</p>'
 		],
@@ -372,7 +372,8 @@ export const I18N = {
 		LICENSES: [
 			'<h3>Licences</h3>',
 			'<p>Ce générateur est fourni sous licence MIT et se base sur celui de Robert <a herf="https://github.com/crobi">\'crobi\'</a> Autenrieth disponible sur <a herf="https://github.com/crobi/rpg-cards">https://github.com/crobi/rpg-cards</a>.</p>',
-			'<p>Les icônes sont faites par plusieurs artistes et sont disponibles sur <a href="https://game-icons.net/">https://game-icons.net</a>. Elles sont fournis sous licence Creative Commons 3.0 BY.</p>'
+			'<p>Les icônes sont faites par plusieurs artistes et sont disponibles sur <a href="https://game-icons.net/">https://game-icons.net</a>. Elles sont fournis sous licence Creative Commons 3.0 BY.</p>',
+			'<p>Site non-officiel pour Dragons créé par Grégoire André. Utilise des contenus protégés par la propriété intellectuelle © Agate RPG, avec l’aimable permission de l’éditeur dans le cadre de la licence CUVD. Rejoignez la communauté : www.dragons-rpg.com/</p>'
 		]
 	},
 };
