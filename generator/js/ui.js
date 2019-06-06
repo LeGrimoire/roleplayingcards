@@ -1576,7 +1576,7 @@ ui_change_keyup.timeout = null;
  * Handle shortcuts on the page.
  * @param {JQuery.Event} evt
  */
-function ui_document_shortcut(evt) {
+function ui_document_shortcut_keydown(evt) {
 	if (evt.key === 'PageUp') {
 		if (evt.preventDefault)
 			evt.preventDefault();
@@ -1593,17 +1593,7 @@ function ui_document_shortcut(evt) {
 		if (idx < deck.cards.length - 1)
 			card_select_by_index(idx + 1);
 	} else if (evt.ctrlKey) {
-		if (evt.key === 's') {
-			if (evt.preventDefault)
-				evt.preventDefault();
-
-			deck_save_to_file();
-		} else if (evt.key === 'g') {
-			if (evt.preventDefault)
-				evt.preventDefault();
-
-			deck_generate();
-		} else if (evt.key === '+') {
+		if (evt.key === '+') {
 			if (evt.preventDefault)
 				evt.preventDefault();
 
@@ -1629,7 +1619,29 @@ function ui_document_shortcut(evt) {
 
 			let cardsLessButtonList = $('#cards-list .card-count-less');
 			cardsLessButtonList[g_ui.cardIdx].click();
-		} else if (evt.key === '²' && evt.type === 'keyup') {
+		}
+	}
+}
+
+/**
+ * Handle shortcuts on the page.
+ * @param {JQuery.Event} evt
+ */
+function ui_document_shortcut_keyup(evt) {
+	if (evt.ctrlKey) {
+		if (evt.key === 's') {
+			if (evt.preventDefault)
+				evt.preventDefault();
+
+			deck_save_to_file();
+		} else if (evt.key === 'g') {
+			if (evt.preventDefault)
+				evt.preventDefault();
+
+			deck_generate();
+		}
+	} else if (evt.currentTarget.activeElement.nodeName !== 'INPUT' && evt.currentTarget.activeElement.nodeName !== 'TEXTAREA') {
+		if (evt.key === '²') {
 			if (evt.preventDefault)
 				evt.preventDefault();
 
@@ -1941,8 +1953,8 @@ $(async function () {
 
 	ui_update_texts();
 
-	$(document).on('keydown', ui_document_shortcut);
-	$(document).on('keyup', ui_document_shortcut);
+	$(document).on('keydown', ui_document_shortcut_keydown);
+	$(document).on('keyup', ui_document_shortcut_keyup);
 	ui_setup_resize();
 
 	local_store_ui_load();
