@@ -1947,7 +1947,8 @@ function ui_setup_color_selector() {
 // ============================================================================
 
 $(async function () {
-	await import('./i18n.js');
+	const I18Nmodule = await import('./i18n.js');
+	await I18Nmodule.loadLocal();
 
 	g_canSave = false;
 

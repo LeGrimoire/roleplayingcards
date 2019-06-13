@@ -18,7 +18,7 @@ export function updateLang(value) {
 	}
 }
 
-async function loadLocal() {
+export async function loadLocal() {
 	try {
 		if (is_storage_available('localStorage') && window.localStorage) {
 			local = localStorage.getItem('local') || local;
@@ -44,7 +44,3 @@ async function loadLocal() {
 		console.error(e.stack);
 	}
 }
-
-(async () => {
-	await loadLocal();
-})();
