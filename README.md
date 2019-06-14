@@ -26,9 +26,9 @@ In active development, may contain bugs. I have a list of stuffs i would like to
 - Install [npm](https://www.npmjs.com) (can be installed as an extension in visual studio)
 - Run the following commands from the root of the project:
   - `npm install`
-- Run a server and access to [generator/generate.html]()
+- Run a server and access to _generator/generate.html_
   - If you are using [vscode](https://code.visualstudio.com/), you can install the extension Live Server
-  - Then opening the whole root folder with vscode, start the server and go to [http://127.0.0.1:5500/generator/generate.html]()
+  - Then opening the whole root folder with vscode, start the server and go to [http://127.0.0.1:5500/generator/generate.html](http://127.0.0.1:5500/generator/generate.html)
 
 ## Updating icons
 
