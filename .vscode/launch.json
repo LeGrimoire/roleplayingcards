@@ -30,22 +30,24 @@
             "webRoot": "${workspaceFolder}/generator"
         },
         {
-            "name": "Update icons no dl no transform",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceFolder}/tools/update-icons-no-dl-no-transform.js"
-        },
-        {
-            "name": "Update icons no dl",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceFolder}/tools/update-icons-no-dl.js"
-        },
-        {
             "name": "Update icons",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/tools/update-icons.js"
+            "program": "${workspaceFolder}/tools/update-icons.js",
+        },
+        {
+            "name": "Update icons with transform",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/tools/update-icons.js",
+				"args": ["transform"]
+        },
+        {
+            "name": "Update icons with download & transform",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/tools/update-icons.js",
+				"args": ["download", "transform"]
         }
     ]
 }

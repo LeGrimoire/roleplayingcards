@@ -1,1 +1,0 @@
-node ./tools/update-icons-no-dl-no-transform.js

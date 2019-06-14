@@ -23,7 +23,12 @@ In active development, may contain bugs. I have a list of stuffs i would like to
 
 ## Setup
 
-\[TODO\]
+- Install [npm](https://www.npmjs.com) (can be installed as an extension in visual studio)
+- Run the following commands from the root of the project:
+  - `npm install`
+- Run a server and access to [generator/generate.html]()
+  - If you are using [vscode](https://code.visualstudio.com/), you can install the extension Live Server
+  - Then opening the whole root folder with vscode, start the server and go to [http://127.0.0.1:5500/generator/generate.html]()
 
 ## Updating icons
 
@@ -32,11 +37,13 @@ This project includes a copy of icons from the [game-icons](https://game-icons.n
 which regularly publishes new icons.
 To download these new icons:
 
-- Install Imagemagick
+- Install [Imagemagick](https://www.imagemagick.org/script/download.php)
 - Run the following commands from the root of the project:
-  - `npm install`
-  - `node ./resources/tools/update-icons.js` or `update-icons-no-dl.js` if you just want to copy+transfrom assets from _resources_ folder to _generator/img_ or `update-icons-no-dl-no-transform.js` if you just want the copy.
-
+  - `node ./resources/tools/update-icons.js [download] [tranform]`
+    - png and jpeg in _resources_ will be copied to _generator/img_
+    - `download` : first download all icons from game-icons.net into a zip file, then extract it and add it to the generator img directory.
+    - `transform` : transfrom assets in _generator/img_ to be white on transparent background
+    - You can edit _tools/icons.cfg_ to personalize paths and folder that shouldn't be transformed.
 
 ## Licenses
 
