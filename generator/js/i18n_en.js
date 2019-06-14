@@ -312,7 +312,7 @@ export const I18N = {
 		],
 		CONTENTS_ELEMENTS_DESCRIPTION: [
 			'<h4>Contents elements</h4>',
-			'<p>To use inside the <i>Contents</i> area as : <code>balise | <i>param1</i> | param2</code>. Parameters in italic are to be replaced and the other to put as is.<br/><code>/</code> separates options.<br/><code>[]</code> surrounds optional parameters.<br/><code>...</code> indicates that an other element can follow.<br/><code>=</code> precedes the default value.</p>',
+			'<p>To use inside the <i>Contents</i> area as : <code><b>tag</b> | <i>param1</i> | param2</code>. Parameters in italic are to be replaced and the other to put as is.<br/><code>/</code> separates options.<br/><code>[]</code> surrounds optional parameters.<br/><code>...</code> indicates that an other element can follow.<br/><code>=</code> precedes the default value.</p>',
 			'<p>Texts are parsed by default and some strings are replaced by icons or are layout differently. See the <i>Lexical</i> deck for a detailed list.</p>',
 			'<ul>',
 			'<li><code><b>text</b> | <i>text</i></code></li>',
