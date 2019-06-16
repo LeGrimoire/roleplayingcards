@@ -326,7 +326,8 @@ export const I18N = {
 		],
 		CONTENTS_ELEMENTS_DESCRIPTION: [
 			'<h4>Balises de contenus</h4>',
-			'<p>À placer dans la zone de <i>Contenus</i> de la manière suivante : <code><b>balise</b> | <i>param1</i> | param2</code>. Les paramètres en italiques sont à remplacer et les autres à laisser tel quel.<br/>Des <code>/</code> séparent plusieurs options.<br/>Les <code>[]</code> entourent des paramètres optionnels.<br/>Les <code>...</code> indiquent qu\'il est possible de mettre une autre balise à la suite.<br/>Un <code>=</code> précède la valeur par défaut du paramètre.</p>',
+			'<p>À placer dans la zone de <i>Contenus</i> de la manière suivante : <code><b>balise</b> | <i>param1</i> | param2</code>. Les paramètres en italiques sont à remplacer et les autres à laisser tel quel.</p>',
+			'<p>Des <code>/</code> séparent plusieurs options.<br/>Les <code>[]</code> entourent des paramètres optionnels.<br/>Les <code>...</code> indiquent qu\'il est possible de mettre une autre balise à la suite.<br/>Un <code>=</code> précède la valeur par défaut du paramètre.</p>',
 			'<p>Enfin, les textes sont parsés par défaut et certaines chaînes de caractères sont remplacées par des icônes ou mis en page différemment. Pour voir la liste des éléments concernés, consultez le deck <i>Lexique</i>.</p>',
 			'<ul>',
 			'<li><code><b>text</b> | <i>texte</i></code></li>',

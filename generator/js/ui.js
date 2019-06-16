@@ -1830,12 +1830,16 @@ function ui_update_texts() {
 	$('#card-spell-range-label').text(I18N.get('SPELL.RANGE'));
 	$('#card-spell-casting-time-label').text(I18N.get('SPELL.CASTING_TIME'));
 	$('#card-spell-duration-label').text(I18N.get('SPELL.DURATION'));
-	$('#card-contents-label').text(I18N.get('UI.CONTENTS'));
+
+	$('#card-contents-label').html('<span id="contents-tooltip">' + I18N.get('UI.CONTENTS') + '<br/>(?)<span class="tooltiptext">' + I18N.get('UI.CONTENTS_ELEMENTS_DESCRIPTION').join('') + '</span></span>');
+
 	$('#card-spell-higher-levels-label').text(I18N.get('SPELL.AT_HIGHER_LEVELS'));
 	$('#card-spell-classes-label').text(I18N.get('UI.CLASSES'));
 	$('#card-tags-label').text(I18N.get('UI.TAGS'));
 	$('#card-reference-label').text(I18N.get('UI.REFERENCE'));
 	$('#card-compact-label').text(I18N.get('UI.COMPACT'));
+	
+	$('[data-toggle="tooltip"]').tooltip({ html: true });
 }
 
 /**
@@ -1961,8 +1965,9 @@ $(async function () {
 	local_store_ui_load();
 	local_store_decks_load();
 
-	if (!g_ui.deckIdx || g_ui.deckIdx >= g_decks.length) 
+	if (!g_ui.deckIdx || g_ui.deckIdx >= g_decks.length) {
 		g_ui.deckIdx = 0;
+	}
 	
 	let deck = g_decks[g_ui.deckIdx];
 
