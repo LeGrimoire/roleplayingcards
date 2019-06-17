@@ -325,12 +325,15 @@ export class Deck {
 		/** @type {string[]} */
 		let backCards = [];
 		let options = this.options;
-		this.cards.forEach(function (card) {
-			let front = card.generateFront(options);
-			let back = card.generateBack(options);
-			frontCards = frontCards.concat(card_repeat(front, card.count * options.count));
-			backCards = backCards.concat(card_repeat(back, card.count * options.count));
-		});
+		
+		for (let i = 0; i < options.count; i++) {
+			this.cards.forEach(function (card) {
+				let front = card.generateFront(options);
+				let back = card.generateBack(options);
+				frontCards = frontCards.concat(card_repeat(front, card.count));
+				backCards = backCards.concat(card_repeat(back, card.count));
+			});
+		}
 
 		/** @type {string[][]} */
 		let pages = [];

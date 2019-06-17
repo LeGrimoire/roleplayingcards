@@ -283,7 +283,7 @@ export const I18N = {
 		ROUND_CORNERS: 'Bords arrondis',
 		SMALL_ICONS: 'Petites icônes',
 		SPELL_CLASSES: 'Classes du sort',
-		COUNT: 'Nb x',
+		COUNT: 'Compte',
 		DEFAULT_VALUES: 'Valeur par défaut',
 		GENERIC: 'Generique',
 		CREATURE: 'Créature',

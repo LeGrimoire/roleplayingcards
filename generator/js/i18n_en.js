@@ -269,7 +269,7 @@ export const I18N = {
 		ROUND_CORNERS: 'Round corners',
 		SMALL_ICONS: 'Small icons',
 		SPELL_CLASSES: 'Spell classes',
-		COUNT: 'Nb x',
+		COUNT: 'Count',
 		DEFAULT_VALUES: 'Default values',
 		GENERIC: 'Generic',
 		CREATURE: 'Creature',
