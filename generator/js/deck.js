@@ -16,6 +16,7 @@ export class DeckOptions {
 	roundCorners = true;
 	showSpellClasses = false;
 	titleSize = '14';
+	count = 1;
 	cardsDefault = {};
 
 	constructor(name) {
@@ -263,6 +264,9 @@ export class Deck {
 		}
 	}
 
+	/**
+	 * @param {boolean} readable
+	 */
 	stringify(readable) {
 		let result = '{';
 		if (readable) {
@@ -277,6 +281,9 @@ export class Deck {
 		return result;
 	}
 
+	/**
+	 * @param {Object} deck
+	 */
 	load(deck) {
 		if (deck.options)
 			this.options.load(deck.options);
@@ -321,8 +328,8 @@ export class Deck {
 		this.cards.forEach(function (card) {
 			let front = card.generateFront(options);
 			let back = card.generateBack(options);
-			frontCards = frontCards.concat(card_repeat(front, card.count));
-			backCards = backCards.concat(card_repeat(back, card.count));
+			frontCards = frontCards.concat(card_repeat(front, card.count * options.count));
+			backCards = backCards.concat(card_repeat(back, card.count * options.count));
 		});
 
 		/** @type {string[][]} */

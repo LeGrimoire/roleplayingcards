@@ -294,6 +294,7 @@ ul {
 
 #decks-list .selected-deck {
 	font-style: italic;
+	font-weight: bold;
 }
 
 p#file-name {

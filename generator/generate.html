@@ -112,8 +112,12 @@
 							<form id="deck-settings-block" role="form" class="form-horizontal">
 								<div class="form-group">
 									<label id="deck-name-label" class="col-sm-2 control-label" for="deck-name"></label>
-									<div class="col-sm-10">
+									<div class="col-sm-7">
 										<input id="deck-name" type="text" class="form-control" data-property="name">
+									</div>
+									<label id="deck-count-label" class="col-sm-2 control-label" for="deck-count"></label>
+									<div class="col-sm-1">
+										<input id="deck-count" type="text" class="form-control" data-property="count">
 									</div>
 								</div>
 								<div class="form-group">
@@ -165,8 +169,12 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label id="title-size-label" class="col-sm-2 control-label" for="title-size"></label>
-									<div class="col-sm-4">
+									<div class="col-sm-6 checkbox">
+										<label id="spell-classes-label" for="spell-classes"></label>
+										<input id="spell-classes" type="checkbox" data-property="showSpellClasses">
+									</div>
+									<label id="title-size-label" class="col-sm-3 control-label" for="title-size"></label>
+									<div class="col-sm-3">
 										<select id="title-size" class="form-control" data-property="titleSize">
 											<option value="16">16pt</option>
 											<option value="15">15pt</option>
@@ -176,10 +184,6 @@
 											<option value="11">11pt</option>
 											<option value="10">10pt</option>
 										</select>
-									</div>
-									<div class="col-sm-6 checkbox">
-										<label id="spell-classes-label" for="spell-classes"></label>
-										<input id="spell-classes" type="checkbox" data-property="showSpellClasses">
 									</div>
 								</div>
 							</form>

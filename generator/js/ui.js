@@ -580,6 +580,7 @@ function deck_update_ui() {
 		$('#spell-classes').attr('disabled', false).prop('checked', deck.options.showSpellClasses);
 		$('#small-icons').attr('disabled', false).prop('checked', deck.options.smallIcons);
 		$('#title-size').attr('disabled', false).val(deck.options.titleSize);
+		$('#deck-count').attr('disabled', false).val(deck.options.count);
 		
 		$('#default-card-type').attr('disabled', false);
 	} else {
@@ -602,6 +603,7 @@ function deck_update_ui() {
 		$('#spell-classes').attr('disabled', true).prop('checked', false);
 		$('#small-icons').attr('disabled', true).prop('checked', false);
 		$('#title-size').attr('disabled', true).val('');
+		$('#deck-count').attr('disabled', true).val('');
 		
 		$('#default-card-type').attr('disabled', true);
 	}
@@ -644,6 +646,7 @@ function deck_setup_ui() {
 	$('#spell-classes').change(deck_option_change);
 	$('#small-icons').change(deck_option_change);
 	$('#title-size').change(deck_option_change);
+	$('#deck-count').change(deck_option_change);
 
 	// ----- Default values
 
@@ -1764,6 +1767,7 @@ function ui_update_texts() {
 	$('#small-icons-label').text(I18N.get('UI.SMALL_ICONS'));
 	$('#spell-classes-label').text(I18N.get('UI.SPELL_CLASSES'));
 	$('#title-size-label').text(I18N.get('UI.TITLE'));
+	$('#deck-count-label').text(I18N.get('UI.COUNT'));
 
 	$('#default-block-title h3').text(I18N.get('UI.DEFAULT_VALUES'));
 	$('#default-card-type option[value="Card"]').text(I18N.get('UI.GENERIC'));
