@@ -100,16 +100,16 @@ function local_store_ui_load() {
 }
 
 
-function update_lang() {
+async function update_lang() {
 	$('#language-modal').modal('hide');
 
 	let lang = $(this).attr('data-lang');
 
 	// Save the desired lang
-	updateLang(lang);
+	await updateLang(lang);
 
-	// Reload the window with the choose lang
-	location.reload();
+	ui_update_texts();
+	card_update_ui();
 }
 
 /**
