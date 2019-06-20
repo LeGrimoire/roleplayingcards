@@ -1,9 +1,9 @@
 
-import { Card } from '../js/card.js';
-import { ItemCard } from '../js/card_item.js';
-import { PowerCard } from '../js/card_power.js';
-import { SpellCard } from '../js/card_spell.js';
-import { CreatureCard } from '../js/card_creature.js';
+import { Card } from './card.js';
+import { ItemCard } from './card_item.js';
+import { PowerCard } from './card_power.js';
+import { SpellCard } from './card_spell.js';
+import { CreatureCard } from './card_creature.js';
 
 /**
  * @return {Card[]}

@@ -1,6 +1,6 @@
 
-import { Card } from '../js/card.js';
-import { I18N } from '../js/i18n.js';
+import { Card } from './card.js';
+import { I18N } from './i18n.js';
 
 /**
  * @return {Card[]}
@@ -49,7 +49,7 @@ export function CardLexicals() {
 	card.title = I18N.get('ABREVIATIONS_TITLE');
 	let abreviations = I18N.get('ABREVIATIONS');
 	for (let i = 0; i < abreviations.length; i++) {
-		let line = 'property | ' + abreviations[i].name + ' | ' + abreviations[i].meaning;
+		let line = 'property | \\' + abreviations[i].name + ' | ' + abreviations[i].meaning;
 		card.contents.push(line);
 	}
 	cards.push(card);
@@ -60,7 +60,7 @@ export function CardLexicals() {
 	card.title = I18N.get('COMMON_RULES_TITLE');
 	let commonRules = I18N.get('COMMON_RULES');
 	for (let i = 0; i < commonRules.length; i++) {
-		let line = 'property | ' + commonRules[i].name + ' | ' + commonRules[i].meaning;
+		let line = 'property | \\' + commonRules[i].name + ' | ' + commonRules[i].meaning;
 		card.contents.push(line);
 	}
 	cards.push(card);

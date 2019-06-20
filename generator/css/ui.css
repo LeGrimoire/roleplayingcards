@@ -20,10 +20,10 @@ body {
 }
 
 .row-eq-height {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
 }
 
 .color-input-addon {
@@ -41,12 +41,13 @@ body {
 .form-group .col-sm-5, .form-group .col-sm-6, .form-group .col-sm-7, .form-group .col-sm-8, 
 .form-group .col-sm-9, .form-group .col-sm-10, .form-group .col-sm-11, .form-group .col-sm-12 {
 	padding-left: 0px;
-    padding-right: 1px;
-    margin-left: -2px;
-    margin-right: 2px;
+	padding-right: 1px;
+	margin-left: -2px;
+	margin-right: 2px;
 }
 .form-group .control-label {
 	padding-right: 3px;
+	max-height: 20px;
 }
 .form-group .btn {
 	padding: 6px 2px;
@@ -99,7 +100,7 @@ select.form-control option {
 }
 
 .dropdown-colorselector>.dropdown-menu {
-    max-width: 178px;
+	max-width: 178px;
 }
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
@@ -117,7 +118,7 @@ label, p {
 
 @media (max-width : 1199px) {
 	.form-horizontal .form-group {
-  		margin-right: -10px;
+		margin-right: -10px;
 		margin-left: -10px;
 	}
 }
@@ -146,10 +147,10 @@ ul {
 	vertical-align: middle;	
 	position: relative;
 	top: -1px;
-    width: 10px;
-    height: 10px;
-    margin-left: -15px;
-    margin-right: 5px;
+	width: 10px;
+	height: 10px;
+	margin-left: -15px;
+	margin-right: 5px;
 }
 
 .btn-fold-section {
@@ -270,8 +271,8 @@ ul {
 .checkbox label {
 	font-weight: 700;
 	padding-left: 0;
-    right: 22px;
-    position: relative;
+	right: 22px;
+	position: relative;
 }
 #menu-container .btn-colorselector {
 	width: 16px;
@@ -304,9 +305,9 @@ p#file-name {
 	line-height: unset;
 }
 
-#default-block-title h3 {
-    float: left;
-    margin: 2px 0px 0px;
+#default-block-title {
+	float: left;
+	margin: 2px 0px 0px;
 	margin-left: 15px;
 	margin-top: 2px;
 }
@@ -315,20 +316,20 @@ p#file-name {
 	float: right;
 }
 
-#cards-list-title * {
-	margin-bottom: 0px;
-}
-#cards-list-title h3 {
+#cards-list-title {
 	margin-left: 15px;
 	margin-top: 2px;
+}
+#cards-list-title, #total_cards_count {
+	margin-bottom: 0px;
 }
 #cards-list-buttons.form-group {
 	margin-bottom: 1px;
 }
 #cards-list-buttons > * {
 	padding-right: 1px;
-    margin-left: -2px;
-    margin-right: 2px;
+	margin-left: -2px;
+	margin-right: 2px;
 }
 #cards-list-buttons button,
 #cards-list-buttons select {
@@ -345,14 +346,31 @@ p#file-name {
 #cards-list {
 	margin: 0px -39px 0px -20px;
 	overflow-y: scroll;
-    padding-left: 0px;
+	padding-left: 0px;
 }
+#cards-list-shortcuts {
+	position: absolute;
+	top: 0; left: 0;
+	width: 80%;
+	max-width: 300px;
+	background: center no-repeat;
+	opacity: 0.7;
+	margin: 150px 10% 0%;
+}
+
 #cards-list .card-name {
 	margin: 0px;
 	padding: 1px 0px 1px 7px;
 	line-height: 1.1;
 	cursor: pointer;
 	position: relative;
+}
+#cards-list .card-name:nth-child(5):after
+{
+	content: " ";
+	display: block;
+	margin: 1px 0px -10001px -7px;
+	border-bottom: solid #fff 10000px;
 }
 #cards-list .card-name.selected {
 	padding: 0px 0px 0px 1px;
@@ -376,7 +394,7 @@ p#file-name {
 	right: 12px;
 	top: 1px;
 	/* margin-right: 12px; */
-   text-shadow: 0 0 3px white;
+	text-shadow: 0 0 3px white;
 }
 #cards-list .card-count * {
 	vertical-align: text-bottom;
@@ -466,7 +484,7 @@ p#file-name {
 		width: 100%;
 		padding: 0px 24px;
 	}
-
+	
 	#card-form-container h3 {
 		display:none;
 	}
@@ -504,7 +522,7 @@ p#file-name {
 		background: white;
 		padding-left: 0px;
 	}
-
+	
 	.card {
 		margin-right: 10px;
 	}

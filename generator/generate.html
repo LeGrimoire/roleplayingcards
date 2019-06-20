@@ -191,8 +191,8 @@
 						<!-- Default values -->
 						<div id="default-block" class="col-sm-12">
 							<form role="form" class="form-horizontal">
-								<div id="default-block-title" class="form-group">
-									<h3 class="btn-fold-block" for="default-values-block"></h3>
+								<div class="form-group">
+									<h3 id="default-block-title" class="btn-fold-block" for="default-values-block"></h3>
 									<select id="default-card-type" class="form-control" data-property="type">
 										<option value="Card" selected></option>
 										<option value="CreatureCard"></option>
@@ -245,8 +245,8 @@
 						<!-- Cards list -->
 						<div class="col-sm-12">
 							<form role="form" class="form-horizontal">
-								<div id="cards-list-title" class="form-group">
-									<h3 class="btn-fold-block col-sm-6" for="cards-list"></h3>
+								<div class="form-group">
+									<h3 id="cards-list-title" class="btn-fold-block col-sm-6" for="cards-list"></h3>
 									<p id="total_cards_count" class="form-control-static"></p>
 								</div>
 								<div id="cards-list-buttons" class="form-group">
@@ -276,8 +276,11 @@
 									</div>
 								</div>
 							</form>
-							<form id="cards-list" role="form" class="form-horizontal">
-							</form>
+							<div id="card-list-container">
+								<div id="cards-list-shortcuts"></div>
+								<form id="cards-list" role="form" class="form-horizontal">
+								</form>
+							</div>
 						</div>
 					</div>
 				</div>

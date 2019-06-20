@@ -1,5 +1,5 @@
-import { CardExamples } from '../data/card_examples.js';
-import { CardLexicals } from '../data/card_lexicals.js';
+import { CardExamples } from './card_examples.js';
+import { CardLexicals } from './card_lexicals.js';
 import { CreatureCard } from './card_creature.js';
 import { ItemCard } from './card_item.js';
 import { PowerCard } from './card_power.js';
@@ -1423,13 +1423,14 @@ function typeahead_contents_updater(item) {
  * Update the height of the cards list block.
  */
 function ui_cards_list_update_height() {
-	let cardsListParents = $('#cards-list').parents();
-	let top = $('#cards-list').position().top;
+	let cardsList = $('#cards-list');
+	let cardsListParents = cardsList.parents();
+	let top = cardsList.position().top;
 
 	for (let i = 0; i < cardsListParents.length; i++)
 		top += $(cardsListParents[i]).position().top;
 
-	$('#cards-list').css('height', ($(window).height() - top) + 'px');
+	cardsList.css('height', ($(window).height() - top) + 'px');
 }
 
 /**
@@ -1769,7 +1770,7 @@ function ui_update_texts() {
 	$('#title-size-label').text(I18N.get('UI.TITLE'));
 	$('#deck-count-label').text(I18N.get('UI.COUNT'));
 
-	$('#default-block-title h3').text(I18N.get('UI.DEFAULT_VALUES'));
+	$('#default-block-title').text(I18N.get('UI.DEFAULT_VALUES'));
 	$('#default-card-type option[value="Card"]').text(I18N.get('UI.GENERIC'));
 	$('#default-card-type option[value="CreatureCard"]').text(I18N.get('UI.CREATURE'));
 	$('#default-card-type option[value="ItemCard"]').text(I18N.get('UI.ITEM'));
@@ -1781,7 +1782,7 @@ function ui_update_texts() {
 	$('#default-icon').attr('placeholder', I18N.get('UI.ICON_NAME'));
 	$('#default-icon-back').attr('placeholder', I18N.get('UI.ICON_NAME'));
 
-	$('#cards-list-title h3').text(I18N.get('UI.CARDS'));
+	$('#cards-list-title').text(I18N.get('UI.CARDS'));
 	if (deck)
 		$('#total_card_count').text('(' + deck.cards.length + ' ' + I18N.get('UI.UNIQUE') + ')');
 	else
@@ -1789,11 +1790,12 @@ function ui_update_texts() {
 	$('#button-card-delete').text(I18N.get('UI.DELETE'));
 	$('#button-card-duplicate').text(I18N.get('UI.COPY'));
 	$('#button-card-add').text(I18N.get('UI.NEW'));
-	$('#card-type option[value="Card"]').text(I18N.get('UI.GENERIC'));// TODO GREGOIRE: Factorise with default
+	$('#card-type option[value="Card"]').text(I18N.get('UI.GENERIC'));
 	$('#card-type option[value="CreatureCard"]').text(I18N.get('UI.CREATURE'));
 	$('#card-type option[value="ItemCard"]').text(I18N.get('UI.ITEM'));
 	$('#card-type option[value="SpellCard"]').text(I18N.get('UI.SPELL'));
 	$('#card-type option[value="PowerCard"]').text(I18N.get('UI.POWER'));
+	$('#cards-list-shortcuts').html(I18N.get('UI.SHORTCUTS').join(''));
 
 	$('#card-form-container-title').text(I18N.get('UI.CARD'));
 	$('#card-title-label').text(I18N.get('UI.TITLE'));
