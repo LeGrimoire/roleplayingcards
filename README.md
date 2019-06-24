@@ -4,7 +4,7 @@ RPG spell/item/monster card generator, based on the [crobi rpg-cards](https://gi
 
 ## Preview
 
-\[TODO\]
+You can find it [here](https://grimo0.github.io/roleplayingcards/generator/generate.html).
 
 ## Status of the project
 
