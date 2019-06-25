@@ -14,8 +14,10 @@ In active development, may contain bugs. I have a list of stuffs i would like to
 
 - What browsers are supported?
   - This poject uses ES6 features like `import` and `class`, therefore it's not supported by all browsers. It works on Chrome 73+ and the list of supported browsers will be updated later. 
+- What is an .rpc file ? 
+  - A json which contains several decks and their settings.
 - Cards are generated without icons and background colors, what's wrong?
-  - Enable printing backround images in your browser print dialog
+  - Enable printing backround images in your browser print dialog.
 - I can't find an icon that I've seen on [game-icons.net](https://game-icons.net), where is it?
   - See the section "updating icons" below.
 - The layout of the cards is broken (e.g., cards are placed outside the page), what's wrong?
