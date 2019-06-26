@@ -242,8 +242,10 @@ export class Card {
 		let element_params = parts.splice(1);
 		let element_generator = 'generateElement_' + element_name;
 		if (this[element_generator]) {
+			this.#element_counts[element_generator]++;
 			return this[element_generator](element_params, options);
 		} else if (element_name.length > 0) {
+			this.#element_counts['generateElement_text']++;
 			return this.generateElement_text(parts, options);
 		}
 	}
@@ -255,18 +257,21 @@ export class Card {
 	// eslint-disable-next-line no-unused-vars
 	generateContents(options) {
 		this.isPreviousLineColored = false;
-		let card_element_names = Object.keys(this);
-		for (let i = 0; i < card_element_names.length; i++) {
-			if (card_element_names[i].startsWith('generateElement_'))
-				this.#element_counts[card_element_names[i]] = 0;
+		let proto = this.__proto__;
+		while (proto.constructor !== Object)
+		{
+			let card_element_names = Object.getOwnPropertyNames(proto);
+			for (let i = 0; i < card_element_names.length; i++) {
+				if (card_element_names[i].startsWith('generateElement_'))
+					this.#element_counts[card_element_names[i]] = 0;
+			}
+			proto = proto.__proto__;
 		}
 
 		let result = '';
 		let card = this;
 		result += this.contents.map(function (content_line) {
 			let parts = content_line.split('|').map(function (str) { return str.trim(); });
-			let element_name = parts[0];
-			card.#element_counts[element_name]++;
 			return card.generateElement(parts, options);
 		}).join('\n');
 		return result;

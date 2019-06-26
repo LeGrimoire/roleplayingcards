@@ -98,12 +98,16 @@ export class SpellCard extends Card {
 		let color = this.colorContent(options);
 		let result = '';
 		if (this.higherLevels && this.higherLevels.length > 0) {
-			if (this.elementCounts['fill'] === 0) {
+			if (this.elementCounts['generateElement_fill'] === 0) {
 				result += this.generateElement_fill(['1'], options);
+			}
+			let textStyle = '';
+			if (!options.showSpellClasses) {
+				textStyle += 'padding-bottom:1px;';
 			}
 			result += '<div class="card-spell-higher-levels">';
 			result += '<h3 style="color:' + color + ';background-color:' + color + '33;">' + I18N.get('SPELL.AT_HIGHER_LEVELS') + '</h3>';
-			result += '<p class="card-element" style="background-color:' + color + '11;">' + Card.parse_icons_params(this.higherLevels) + '</p>';
+			result += '<p class="card-element" style="background-color:' + color + '11;' + textStyle + '">' + Card.parse_icons_params(this.higherLevels) + '</p>';
 			result += '</div>';
 		}
 		return result;

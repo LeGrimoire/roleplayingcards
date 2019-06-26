@@ -1,20 +1,8 @@
-
 body {
 	overflow: hidden;
 }
 
-.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, 
-.col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, 
-.col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, 
-.col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, 
-.col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, 
-.col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, 
-.col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, 
-.col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, 
-.col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, 
-.col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, 
-.col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, 
-.col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
 	padding-left: 10px;
 	padding-right: 10px;
 }
@@ -37,21 +25,23 @@ body {
 .form-group {
 	margin-bottom: 5px;
 }
-.form-group .col-sm-1, .form-group .col-sm-2, .form-group .col-sm-3, .form-group .col-sm-4,
-.form-group .col-sm-5, .form-group .col-sm-6, .form-group .col-sm-7, .form-group .col-sm-8, 
-.form-group .col-sm-9, .form-group .col-sm-10, .form-group .col-sm-11, .form-group .col-sm-12 {
+
+.form-group .col-sm-1, .form-group .col-sm-2, .form-group .col-sm-3, .form-group .col-sm-4, .form-group .col-sm-5, .form-group .col-sm-6, .form-group .col-sm-7, .form-group .col-sm-8, .form-group .col-sm-9, .form-group .col-sm-10, .form-group .col-sm-11, .form-group .col-sm-12 {
 	padding-left: 0px;
 	padding-right: 1px;
 	margin-left: -2px;
 	margin-right: 2px;
 }
+
 .form-group .control-label {
 	padding-right: 3px;
 	max-height: 20px;
 }
+
 .form-group .btn {
 	padding: 6px 2px;
 }
+
 .form-group .icon-select-button {
 	padding: 6px 6px;
 }
@@ -59,6 +49,7 @@ body {
 .form-control {
 	padding: 3px 4px;
 }
+
 .col-sm-1 .form-control, select.form-control {
 	padding: 0px;
 	text-align: center;
@@ -67,6 +58,7 @@ body {
 select.form-control {
 	padding: 0px;
 }
+
 select.form-control option {
 	padding: 0px;
 }
@@ -74,19 +66,23 @@ select.form-control option {
 .dropdown-icons {
 	width: 300px;
 }
+
 .dropdown-icons>li>a {
 	padding-left: 35px;
 	position: relative;
 }
+
 .dropdown-menu {
 	width: 540px;
 }
+
 .dropdown-menu>li>a {
 	margin: 0px;
 	padding-left: 3px;
 	position: relative;
 }
-.dropdown-menu a > span {
+
+.dropdown-menu a>span {
 	position: absolute;
 	left: 5px;
 	background-color: #000;
@@ -102,8 +98,8 @@ select.form-control option {
 .dropdown-colorselector>.dropdown-menu {
 	max-width: 178px;
 }
-.dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus {
+
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
 	background-image: none;
 }
 
@@ -116,7 +112,7 @@ label, p {
 	margin-bottom: 0px;
 }
 
-@media (max-width : 1199px) {
+@media (max-width: 1199px) {
 	.form-horizontal .form-group {
 		margin-right: -10px;
 		margin-left: -10px;
@@ -133,18 +129,18 @@ ul {
 	margin-bottom: 3px;
 }
 
-
-/****************************/
-/***** GENERAL BUTTONS ******/
-/****************************/
+/****************************
+****** GENERAL BUTTONS ******
+****************************/
 
 .btn-fold-block {
 	width: fit-content;
 	cursor: pointer;
 }
+
 .btn-fold-block svg {
 	display: inline;
-	vertical-align: middle;	
+	vertical-align: middle;
 	position: relative;
 	top: -1px;
 	width: 10px;
@@ -164,26 +160,30 @@ ul {
 	outline: 0px;
 	float: left;
 }
+
 .btn-fold-section-left {
 	margin-left: -12px;
 	background: radial-gradient(at 100% 50%, #666666ff 0%, #ffffff00 75%);
 	border-right: 1px solid #aaaaaaaa;
 }
+
 .btn-fold-section-left:hover {
 	background: radial-gradient(at 100% 50%, #331111ff 0%, #ffffff00 75%);
 	border-right: 1px solid #88666666;
 }
+
 .btn-fold-section-right {
 	margin-right: -12px;
 	background: radial-gradient(at 0% 50%, #666666ff 0%, #ffffff00 75%);
 	border-left: 1px solid #aaaaaaaa;
 }
+
 .btn-fold-section-right:hover {
 	background: radial-gradient(at 0% 50%, #331111ff 0%, #ffffff00 75%);
 	border-left: 1px solid #88666666;
 }
 
-@media (max-width: 1199px) {	
+@media (max-width: 1199px) {
 	.btn-fold-section {
 		position: absolute;
 		top: 0px;
@@ -199,9 +199,9 @@ ul {
 	}
 }
 
-@media (min-width: 992px){
-	.hide-when-large{
-		display:none;
+@media (min-width: 992px) {
+	.hide-when-large {
+		display: none;
 	}
 }
 
@@ -210,7 +210,7 @@ ul {
 		padding: 0px;
 		overflow: hidden;
 	}
-	.container-wrapper > * {
+	.container-wrapper>* {
 		height: 100%;
 		margin: 0px;
 		margin-right: -15px;
@@ -220,10 +220,9 @@ ul {
 	}
 }
 
-
-/****************************/
-/****** MENU CONTAINER ******/
-/****************************/
+/****************************
+****** MENU CONTAINER *******
+****************************/
 
 #menu-container {
 	padding-right: 12px;
@@ -235,32 +234,33 @@ ul {
 	margin-bottom: 2px;
 }
 
-#menu-container p,
-#menu-container button {
+#menu-container p, #menu-container button {
 	padding-top: 0px;
 	padding-bottom: 0px;
 	height: 24px;
 	line-height: 24px;
 	overflow: hidden;
 }
-#menu-container select,
-#menu-container input {
+
+#menu-container select, #menu-container input {
 	height: 24px;
 	font-size: 13px;
 	vertical-align: middle;
 }
-#menu-container label,
-#menu-container .checkbox {
+
+#menu-container label, #menu-container .checkbox {
 	min-height: unset;
 	height: 24px;
 	line-height: 24px;
 	padding-top: 0px;
 	vertical-align: middle;
 }
+
 .form-group .checkbox {
 	text-align: right;
 	padding-right: 0px;
 }
+
 .checkbox input[type=checkbox] {
 	margin-top: 2px;
 	margin-left: 0px;
@@ -268,23 +268,28 @@ ul {
 	vertical-align: middle;
 	right: 3px;
 }
+
 .checkbox label {
 	font-weight: 700;
 	padding-left: 0;
 	right: 22px;
 	position: relative;
 }
+
 #menu-container .btn-colorselector {
 	width: 16px;
 	height: 16px;
 }
+
 #menu-container .dropdown {
 	padding: 2px;
 	height: 24px;
 }
-#menu-container .dropdown > a {
+
+#menu-container .dropdown>a {
 	height: 16px;
 }
+
 #menu-container .dropdown-menu {
 	width: 322px;
 }
@@ -311,6 +316,7 @@ p#file-name {
 	margin-left: 15px;
 	margin-top: 2px;
 }
+
 #default-card-type {
 	width: 80px;
 	float: right;
@@ -320,19 +326,22 @@ p#file-name {
 	margin-left: 15px;
 	margin-top: 2px;
 }
+
 #cards-list-title, #total_cards_count {
 	margin-bottom: 0px;
 }
+
 #cards-list-buttons.form-group {
 	margin-bottom: 1px;
 }
-#cards-list-buttons > * {
+
+#cards-list-buttons>* {
 	padding-right: 1px;
 	margin-left: -2px;
 	margin-right: 2px;
 }
-#cards-list-buttons button,
-#cards-list-buttons select {
+
+#cards-list-buttons button, #cards-list-buttons select {
 	margin: 0px 5px 0px 0px;
 	font-size: 13px;
 	height: 24px;
@@ -348,9 +357,11 @@ p#file-name {
 	overflow-y: scroll;
 	padding-left: 0px;
 }
+
 #cards-list-shortcuts {
 	position: absolute;
-	top: 0; left: 0;
+	top: 0;
+	left: 0;
 	width: 80%;
 	max-width: 300px;
 	background: center no-repeat;
@@ -365,18 +376,20 @@ p#file-name {
 	cursor: pointer;
 	position: relative;
 }
-#cards-list .card-name:nth-child(5):after
-{
+
+#cards-list .card-name:nth-child(5):after {
 	content: " ";
 	display: block;
 	margin: 1px 0px -10001px -7px;
 	border-bottom: solid #fff 10000px;
 }
+
 #cards-list .card-name.selected {
 	padding: 0px 0px 0px 1px;
 	border: solid 1px #33333377;
 	border-left-width: 6px;
 }
+
 #cards-list .card-name h4 {
 	margin: 0px;
 	padding: 0px;
@@ -384,11 +397,13 @@ p#file-name {
 	font-size: 16px;
 	overflow: hidden;
 }
+
 #cards-list .card-name h4.separator {
 	margin: -1px 0 -1px -7px;
 	border: solid 1px #00000099;
 	height: 0;
 }
+
 #cards-list .card-count {
 	position: absolute;
 	right: 12px;
@@ -396,15 +411,18 @@ p#file-name {
 	/* margin-right: 12px; */
 	text-shadow: 0 0 3px white;
 }
+
 #cards-list .card-count * {
 	vertical-align: text-bottom;
 	height: 17px;
 	line-height: 17px;
 }
+
 #cards-list .card-name.selected .card-count {
 	top: 0px;
 	right: 11px;
 }
+
 #cards-list .card-error {
 	text-decoration: #f00 underline dotted;
 }
@@ -416,7 +434,7 @@ p#file-name {
 	line-height: unset;
 }
 
-@media (max-width : 1199px) {
+@media (max-width: 1199px) {
 	#menu-container-wrapper {
 		position: absolute;
 		z-index: 99;
@@ -426,18 +444,17 @@ p#file-name {
 		background: white;
 		padding-left: 0px;
 	}
-	
 	#cards-list {
 		margin-right: -30px;
 	}
 }
 
-
-/****************************/
-/**** CARD FORM CONTAINER ***/
-/****************************/
+/****************************
+**** CARD FORM CONTAINER ****
+****************************/
 
 /* Don't set margin, it's done in js and would break the folding of menu and preview. */
+
 #card-form-container {
 	padding-top: 7px;
 }
@@ -445,55 +462,58 @@ p#file-name {
 #card-form-container:before {
 	content: "";
 	position: absolute;
-	top: 0; left: 0;
-	width: 100%; height: 100%;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 	background: center no-repeat;
 	filter: invert(1);
 	-webkit-filter: invert(1);
 	opacity: 0.3;
 }
+
 #card-form-container[card-type='Card']:before {
 	background-image: url('../img/TODO.png');
 }
+
 #card-form-container[card-type='CreatureCard']:before {
 	background-image: url('../img/TODO.png');
 }
+
 #card-form-container[card-type='ItemCard']:before {
 	background-image: url('../img/TODO.png');
 }
+
 #card-form-container[card-type='SpellCard']:before {
 	background-image: url('../img/TODO.png');
 }
+
 #card-form-container[card-type='PowerCard']:before {
 	background-image: url('../img/TODO.png');
 }
 
-#card-form-container textarea,
-#card-form-container input {
+#card-form-container textarea, #card-form-container input {
 	background-color: rgba(255, 255, 255, 0.5);
 }
 
-#card-form-container textarea[disabled],
-#card-form-container input[disabled] {
+#card-form-container textarea[disabled], #card-form-container input[disabled] {
 	background-color: rgba(230, 230, 230, 0.5);
 }
 
-@media (max-width : 1199px) {
+@media (max-width: 1199px) {
 	#card-form-container-wrapper {
 		display: inline-block;
 		width: 100%;
 		padding: 0px 24px;
 	}
-	
 	#card-form-container h3 {
-		display:none;
+		display: none;
 	}
 }
 
-
-/****************************/
-/***** PREVIW CONTAINER *****/
-/****************************/
+/****************************
+****** PREVIW CONTAINER *****
+****************************/
 
 #preview-container {
 	z-index: 0;
@@ -502,17 +522,19 @@ p#file-name {
 	justify-content: space-around;
 	align-items: center;
 }
+
 #preview-container .card {
 	margin-left: auto;
 	margin-right: auto;
 }
-#preview-container .card-size-25x35,
-#preview-container .card-size-225x35 {
+
+#preview-container .card-size-25x35, #preview-container .card-size-225x35 {
 	zoom: 1.60;
 }
 
 /* Small screen (preview fills all columns) */
-@media (max-width : 1199px) {
+
+@media (max-width: 1199px) {
 	#preview-container-wrapper {
 		position: absolute;
 		z-index: 99;
@@ -522,12 +544,13 @@ p#file-name {
 		background: white;
 		padding-left: 0px;
 	}
-	
 	.card {
 		margin-right: 10px;
 	}
 }
+
 /* Large screen (preview fills one column, columns are narrow) */
+
 @media (min-width: 1200px) {
 	.card {
 		margin-top: 2.5px;
@@ -537,7 +560,6 @@ p#file-name {
 #language-list {
 	text-align: center;
 }
-
 
 #help-modal p {
 	margin-bottom: 3px;
@@ -556,15 +578,15 @@ p#file-name {
 	padding-inline-start: 15px;
 }
 
-
-
 /* Tooltip container */
+
 #contents-tooltip {
 	position: relative;
 	display: inline-block;
 }
 
 /* Tooltip text */
+
 #contents-tooltip .tooltiptext {
 	visibility: hidden;
 	min-width: 500px;
@@ -576,7 +598,6 @@ p#file-name {
 	padding: 2px 2px;
 	border-radius: 3px;
 	box-shadow: 0 0 3px #aaa;
-	
 	/* Position the tooltip text */
 	position: absolute;
 	z-index: 99999999;
@@ -586,15 +607,18 @@ p#file-name {
 	/* transform: translate(-50%, 0); */
 	/* margin-left: -60px; */
 }
+
 #contents-tooltip .tooltiptext ul {
 	list-style-type: none;
 	padding-inline-start: 3px;
 }
-#contents-tooltip .tooltiptext > *:not(ul) {
+
+#contents-tooltip .tooltiptext>*:not(ul) {
 	display: none;
 }
 
 /* Show the tooltip text when you mouse over the abreviation */
+
 #contents-tooltip:hover .tooltiptext {
 	visibility: visible;
 }
