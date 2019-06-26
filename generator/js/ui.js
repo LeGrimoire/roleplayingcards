@@ -1427,8 +1427,11 @@ function ui_cards_list_update_height() {
 	let cardsListParents = cardsList.parents();
 	let top = cardsList.position().top;
 
-	for (let i = 0; i < cardsListParents.length; i++)
-		top += $(cardsListParents[i]).position().top;
+	for (let i = 0; i < cardsListParents.length; i++) {
+		let parentElt = $(cardsListParents[i]);
+		if (parentElt.css('position') !== 'static')
+			top += $(cardsListParents[i]).position().top;
+	}
 
 	cardsList.css('height', ($(window).height() - top) + 'px');
 }
