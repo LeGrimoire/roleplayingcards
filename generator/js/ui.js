@@ -252,7 +252,7 @@ function deck_select() {
 	if (g_ui.deckIdx >= 0 && g_ui.deckIdx < g_decks.length)
 		decksList[0].children[g_ui.deckIdx].classList.remove('selected-deck');
 
-	g_ui.deckIdx = this.value ? this.value : g_ui.deckIdx;
+	g_ui.deckIdx = this.value ? parseInt(this.value) : parseInt(g_ui.deckIdx);
 	
 	if (g_ui.deckIdx >= 0 && g_ui.deckIdx < g_decks.length)
 		decksList[0].children[g_ui.deckIdx].classList.add('selected-deck');
@@ -1584,7 +1584,37 @@ ui_change_keyup.timeout = null;
  * @param {JQuery.Event} evt
  */
 function ui_document_shortcut_keydown(evt) {
-	if (evt.key === 'PageUp') {
+	if (evt.ctrlKey) {
+		if (evt.key === '+') {
+			if (evt.preventDefault)
+				evt.preventDefault();
+
+			let cardsMoreButtonList = $('#cards-list .card-count-more');
+			cardsMoreButtonList[g_ui.cardIdx].click();
+		} else if (evt.key === '-') {
+			if (evt.preventDefault)
+				evt.preventDefault();
+
+			let cardsLessButtonList = $('#cards-list .card-count-less');
+			cardsLessButtonList[g_ui.cardIdx].click();
+		}
+	} else if (evt.shiftKey) {
+		if (evt.key === 'PageUp') {
+			if (evt.preventDefault)
+				evt.preventDefault();
+				
+			let idx = g_ui.deckIdx;
+			if (idx > 0)
+				deck_select_by_index(idx - 1);
+		} else if (evt.key === 'PageDown') {
+			if (evt.preventDefault)
+				evt.preventDefault();
+	
+			let idx = g_ui.deckIdx;
+			if (idx < g_decks.length - 1)
+				deck_select_by_index(idx + 1);
+		} 
+	} else if (evt.key === 'PageUp') {
 		if (evt.preventDefault)
 			evt.preventDefault();
 			
@@ -1599,20 +1629,6 @@ function ui_document_shortcut_keydown(evt) {
 		let idx = g_ui.cardIdx;
 		if (idx < deck.cards.length - 1)
 			card_select_by_index(idx + 1);
-	} else if (evt.ctrlKey) {
-		if (evt.key === '+') {
-			if (evt.preventDefault)
-				evt.preventDefault();
-
-			let cardsMoreButtonList = $('#cards-list .card-count-more');
-			cardsMoreButtonList[g_ui.cardIdx].click();
-		} else if (evt.key === '-') {
-			if (evt.preventDefault)
-				evt.preventDefault();
-
-			let cardsLessButtonList = $('#cards-list .card-count-less');
-			cardsLessButtonList[g_ui.cardIdx].click();
-		}
 	} else if (evt.currentTarget.activeElement.nodeName !== 'INPUT' && evt.currentTarget.activeElement.nodeName !== 'TEXTAREA') {
 		if (evt.key === '+') {
 			if (evt.preventDefault)

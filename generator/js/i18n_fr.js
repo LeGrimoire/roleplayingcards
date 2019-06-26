@@ -356,10 +356,12 @@ export const I18N = {
 			'</ul>'
 		],
 		SHORTCUTS: [
-			'<h3>Raccourcis</h3>',
+			'<h4>Raccourcis</h4>',
 			'<ul>',
 			'<li><b>Ctrl+S:</b> Enregistrer le deck courrant</li>',
 			'<li><b>Ctrl+G:</b> Générer le deck courrant</li>',
+			'<li><b>Maj+Pg Up:</b> Deck précédent</li>',
+			'<li><b>Maj+Pg Down:</b> Prochain deck</li>',
 			'<li><b>Pg Up:</b> Carte précédente</li>',
 			'<li><b>Pg Down:</b> Prochaine carte</li>',
 			'<li><b>²:</b> Affiche cette aide</li>',

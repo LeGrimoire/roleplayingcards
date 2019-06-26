@@ -346,6 +346,8 @@ export const I18N = {
 			'<ul>',
 			'<li><b>Ctrl+S:</b> Save current deck</li>',
 			'<li><b>Ctrl+G:</b> Generate current deck</li>',
+			'<li><b>Shift+Pg Up:</b> Previous deck</li>',
+			'<li><b>Shift+Pg Down:</b> Next deck</li>',
 			'<li><b>Pg Up:</b> Previous card</li>',
 			'<li><b>Pg Down:</b> Next card</li>',
 			'<li><b>²:</b> Toggle this help</li>',
