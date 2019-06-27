@@ -109,7 +109,7 @@ export function CardExamples() {
 		'property | Nimble escape | Disengage or Hide as bonus action',
 		'fill',
 		'section | Actions',
-		'attack | Scimitar | +4 (5 ft.) | one target. 5 (1d6 + 2) slashing damage'
+		'attack | Scimitar | +4 (5 ft.) | one target. 5 (1d6 + 2) slashing'
 	];
 	goblin.count = 1;
 	cards.push(goblin);
@@ -160,7 +160,7 @@ export function CardExamples() {
 		'bullet | magic missile, 2nd level (2 charges)',
 		'bullet | magic missile, 3rd level (3 charges)',
 		'fill | 3',
-		'boxes | 7 | 2 | true | true'
+		'boxes | 7 | 2 | true'
 	];
 	wand.count = 1;
 	cards.push(wand);
@@ -173,7 +173,7 @@ export function CardExamples() {
 		'property | Use time | 1 action',
 		'property | Hit points restored | 2d4+2',
 		'ruler',
-		'When you drink this potion, you regain 2d4+2 hitpoints.',
+		'When you drink this potion, you regain 2d4+2 hp.',
 		'Drinking or administering a potion takes 1 action.'
 	];
 	potion.count = 1;
