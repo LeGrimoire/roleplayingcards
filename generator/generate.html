@@ -1,34 +1,34 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>
-	<title>RPG cards</title>
-	<meta charset="UTF-8">
-	<!-- Library: jQuery -->
-	<script type="application/javascript" src="lib/jquery/dist/jquery.js" charset="utf-8"></script>
-	<!-- Library: Bootstrap -->
-	<script type="application/javascript" src="lib/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
-	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css" />
-	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-theme.css" />
-	<!-- Library: Bootstrap typeahead -->
-	<script type="application/javascript" src="lib/typeahead/bootstrap3-typeahead.min.js" charset="utf-8"></script>
-	<!-- Library: Color picker -->
-	<script type="application/javascript" src="lib/colorpicker/js/bootstrap-colorselector.js" charset="utf-8"></script>
-	<link rel="stylesheet" type="text/css" href="lib/colorpicker/css/bootstrap-colorselector.css" />
-	<!-- Javascript -->
-	<script type="module" src="js/ui.js"></script>
-	<!-- CSS -->
-	<link rel="stylesheet" type="text/css" href="css/ui.css" />
-	<link rel="stylesheet" type="text/css" href="css/cards.css" />
-	<link rel="stylesheet" type="text/css" href="css/card-size.css" />
-	<link rel="stylesheet" type="text/css" href="css/icons.css" />
-	<!-- Fonts -->
-	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=
-		Noto+Sans:400,700,400italic,700italic
-		|Roboto+Mono:400,700,400italic,700italic
-		|Ubuntu+Mono:400,700,400italic,700italic
-		&display=block">
-		<!-- |Lora:400,700,400italic,700italic -->
-		<!-- |Cutive+Mono:400,700,400italic,700italic -->
+	<head>
+		<title>RPG cards</title>
+		<meta charset="UTF-8">
+		<!-- Library: jQuery -->
+		<script type="application/javascript" src="lib/jquery/dist/jquery.js" charset="utf-8"></script>
+		<!-- Library: Bootstrap -->
+		<script type="application/javascript" src="lib/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-theme.css" />
+		<!-- Library: Bootstrap typeahead -->
+		<script type="application/javascript" src="lib/typeahead/bootstrap3-typeahead.min.js" charset="utf-8"></script>
+		<!-- Library: Color picker -->
+		<script type="application/javascript" src="lib/colorpicker/js/bootstrap-colorselector.js" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="lib/colorpicker/css/bootstrap-colorselector.css" />
+		<!-- Javascript -->
+		<script type="module" src="js/ui.js"></script>
+		<!-- CSS -->
+		<link rel="stylesheet" type="text/css" href="css/ui.css" />
+		<link rel="stylesheet" type="text/css" href="css/cards.css" />
+		<link rel="stylesheet" type="text/css" href="css/card-size.css" />
+		<link rel="stylesheet" type="text/css" href="css/icons.css" />
+		<!-- Fonts -->
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=
+			Noto+Sans:400,700,400italic,700italic
+			|Roboto+Mono:400,700,400italic,700italic
+			|Ubuntu+Mono:400,700,400italic,700italic
+			&display=block">
+			<!-- |Lora:400,700,400italic,700italic -->
+			<!-- |Cutive+Mono:400,700,400italic,700italic -->
 	</head>
 	
 	<body>
@@ -257,15 +257,18 @@
 										<button id="button-card-down" type="button" class="btn btn-primary btn-block">\/</button>
 									</div>
 									<div class="col-sm-2">
-										<button id="button-card-delete" type="button" class="btn btn-danger btn-block">Delete</button>
+										<button id="button-card-delete" type="button" class="btn btn-danger btn-block"></button>
 									</div>
 									<div class="col-sm-2">
-										<button id="button-card-duplicate" type="button" class="btn btn-success btn-block">Copy</button>
+										<button id="button-card-duplicate" type="button" class="btn btn-success btn-block"></button>
 									</div>
 									<div class="col-sm-2">
-										<button id="button-card-add" type="button" class="btn btn-primary btn-block">New :</button>
+										<button id="button-card-move-to" type="button" class="btn btn-info btn-block"></button>
 									</div>
-									<div class="col-sm-4">
+									<div class="col-sm-2">
+										<button id="button-card-add" type="button" class="btn btn-primary btn-block"></button>
+									</div>
+									<div class="col-sm-2">
 										<select id="card-type" class="form-control" data-property="type">
 											<option value="Card" selected></option>
 											<option value="CreatureCard"></option>
@@ -528,37 +531,11 @@
 			</div>
 		</div>
 		
-		<!-- Modal (Print) -->
-		<div id="print-modal" class="modal" tabindex="-1" role="dialog">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h4 class="modal-title">Printing generated cards</h4>
-					</div>
-					<div class="modal-body">
-						<ul>
-							<li>The generated cards open in a new tab or window. If you don't see any new tab or window, check your popup and script blockers. If that does not help, try disabling all addons.</li>
-							<li>Make sure you enable the printing of background images and colors in your browser.</li>
-							<li>Make sure your printer uses the correct paper size (same as in the editor).</li>
-							<li>Enable double sided printing (flip on long edge).</li>
-							<li>Do not scale the document to fit the page. Print at original size.</li>
-							<li>Some printers are not very precise (pages print slightly shifted or rotated) and the cards will not line up with the card backs. If this is the case, there's not much you can do. Try making the page background the same color as the cards, so that you won't get any white edges on the card. If that does not help, try a different printer or print single-sided.</li>
-						</ul>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Ok, got it</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		
 		<!-- Modal (Help)-->
 		<div id="help-modal" class="modal" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 						<h4 class="modal-title"></h4>
 					</div>
 					<div class="modal-body">
@@ -566,6 +543,9 @@
 						<div id="shortcuts"></div>
 						<div id="contents-elements-description"></div>
 						<div id="licenses"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger modal-ok modal-close" data-dismiss="modal"></button>
 					</div>
 				</div>
 			</div>
@@ -576,8 +556,7 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h4 class="modal-title">Language</h4>
+						<h4 class="modal-title"></h4>
 					</div>
 					<div class="modal-body">
 						<div id="language-list">
@@ -585,24 +564,59 @@
 							<button type="button" class="btn btn-default" data-lang="en">English</button>
 						</div>
 					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger modal-cancel modal-close" data-dismiss="modal"></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal (Print) -->
+		<div id="print-modal" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title"></h4>
+					</div>
+					<div class="modal-body">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger modal-ok modal-close" data-dismiss="modal"></button>
+					</div>
 				</div>
 			</div>
 		</div>
 		
 		<!-- Modal (Delete)-->
-		<div id="delete-confirmation-modal" class="modal" tabindex="-1" role="dialog">
+		<div id="delete-modal" class="modal" tabindex="-1" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h4 class="modal-title">Confirm delete</h4>
+						<h4 class="modal-title"></h4>
 					</div>
 					<div class="modal-body">
-						<p>All cards will be removed.<br/>Revert won't be possible.<br/>Are you sure ?</p>
 					</div>
 					<div class="modal-footer">
-						<button id="delete-modal-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-						<button id="delete-modal-confirm" type="button" class="btn btn-danger" data-dismiss="modal">Delete all</button>
+						<button id="delete-modal-cancel" type="button" class="btn btn-default modal-cancel" data-dismiss="modal"></button>
+						<button id="delete-modal-confirm" type="button" class="btn btn-danger modal-close" data-dismiss="modal"></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal (Send to deck)-->
+		<div id="move-to-deck-modal" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title"></h4>
+					</div>
+					<div class="modal-body">
+						<div id="move-to-deck-list">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default modal-cancel" data-dismiss="modal"></button>
 					</div>
 				</div>
 			</div>
@@ -671,4 +685,4 @@
 		</div>
 	</body>
 	
-	</html>
+</html>

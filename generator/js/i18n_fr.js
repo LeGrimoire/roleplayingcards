@@ -256,7 +256,8 @@ export const I18N = {
 
 	UI: {
 		HELP: 'Aide',
-		LANGUAGE: 'Français',
+		LANGUAGE: 'Langage',
+		LOCAL_LANGUAGE: 'Français',
 		DECKS_LIST: 'Decks',
 		SORT: 'Trier',
 		FILTER: 'Filtrer',
@@ -298,6 +299,7 @@ export const I18N = {
 		UNIQUE: 'unique',
 		DELETE: 'Suppr',
 		COPY: 'Copier',
+		MOVE_TO: 'Déplacer',
 		NEW: 'Nouveau',
 		TITLE: 'Titre',
 		MULTILINE: 'sur 2 lignes',
@@ -316,17 +318,19 @@ export const I18N = {
 		TAGS: 'Tags',
 		REFERENCE: 'Reférence',
 		COMPACT: 'Compacte',
+		OK: 'Ok',
+		CANCEL: 'Annuler',
 	
 		PROJECT_TITLE: 'RPG Deck',
 		PROJECT_DESCRIPTION: [
 			'<p>Certains jeux sont protégés par copyright. Même si certains éléments comme les objets, les sorts, sont accessibles gratuitement, <b>vérifiez que vous disposez du droit de les redistribuer</b> avant de les partager.</p>',
-			'<h3>État du projet</h3>',
+			'<h2>État du projet</h2>',
 			'<p>Ce site est toujours en cours de dévelopement. Si vous trouvez un bug ou souhaitez voir implémenter un nouvel élément vous pouvez poster sur la page du <a href="https://github.com/grimo0/rpg-deck/issues">projet Github</a> ou m\'envoyer un mp <a href="https://twitter.com/Grimo_">@Grimo_</a>.</p>',
-			'<h3>Usage</h3>',
+			'<h2>Usage</h2>',
 			'<p>Pour utiliser ce générateur vous pouvez démarrer avec le deck d\'<i>Exemples</i>. Vous pouvez aussi en créer un <i>Nouveau</i> et ajouter des cartes manuellement. Quand vous voulez imprimer votre deck, cliquez sur <i>Générer</i>.</p>'
 		],
 		CONTENTS_ELEMENTS_DESCRIPTION: [
-			'<h4>Balises de contenus</h4>',
+			'<h2>Balises de contenus</h2>',
 			'<p>À placer dans la zone de <i>Contenus</i> de la manière suivante : <code><b>balise</b> | <i>param1</i> | param2</code>. Les paramètres en italiques sont à remplacer et les autres à laisser tel quel.</p>',
 			'<p>Des <code>/</code> séparent plusieurs options.<br/>Les <code>[]</code> entourent des paramètres optionnels.<br/>Les <code>...</code> indiquent qu\'il est possible de mettre une autre balise à la suite.<br/>Un <code>=</code> précède la valeur par défaut du paramètre.</p>',
 			'<p>Enfin, les textes sont parsés par défaut et certaines chaînes de caractères sont remplacées par des icônes ou mis en page différemment. Pour voir la liste des éléments concernés, consultez le deck <i>Lexique</i>.</p>',
@@ -356,14 +360,14 @@ export const I18N = {
 			'</ul>'
 		],
 		SHORTCUTS: [
-			'<h4>Raccourcis</h4>',
+			'<h2>Raccourcis</h2>',
 			'<ul>',
 			'<li><b>Ctrl+S:</b> Enregistrer le deck courrant</li>',
 			'<li><b>Ctrl+G:</b> Générer le deck courrant</li>',
 			'<li><b>Maj+Pg Up:</b> Deck précédent</li>',
-			'<li><b>Maj+Pg Down:</b> Prochain deck</li>',
+			'<li><b>Maj+Pg Down:</b> Deck suivant</li>',
 			'<li><b>Pg Up:</b> Carte précédente</li>',
-			'<li><b>Pg Down:</b> Prochaine carte</li>',
+			'<li><b>Pg Down:</b> Carte suivante</li>',
 			'<li><b>²:</b> Affiche cette aide</li>',
 			'</ul>',
 			'<p>Dans la zone <i>Contenus</i> :</p>',
@@ -374,10 +378,30 @@ export const I18N = {
 			'</ul>'
 		],
 		LICENSES: [
-			'<h3>Licences</h3>',
+			'<h2>Licences</h2>',
 			'<p>Ce générateur est fourni sous licence MIT et se base sur celui de Robert <a herf="https://github.com/crobi">\'crobi\'</a> Autenrieth disponible sur <a herf="https://github.com/crobi/rpg-cards">https://github.com/crobi/rpg-cards</a>.</p>',
 			'<p>Les icônes sont faites par plusieurs artistes et sont disponibles sur <a href="https://game-icons.net/">https://game-icons.net</a>. Elles sont fournis sous licence Creative Commons 3.0 BY.</p>',
 			'<p>Site non-officiel pour Dragons créé par Grégoire André. Utilise des contenus protégés par la propriété intellectuelle © Agate RPG, avec l’aimable permission de l’éditeur dans le cadre de la licence CUVD. Rejoignez la communauté : www.dragons-rpg.com/</p>'
-		]
+		],
+
+		PRINT_MODAL_TITLE: 'Impression des cartes générées',
+		PRINT_MODAL: [
+			'<ul>',
+			'<li>Un nouvel onglet contient les cartes générés. Si vous ne le voyez pas, vérifiez vos bloqueur de scripts et de popup. Si cela n\'aide pas, essayez de désactiver les extensions.</li>',
+			'<li>Dans la fenêre d\'impression, assurez-vous d\'avoir activé les graphiques d\'arrière-plan.</li>',
+			'<li>Vérifiez bien la taille du papier d\'impression qui doit être la même que dans l\'éditeur.</li>',
+			'<li>Activez le recto verso (retournez sur le côté long) si vous l\'avez fait dans l\'éditeur.</li>',
+			'<li>Ne mettez pas d\'échelle, conservez la taille original.</li>',
+			'<li>Certaines imprimantes ne sont pas très précises (les pages se décalent ou tournent un peu) et les faces des carte ne s\'aligneront pas parfaitement avec le dos. Si c\'est votre cas, vous pouvez utiliser l\'option "Bordure épaissi". Si cela n\'aide pas, essayez une autre imprimante ou n\'imprimez qu\'une face.</li>',
+			'</ul>'
+		],
+		
+		DELETE_MODAL_TITLE: 'Confirmez la suppression',
+		DELETE_MODAL: [
+			'<p>Le deck et toutes ses cartes vont être supprimées.<br/>Il ne sera pas possible de revenir en arrière.<br/>Êtes-vous sûr.e ?</p>'
+		],
+		DELETE_MODAL_CONFIRMATION: 'Supprimer',
+		
+		MOVE_TO_MODAL_TITLE: 'Déplacer vers'
 	},
 };

@@ -241,7 +241,8 @@ export const I18N = {
 
 	UI: {
 		HELP: 'Help',
-		LANGUAGE: 'English',
+		LANGUAGE: 'Language',
+		LOCAL_LANGUAGE: 'English',
 		DECKS_LIST: 'Decks',
 		SORT: 'Sort',
 		FILTER: 'Filter',
@@ -284,6 +285,7 @@ export const I18N = {
 		UNIQUE: 'unique',
 		DELETE: 'Del',
 		COPY: 'Copy',
+		MOVE_TO: 'Move to',
 		NEW: 'New',
 		TITLE: 'Title',
 		MULTILINE: 'on 2 lines',
@@ -302,17 +304,19 @@ export const I18N = {
 		TAGS: 'Tags',
 		REFERENCE: 'Reference',
 		COMPACT: 'Compact',
+		OK: 'Ok',
+		CANCEL: 'Cancel',
 	
 		PROJECT_TITLE: 'RPG Deck',
 		PROJECT_DESCRIPTION: [
 			'<p>Some games and systems are protected by copyright. Even if some elements like spells or items are freely available, <i>please check that you have the right to redistribute</i> before sharing those cards.</p>',
-			'<h3>Status of the project</h3>',
+			'<h2>Status of the project</h2>',
 			'<p>This site is still in active development. If you find a bug or have a feature request, post them at the <a href="https://github.com/grimo0/rpg-deck/issues">Github project site</a> or send me a pm <a href="https://twitter.com/Grimo_">@Grimo_</a>.</p>',
-			'<h3>How to</h3>',
+			'<h2>How to</h2>',
 			'<p>To use this generator, you can start with the <i>Examples</i> deck. You can also create a <i>New</i> one and manually add cards. When you want to print your deck, click on <i>Generate</i>.</p>'
 		],
 		CONTENTS_ELEMENTS_DESCRIPTION: [
-			'<h4>Contents elements</h4>',
+			'<h2>Contents elements</h2>',
 			'<p>To use inside the <i>Contents</i> area as : <code><b>tag</b> | <i>param1</i> | param2</code>. Parameters in italic are to be replaced and the other to put as is.</p>',
 			'<p><code>/</code> separates options.<br/><code>[]</code> surrounds optional parameters.<br/><code>...</code> indicates that an other element can follow.<br/><code>=</code> precedes the default value.</p>',
 			'<p>Texts are parsed by default and some strings are replaced by icons or are layout differently. See the <i>Lexical</i> deck for a detailed list.</p>',
@@ -342,7 +346,7 @@ export const I18N = {
 			'</ul>'
 		],
 		SHORTCUTS: [
-			'<h4>Shortcuts</h4>',
+			'<h2>Shortcuts</h2>',
 			'<ul>',
 			'<li><b>Ctrl+S:</b> Save current deck</li>',
 			'<li><b>Ctrl+G:</b> Generate current deck</li>',
@@ -360,10 +364,30 @@ export const I18N = {
 			'</ul>'
 		],
 		LICENSES: [
-			'<h4>Licenses</h4>',
+			'<h2>Licenses</h2>',
 			'<p>This generator is provided under the terms of the MIT License and is hugely based on the one made by Robert <a herf="https://github.com/crobi">\'crobi\'</a> Autenrieth at <a herf="https://github.com/crobi/rpg-cards">https://github.com/crobi/rpg-cards</a>.</p>',
 			'<p>Icons are made by various artists, available at <a href="https://game-icons.net/">https://game-icons.net</a>. They are provided under the terms of the Creative Commons 3.0 BY license.</p>',
 			'<p>Unofficial site for Dragons created by Grégoire André. Uses contents protected by the intelectual property © Agate RPG, with the kind autorisation of the editor as part of the license CUVD. Join the community : www.dragons-rpg.com/</p>'
-		]
+		],
+
+		PRINT_MODAL_TITLE: 'Printing generated cards',
+		PRINT_MODAL: [
+			'<ul>',
+			'<li>The generated cards open in a new tab or window. If you don\'t see any new tab or window, check your popup and script blockers. If that does not help, try disabling all addons.</li>',
+			'<li>Make sure you enable the printing of background images and colors in your browser.</li>',
+			'<li>Make sure your printer uses the correct paper size (same as in the editor).</li>',
+			'<li>Enable double sided printing (flip on long edge).</li>',
+			'<li>Do not scale the document to fit the page. Print at original size.</li>',
+			'<li>Some printers are not very precise (pages print slightly shifted or rotated) and the cards will not line up with the card backs. If this is the case, you may want to use the "Bleedin border" option. If that does not help, try a different printer or print single-sided.</li>',
+			'</ul>'
+		],
+
+		DELETE_MODAL_TITLE: 'Confirm delete',
+		DELETE_MODAL: [
+			'<p>This deck and all its cards will be removed.<br/>Revert won\'t be possible.<br/>Are you sure ?</p>'
+		],
+		DELETE_MODAL_CONFIRMATION: 'Delete',
+		
+		MOVE_TO_MODAL_TITLE: 'Move to'
 	}
 };

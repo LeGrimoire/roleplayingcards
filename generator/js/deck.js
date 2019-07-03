@@ -139,10 +139,11 @@ export class Deck {
 	}
 
 	/**
+	 * Insert a new card of the specified type at the given index or at the end if it's out of bound.
 	 * @param {number} cardIdx
 	 * @param {string} cardType
 	 */
-	addCard(cardIdx, cardType) {
+	addNewCard(cardIdx, cardType) {
 		let new_card;
 		if (cardType === 'CreatureCard')
 			new_card = new CreatureCard();
@@ -161,6 +162,20 @@ export class Deck {
 			this.#cards = this.#cards.concat(cards_after);
 		} else {
 			this.#cards.push(new_card);
+		}
+	}
+
+	/**
+	 * Insert the card at the given index or at the end if it's out of bound.
+	 * @param {number} cardIdx
+	 * @param {Card} card
+	 */
+	addCard(cardIdx, card) {
+		if (cardIdx + 1 < this.#cards.length && cardIdx >= 0) {
+			let cards_after = this.#cards.splice(cardIdx + 1, this.#cards.length - cardIdx - 1, card);
+			this.#cards = this.#cards.concat(cards_after);
+		} else {
+			this.#cards.push(card);
 		}
 	}
 
@@ -237,7 +252,7 @@ export class Deck {
 	}
 
 	/**
-	 * @param {Object[]} cards
+	 * @param {object[]} cards
 	 */
 	loadCards(cards) {
 		for (const i in cards) {
@@ -282,7 +297,7 @@ export class Deck {
 	}
 
 	/**
-	 * @param {Object} deck
+	 * @param {object} deck
 	 */
 	load(deck) {
 		if (deck.options)
