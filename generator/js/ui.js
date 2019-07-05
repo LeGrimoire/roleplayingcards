@@ -262,11 +262,12 @@ function deck_select() {
 
 	local_store_ui_save();
 
+	card_list_update_ui();
+
 	deck_update_ui();
 
-	g_previousCardIdx = 0;
-	card_list_update_ui();
-	
+	if (!g_ui.cardIdx || g_ui.cardIdx === 0)
+		g_ui.cardIdx = Number.MAX_VALUE;
 	card_select_by_index(0);
 	g_canSave = couldSave;
 }
@@ -496,8 +497,19 @@ function deck_default_color_change() {
 function deck_default_color_set(color, property) {
 	let deck = g_decks[g_ui.deckIdx];
 	let cardType = $('#default-card-type').val();
-	deck.options.cardsDefault[cardType][property] = color;
-	card_list_update_ui();
+
+	if (deck.options.cardsDefault[cardType][property] !== color) {
+		// Update colors of cards with this type
+		for (let i in deck.cards) {
+			let card = deck.cards[i];
+			if (card.constructor.name === cardType && card[property] === deck.options.cardsDefault[cardType][property])
+				card[property] = color;
+		}
+		
+		deck.options.cardsDefault[cardType][property] = color;
+	
+		card_list_update_ui();
+	}
 	card_update_ui();
 }
 
