@@ -470,8 +470,20 @@ function deck_default_property_change() {
 
 	let cardType = $('#default-card-type').val();
 	let property = $(this).attr('data-property');
-	deck.options.cardsDefault[cardType][property] = value;
-	card_render();
+
+	if (deck.options.cardsDefault[cardType][property] !== value) {
+		// Update property of cards with this type
+		for (let i in deck.cards) {
+			let card = deck.cards[i];
+			if (card.constructor.name === cardType && (!card[property] || card[property] === deck.options.cardsDefault[cardType][property]))
+				card[property] = value;
+		}
+		
+		deck.options.cardsDefault[cardType][property] = value;
+	
+		card_list_update_ui();
+	}
+	card_update_ui();
 }
 
 /**
@@ -502,7 +514,7 @@ function deck_default_color_set(color, property) {
 		// Update colors of cards with this type
 		for (let i in deck.cards) {
 			let card = deck.cards[i];
-			if (card.constructor.name === cardType && card[property] === deck.options.cardsDefault[cardType][property])
+			if (card.constructor.name === cardType && (!card[property] || card[property] === deck.options.cardsDefault[cardType][property]))
 				card[property] = color;
 		}
 		

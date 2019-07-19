@@ -144,18 +144,7 @@ export class Deck {
 	 * @param {string} cardType
 	 */
 	addNewCard(cardIdx, cardType) {
-		let new_card;
-		if (cardType === 'CreatureCard')
-			new_card = new CreatureCard();
-		else if (cardType === 'ItemCard')
-			new_card = new ItemCard();
-		else if (cardType === 'SpellCard')
-			new_card = new SpellCard();
-		else if (cardType === 'PowerCard')
-			new_card = new PowerCard();
-		else
-			new_card = new Card();
-
+		let new_card = this.options.cardsDefault[cardType].clone();
 		new_card.title = 'New ' + new_card.constructor.name;
 		if (cardIdx + 1 < this.#cards.length && cardIdx >= 0) {
 			let cards_after = this.#cards.splice(cardIdx + 1, this.#cards.length - cardIdx - 1, new_card);
