@@ -1067,9 +1067,9 @@ function card_list_update_ui() {
 				let count;
 				if (card.count === 0) {
 					buttonDecrease[0].disabled = true;
-					count = $('<span></span>').text(0);
+					count = $('<p></p>').text(0);
 				} else {
-					count = $('<span></span>').text(card.count || 1);
+					count = $('<p></p>').text(card.count || 1);
 				}
 				countBlock.append(buttonDecrease);
 				countBlock.append(count);

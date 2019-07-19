@@ -406,7 +406,7 @@ p#file-name {
 
 #cards-list .card-count {
 	position: absolute;
-	right: 12px;
+	right: 11px;
 	top: 1px;
 	/* margin-right: 12px; */
 	text-shadow: 0 0 3px white;
@@ -418,9 +418,15 @@ p#file-name {
 	line-height: 17px;
 }
 
+#cards-list .card-count p {
+	display: inline-block;
+	width: 16px;
+	text-align: center;
+}
+
 #cards-list .card-name.selected .card-count {
 	top: 0px;
-	right: 11px;
+	right: 10px;
 }
 
 #cards-list .card-error {
