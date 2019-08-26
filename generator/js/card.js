@@ -22,7 +22,6 @@ export class Card {
 	#error = false;
 	#table_previous_line_colored = false;
 	#element_counts = {};
-	#linked_to_decks = [];
 
 	constructor(title) {
 		if (title)
@@ -49,21 +48,6 @@ export class Card {
 	get elementCounts() {
 		return this.#element_counts;
 	}
-
-	/**
-	 * @param {string} name
-	 */
-	linkToDeck(name) {
-		this.#linked_to_decks.push(name);
-	}
-
-	/**
-	 * @return {string[]}
-	 */
-	linkedToDecks() {
-		return this.#linked_to_decks;
-	}
-
 
 	/**
 	 * @param {DeckOptions} options
