@@ -12,15 +12,17 @@ In active development, may contain bugs. I have a list of stuffs i would like to
 
 ## FAQ
 
-- What browsers are supported?
-  - This poject uses ES6 features like `import` and `class`, therefore it's not supported by all browsers. It works on Chrome 73+ and the list of supported browsers will be updated later. 
-- What is an .rpc file ? 
+- What browsers are supported ?
+  - This poject uses ES6 features therefore it's not supported by all browsers. It works on Chrome 73+ and the list of supported browsers will be updated later.
+- But then, why do you use such features !? Portability first !
+  - Because they are great and this project was designed for my personal uses at first. If other browsers don't start supporting those, i may look into solutions like Babel (but don't expect it for now).
+- What is a .rpc file ? 
   - A json which contains several decks and their settings.
 - Cards are generated without icons and background colors, what's wrong?
   - Enable printing backround images in your browser print dialog.
-- I can't find an icon that I've seen on [game-icons.net](https://game-icons.net), where is it?
-  - See the section "updating icons" below.
-- The layout of the cards is broken (e.g., cards are placed outside the page), what's wrong?
+- I can't find an icon that I've seen on [game-icons.net](https://game-icons.net), where is it ?
+  - See the section [updating icons](#updating-icons) below.
+- The layout of the cards is broken (e.g., cards are placed outside the page), what's wrong ?
   - Check your page size, card size, and cards/page settings. If you ask the generator to place 4x4 poker-sized cards on a A4 paper, they won't fit and they will overflow the page.
 
 ## Setup
@@ -34,7 +36,8 @@ In active development, may contain bugs. I have a list of stuffs i would like to
 
 ## Updating icons
 
-Process to be updated
+*[Process to be updated]*
+
 This project includes a copy of icons from the [game-icons](https://game-icons.net) project,
 which regularly publishes new icons.
 To download these new icons:
@@ -42,10 +45,10 @@ To download these new icons:
 - Install [Imagemagick](https://www.imagemagick.org/script/download.php)
 - Run the following commands from the root of the project:
   - `node ./resources/tools/update-icons.js [download] [tranform]`
-    - png and jpeg in _resources_ will be copied to _generator/img_
+    - png and jpeg in _resources_ will be copied to _generator/img_. You can put custom made icons in the firt one.
     - `download` : first download all icons from game-icons.net into a zip file, then extract it and add it to the generator img directory.
-    - `transform` : transfrom assets in _generator/img_ to be white on transparent background
-    - You can edit _tools/icons.cfg_ to personalize paths and folder that shouldn't be transformed.
+    - `transform` : transfrom assets in _generator/img_ to be white on transparent background.
+      - You can edit _tools/icons.cfg_ to personalize paths and folder that shouldn't be transformed.
 
 ## Licenses
 
