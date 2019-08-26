@@ -587,15 +587,21 @@ p#file-name {
 /* Tooltip container */
 
 #contents-tooltip {
-	position: relative;
+	position: absolute;
 	display: inline-block;
+	top: 0px;
+	right: 10px;
+	text-align: right;
+	font-size: 2em;
+	color: #00000077;
+	z-index: 1;
 }
 
 /* Tooltip text */
 
 #contents-tooltip .tooltiptext {
 	visibility: hidden;
-	min-width: 500px;
+	font-size: 14px;
 	font-style: normal;
 	font-weight: normal;
 	background-color: #fff;
@@ -608,8 +614,9 @@ p#file-name {
 	position: absolute;
 	z-index: 99999999;
 	box-sizing: border-box;
-	top: 105%;
-	left: -15%;
+	top: 0px;
+	right: -9px;
+	z-index: -1;
 	/* transform: translate(-50%, 0); */
 	/* margin-left: -60px; */
 }
@@ -627,4 +634,8 @@ p#file-name {
 
 #contents-tooltip:hover .tooltiptext {
 	visibility: visible;
+}
+#contents-tooltip:hover {
+	width: 500px;
+	max-width: 100%;
 }

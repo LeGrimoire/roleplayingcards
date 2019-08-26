@@ -1968,7 +1968,8 @@ function ui_update_texts() {
 	$('#card-spell-casting-time-label').text(I18N.get('SPELL.CASTING_TIME'));
 	$('#card-spell-duration-label').text(I18N.get('SPELL.DURATION'));
 
-	$('#card-contents-label').html('<span id="contents-tooltip">' + I18N.get('UI.CONTENTS') + '<br/>(?)<span class="tooltiptext">' + I18N.get('UI.CONTENTS_ELEMENTS_DESCRIPTION').join('') + '</span></span>');
+	$('#card-contents-label').text(I18N.get('UI.CONTENTS'));
+	$('#contents-tooltip').html('?<span class="tooltiptext">' + I18N.get('UI.CONTENTS_ELEMENTS_DESCRIPTION').join('') + '</span>');
 
 	$('#card-spell-higher-levels-label').text(I18N.get('SPELL.AT_HIGHER_LEVELS'));
 	$('#card-spell-classes-label').text(I18N.get('UI.CLASSES'));
