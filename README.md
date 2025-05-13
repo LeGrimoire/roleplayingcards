@@ -4,11 +4,11 @@ RPG spell/item/monster card generator, based on the [crobi rpg-cards](https://gi
 
 ## Preview
 
-You can find it [here](https://grimo0.github.io/roleplayingcards/generator/generate.html).
+You can find it [here](https://legrimoire.github.io/roleplayingcards/generator/generate.html).
 
 ## Status of the project
 
-In active development, may contain bugs. I have a list of stuffs i would like to improve/add, but you can always create an issue or send me a message on twitter [@Grimo_](https://twitter.com/Grimo_).
+In active development, may contain bugs. I have a list of stuffs i would like to improve/add, but you can always create an issue or send me a message on Bluesky [@legrimoire.bsky.social](https://bsky.app/profile/legrimoire.bsky.social).
 
 ## FAQ
 
