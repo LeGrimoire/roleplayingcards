@@ -1,0 +1,512 @@
+[{
+	"options":{
+		"name":"Lexique",
+		"pageSize":"A4",
+		"pageRows":3,
+		"pageColumns":3,
+		"cardsArrangement":"front_only",
+		"cardsSize":"25x35",
+		"smallIcons":true,
+		"roundCorners":true,
+		"showSpellClasses":false,
+		"titleSize":"14",
+		"cardsDefault":{
+			"Card":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#A9A9A9",
+				"color_front":"#A9A9A9",
+				"color_back":"#A9A9A9",
+				"icon":"",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false
+			},
+			"CreatureCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#000000",
+				"color_front":"#000000",
+				"color_back":"#000000",
+				"icon":"",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cr":"1/2",
+				"xp":100,
+				"proficiency":2,
+				"size":"M",
+				"alignment":"Sans alignement",
+				"type":"",
+				"ac":"10",
+				"hp":"3 (1d6)",
+				"perception":"10",
+				"speed":"9 m",
+				"stats":[
+					"10",
+					"10",
+					"10",
+					"10",
+					"10",
+					"10"
+				],
+				"vulnerabilities":"",
+				"resistances":"",
+				"immunities":"",
+				"cardType": "CreatureCard"
+			},
+			"ItemCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#696969",
+				"color_front":"#696969",
+				"color_back":"#696969",
+				"icon":"swap-bag",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cardType": "ItemCard"
+			},
+			"SpellCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":true,
+				"subtitle":"",
+				"color":"#800000",
+				"color_front":"#800000",
+				"color_back":"#800000",
+				"icon":"",
+				"icon_back":"magic-swirl",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"level":1,
+				"type":"",
+				"ritual":false,
+				"range":"18 m",
+				"casting_time":"1 action",
+				"duration":"1 round",
+				"materials":"",
+				"verbal":false,
+				"somatic":false,
+				"higherLevels":"",
+				"classes":"",
+				"cardType": "SpellCard"
+			},
+			"PowerCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#2F4F4F",
+				"color_front":"#2F4F4F",
+				"color_back":"#2F4F4F",
+				"icon":"lob-arrow",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cardType": "PowerCard"
+			}
+		}
+	},
+	"cards":[
+		{
+			"count":1,
+			"title":"Picto",
+			"contents":[
+				"property | physique non magique | \\physique non magique | property | contondant | \\contondant",
+				"property | perforant | \\perforant | property | tranchant | \\tranchant",
+				"property | feu | \\feu | property | froid | \\froid",
+				"property | foudre | \\foudre | property | acide | \\acide",
+				"property | poison | \\poison | property | nécrotique | \\nécrotique",
+				"property | tonnerre | \\tonnerre | property | force | \\force",
+				"property | psychique | \\psychique | property | radiant | \\radiant",
+				"line",
+				"property | aveuglé | \\aveuglé | property | charmé | \\charmé",
+				"property | assourdi | \\assourdi | property | épuisé | \\épuisé",
+				"property | effrayé | \\effrayé | property | agrippé | \\agrippé",
+				"property | neutralisé | \\neutralisé | property | invisible | \\invisible",
+				"property | paralysé | \\paralysé | property | pétrifié | \\pétrifié",
+				"property | empoisonné | \\empoisonné | property | à terre | \\à terre",
+				"property | entravé | \\entravé | property | étourdi | \\étourdi",
+				"property | inconscient | \\inconscient",
+				"line",
+				"property | créature | \\créature | property | CA | \\CA",
+				"property | PV temporaire | \\PV temporaire | property | PV | \\PV",
+				"property | PO | \\PO | property | action bonus | \\action bonus",
+				"property | action | \\action"
+			]
+		},
+		{
+			"count":1,
+			"title":"Lexique",
+			"contents":[
+				"property | JS | Jet de sauvegarde",
+				"property | JA | Jet d'attaque",
+				"property | JC | Jet de caractéristique",
+				"property | CA | Classe d'armure",
+				"property | VD | Vitesse de déplacement",
+				"property | PP | Perception passive",
+				"property | CM | Caractéristique magique",
+				"property | av | Avantage (sur 2d20, garder le meilleur)",
+				"property | dav | Désavantage (sur 2d20, garder le moins bon)",
+				"property | FP | Facteur de puissance",
+				"property | DD | Degré de difficulté"
+			]
+		},
+		{
+			"count":1,
+			"title":"Règles courantes",
+			"contents":[
+				"property | Obstacles | Le sort est capable de pénétrer la plupart des \\obstacles, mais 90 cm de bois ou de terre, 30 cm de pierre, 2,5 cm de la plupart des métaux ou une mince feuille de plomb le bloquent. Les frontières éthérées (cf. chapitre « Utiliser la magie ») peuvent mettre le sort en échec.",
+				"property | Arrêt | Par défaut, un sort ayant une durée de plus d'un round peut être interrompu par le lanceur au prix d'une action."
+			]
+		}
+	]
+},{
+	"options":{
+		"name":"Examples",
+		"pageSize":"A4",
+		"pageRows":3,
+		"pageColumns":3,
+		"cardsArrangement":"front_only",
+		"cardsSize":"25x35",
+		"smallIcons":true,
+		"roundCorners":true,
+		"showSpellClasses":false,
+		"titleSize":"14",
+		"cardsDefault":{
+			"Card":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#A9A9A9",
+				"color_front":"#A9A9A9",
+				"color_back":"#A9A9A9",
+				"icon":"",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false
+			},
+			"CreatureCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#000000",
+				"color_front":"#000000",
+				"color_back":"#000000",
+				"icon":"",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cr":"1/2",
+				"xp":100,
+				"proficiency":2,
+				"size":"M",
+				"alignment":"Sans alignement",
+				"type":"",
+				"ac":"10",
+				"hp":"3 (1d6)",
+				"perception":"10",
+				"speed":"9 m",
+				"stats":[
+					"10",
+					"10",
+					"10",
+					"10",
+					"10",
+					"10"
+				],
+				"vulnerabilities":"",
+				"resistances":"",
+				"immunities":"",
+				"cardType": "CreatureCard"
+			},
+			"ItemCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#696969",
+				"color_front":"#696969",
+				"color_back":"#696969",
+				"icon":"swap-bag",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cardType": "ItemCard"
+			},
+			"SpellCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":true,
+				"subtitle":"",
+				"color":"#800000",
+				"color_front":"#800000",
+				"color_back":"#800000",
+				"icon":"",
+				"icon_back":"magic-swirl",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"level":1,
+				"type":"",
+				"ritual":false,
+				"range":"18 m",
+				"casting_time":"1 action",
+				"duration":"1 round",
+				"materials":"",
+				"verbal":false,
+				"somatic":false,
+				"higherLevels":"",
+				"classes":"",
+				"cardType": "SpellCard"
+			},
+			"PowerCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#2F4F4F",
+				"color_front":"#2F4F4F",
+				"color_back":"#2F4F4F",
+				"icon":"lob-arrow",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cardType": "PowerCard"
+			}
+		}
+	},
+	"cards":[
+		{
+			"count":1,
+			"title":"All",
+			"contents":[
+				"comment | icon | name | size | align",
+				"icon | oak-leaf | 15 | right",
+				"comment | picture | url | height",
+				"picture | ./img/3d-hammer.png | 15",
+				"ruler",
+				"fill | 1",
+				"comment | boxes | (count) | (size) | (dashed) | (center)",
+				"boxes | 5 | 1.5 | true | true",
+				"fill | 2",
+				"property | property | Texte sans indentation",
+				"description | Texte d'appoint",
+				"Texte à gauche; feu",
+				"right | Texte à droite; feu | false",
+				"center | Texte centré; feu",
+				"justify | Texte justifié",
+				"section | section",
+				"bullet | bullet",
+				"table_header | titre1 | titre 2 | | titre 4",
+				"table_line | item1 | | item 3 | item 4"
+			]
+		},
+		{
+			"count":1,
+			"title":"Creature",
+			"contents":[
+				"description | Is proficient in Con saving throw and the magic caracteristic is Int as shown by the icons above.",
+				"comment | spells | (level) | ability | spells-0 | spell-1-nb | spells-1 | ... | text",
+				"spells | 5 | DD 12, +2 | spells | 5 | spells | | | 2 | spells | text",
+				"comment | attack | name | hit bonus | damage & text",
+				"attack | Attack | +3 | 1d10feu"
+			],
+			"type":"Type",
+			"stats":[
+				"10",
+				"10",
+				"10S",
+				"10M",
+				"10",
+				"10"
+			],
+			"cardType": "CreatureCard"
+		},
+		{
+			"count":1,
+			"title":"Item",
+			"cardType": "ItemCard"
+		},
+		{
+			"count":1,
+			"title":"Spell",
+			"type":"Abjuration",
+			"materials":"Some herbs, crisals, gems and the tracing of a pentagram",
+			"verbal":true,
+			"classes":"Barde, Mage, Moine",
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Power",
+			"cardType": "PowerCard"
+		},
+		{
+			"title":"SEPARATOR"
+		},
+		{
+			"count":1,
+			"title":"Goblin",
+			"contents":[
+				"Stealth +6",
+				"ruler",
+				"property | Nimble escape | Disengage or Hide as bonus action",
+				"fill",
+				"section | Actions",
+				"attack | Scimitar | +4 (5 ft.) | one target. 5 (1d6 + 2) slashing damage"
+			],
+			"cr":"1/4",
+			"xp":50,
+			"alignment":"Neutre bon",
+			"type":"Small humanoid (goblinoid)",
+			"ac":"15 (leather armor, shield)",
+			"hp":"7 (2d6)",
+			"perception":"15",
+			"speed":"6 m, vol 15 m",
+			"stats":[
+				"8",
+				"14",
+				"10",
+				"10",
+				"8",
+				"8"
+			],
+			"cardType": "CreatureCard"
+		},
+		{
+			"count":1,
+			"title":"Full Plate",
+			"subtitle":"Heavy armor",
+			"icon":"breastplate",
+			"contents":[
+				"property | AC | 18",
+				"property | Strength required | 15",
+				"property | Stealth | Disadvantage",
+				"ruler",
+				"property | Heavy | Unless you have the required strength, your speed is reduced by 10 feet.",
+				"property | Stealth | You have disadvantage on Dexterity (Stealth) checks."
+			],
+			"cardType": "ItemCard"
+		},
+		{
+			"count":1,
+			"title":"Dagger",
+			"subtitle":"Simple melee weapon",
+			"icon":"daggers",
+			"contents":[
+				"property | Damage | 1d4 piercing",
+				"property | Modifier | Strength or Dexterity",
+				"property | Properties | Light, Finesse, Thrown (20/60)",
+				"ruler",
+				"property | Finesse | Use your choice of Strength or Dexterity modifier for attack and damage.",
+				"property | Light | When you attack while dual wielding light weapons, you may use a bonus action to attack with your off hand.",
+				"property | Thrown | You can throw the weapon to make a ranged attack with the given range."
+			],
+			"cardType": "ItemCard"
+		},
+		{
+			"count":1,
+			"title":"Wand of Magic Missiles",
+			"subtitle":"Wondrous item",
+			"icon":"crystal-wand",
+			"contents":[
+				"property | Maximum charges | 7",
+				"property | Recharge | 1d6+1 each day",
+				"property | Depletion | If you expend the last charge, roll a d20. On a 1, the item is destroyed.",
+				"ruler",
+				"fill | 2",
+				"property | Spells | You can use your action to cast the following spells:",
+				"bullet | magic missile, 1st level (1 charge)",
+				"bullet | magic missile, 2nd level (2 charges)",
+				"bullet | magic missile, 3rd level (3 charges)",
+				"fill | 3",
+				"boxes | 7 | 2 | true | true"
+			],
+			"cardType": "ItemCard"
+		},
+		{
+			"count":1,
+			"title":"Potion of Healing",
+			"subtitle":"Potion",
+			"icon":"drink-me",
+			"contents":[
+				"property | Use time | 1 action",
+				"property | Hit points restored | 2d4+2",
+				"ruler",
+				"When you drink this potion, you regain 2d4+2 hitpoints.",
+				"Drinking or administering a potion takes 1 action."
+			],
+			"cardType": "ItemCard"
+		},
+		{
+			"count":1,
+			"title":"Burning Hands",
+			"subtitle":"1st level evocation",
+			"icon":"magic-swirl",
+			"icon_back":"robe",
+			"contents":[
+				"Each creature in a 15-foot cone must make a Dexterity saving throw. A creature takes <b>3d6 fire</b> on a failed save, or half as much damage on a successful one.",
+				"The fire ignites any flammable objects in the area that aren't being worn or carried."
+			],
+			"type":"Abjuration",
+			"range":"Self (15ft cone)",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"+1d6 damage for each slot above 1st",
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Cunning Action",
+			"subtitle":"Rogue feature",
+			"color":"#4B0082",
+			"icon_back":"cloak-dagger",
+			"contents":[
+				"You can take a <b>bonus action on each of your turns</b> in combat. This action can be used only to take the <b>Dash, Disengage, or Hide</b> action.",
+				"fill",
+				"section | Fast hands (Thief 3rd)",
+				"You can also use the bonus action to make a Dexterity (<b>Sleight of Hand</b>) check, use your thieves' tools to <b>disarm a trap</b> or <b>open a lock</b>, or take the <b>Use an Object</b> action."
+			],
+			"cardType": "PowerCard"
+		}
+	]
+}]

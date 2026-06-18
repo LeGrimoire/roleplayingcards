@@ -1,8 +1,8 @@
 
 export function is_storage_available(type) {
+	let storage = window[type],
+		x = '__storage_test__';
 	try {
-		var storage = window[type],
-			x = '__storage_test__';
 		storage.setItem(x, x);
 		storage.removeItem(x);
 		return true;

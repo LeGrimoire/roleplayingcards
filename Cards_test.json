@@ -1,0 +1,186 @@
+{
+	"options":{
+		"pageSize":"A4",
+		"pageRows":3,
+		"pageColumns":3,
+		"cardsArrangement":"front_only",
+		"cardsSize":"25x35",
+		"smallIcons":true,
+		"roundCorners":true,
+		"showSpellClasses":false,
+		"titleSize":"13",
+		"cardsDefault":{
+			"Card":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#A9A9A9",
+				"color_front":"#A9A9A9",
+				"color_back":"#A9A9A9",
+				"icon":"",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false
+			},
+			"CreatureCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#000000",
+				"color_front":"#000000",
+				"color_back":"#000000",
+				"icon":"",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cr":"1/2",
+				"xp":100,
+				"proficiency":2,
+				"size":"M",
+				"alignment":"Sans alignement",
+				"type":"",
+				"ac":"10",
+				"hp":"3 (1d6)",
+				"perception":"10",
+				"speed":"9 m",
+				"stats":[
+					"10",
+					"10",
+					"10",
+					"10",
+					"10",
+					"10"
+				],
+				"vulnerabilities":"",
+				"resistances":"",
+				"immunities":"",
+				"cardType": "CreatureCard"
+			},
+			"ItemCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#696969",
+				"color_front":"#696969",
+				"color_back":"#696969",
+				"icon":"swap-bag",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cardType": "ItemCard"
+			},
+			"SpellCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":true,
+				"subtitle":"",
+				"color":"#800000",
+				"color_front":"#800000",
+				"color_back":"#800000",
+				"icon":"",
+				"icon_back":"magic-swirl",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"level":1,
+				"type":"",
+				"ritual":false,
+				"range":"18 m",
+				"casting_time":"1 action",
+				"duration":"1 round",
+				"materials":"",
+				"verbal":false,
+				"somatic":false,
+				"higherLevels":"",
+				"classes":"",
+				"cardType": "SpellCard"
+			},
+			"PowerCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#2F4F4F",
+				"color_front":"#2F4F4F",
+				"color_back":"#2F4F4F",
+				"icon":"lob-arrow",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cardType": "PowerCard"
+			}
+		}
+	},
+	"cards":[
+		{
+			"count":1,
+			"title":"Creature",
+			"contents":[
+				"description | Is proficient in Con saving throw and the magic caracteristic is Int as shown by the icons above.",
+				"comment | spells | (level) | ability | spells-0 | spell-1-nb | spells-1 | ... | text",
+				"spells | 5 | DD 12, +2 | spells | 5 | spells | | | 2 | spells | text",
+				"comment | attack | name | hit bonus | damage & text",
+				"attack | Attack | +3 | 1d10feu"
+			],
+			"type":"Type",
+			"stats":[
+				"10",
+				"10",
+				"10S",
+				"10M",
+				"10",
+				"10"
+			],
+			"cardType": "CreatureCard"
+		},
+		{
+			"title":"SEPARATOR"
+		},
+		{
+			"count":1,
+			"title":"Goblin",
+			"contents":[
+				"Stealth +6",
+				"ruler",
+				"property | Nimble escape | Disengage or Hide as bonus action",
+				"fill",
+				"section | Actions",
+				"attack | Scimitar | +4 (5 ft.) | one target. 5 (1d6 + 2) slashing damage"
+			],
+			"cr":"1/4",
+			"xp":50,
+			"alignment":"Neutre bon",
+			"type":"Small humanoid (goblinoid)",
+			"ac":"15 (leather armor, shield)",
+			"hp":"7 (2d6)",
+			"perception":"15",
+			"speed":"6 m, vol 15 m",
+			"stats":[
+				"8",
+				"14",
+				"10",
+				"10",
+				"8",
+				"8"
+			],
+			"cardType": "CreatureCard"
+		}
+	]
+}

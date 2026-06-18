@@ -1,0 +1,776 @@
+{
+	"options":{
+		"name":"Sorts prêtre",
+		"pageSize":"A4",
+		"pageRows":3,
+		"pageColumns":3,
+		"cardsArrangement":"front_only",
+		"cardsSize":"25x35",
+		"smallIcons":true,
+		"roundCorners":true,
+		"showSpellClasses":false,
+		"titleSize":"14",
+		"count":1,
+		"cardsDefault":{
+			"Card":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#A9A9A9",
+				"color_front":"#A9A9A9",
+				"color_back":"#A9A9A9",
+				"icon":"",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false
+			},
+			"CreatureCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#000000",
+				"color_front":"#000000",
+				"color_back":"#000000",
+				"icon":"",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cr":"1/2",
+				"xp":100,
+				"proficiency":2,
+				"size":"M",
+				"alignment":"Sans alignement",
+				"type":"",
+				"ac":"10",
+				"hp":"3 (1d6)",
+				"perception":"10",
+				"speed":"9 m",
+				"stats":[
+					"10",
+					"10",
+					"10",
+					"10",
+					"10",
+					"10"
+				],
+				"vulnerabilities":"",
+				"resistances":"",
+				"immunities":"",
+				"cardType": "CreatureCard"
+			},
+			"ItemCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#696969",
+				"color_front":"#696969",
+				"color_back":"#696969",
+				"icon":"swap-bag",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cardType": "ItemCard"
+			},
+			"SpellCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":true,
+				"subtitle":"",
+				"color":"#800000",
+				"color_front":"#800000",
+				"color_back":"#800000",
+				"icon":"",
+				"icon_back":"magic-swirl",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"level":1,
+				"type":"",
+				"ritual":false,
+				"range":"18 m",
+				"casting_time":"1 action",
+				"duration":"1 round",
+				"materials":"",
+				"verbal":false,
+				"somatic":false,
+				"higherLevels":"",
+				"classes":"",
+				"cardType": "SpellCard"
+			},
+			"PowerCard":
+			{
+				"count":0,
+				"title":"",
+				"title_multiline":false,
+				"subtitle":"",
+				"color":"#2F4F4F",
+				"color_front":"#2F4F4F",
+				"color_back":"#2F4F4F",
+				"icon":"lob-arrow",
+				"icon_back":"",
+				"background_image":"",
+				"description":"",
+				"reference":"",
+				"compact":false,
+				"cardType": "PowerCard"
+			}
+		}
+	},
+	"cards":[
+		{
+			"count":1,
+			"title":"Assistance",
+			"contents":[
+				"Vous touchez une créature consentante. Une fois avant la fin du sort, la cible peut <b>ajouter 1d4 à un JC de son choix</b>. Elle peut lancer le dé avant ou après avoir effectué le jet."
+			],
+			"level":"0",
+			"type":"Divination",
+			"range":"contact",
+			"duration":"concentration, 1 min",
+			"verbal":true,
+			"somatic":true,
+			"classes":"Clerc, Druide",
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Lumière",
+			"contents":[
+				"Vous touchez <b>un objet</b> dont aucune dimension <b>ne dépasse 3 m</b>. Tant que le sort persiste, cet objet dégage une <b>lumière vive sur 6 m</b>, et une <b>lumière faible sur 6 m de plus</b>. Elle est de la couleur de votre choix. Pour la bloquer, il suffit de recouvrir l’objet d’un écran opaque.",
+				"Le sort prend fin si vous le relancez ou si vous le révoquez au prix d’une action.",
+				"Si vous ciblez un objet tenu ou porté par une créature hostile, cette dernière doit réussir un JS Dex pour éviter le sort."
+			],
+			"level":"0",
+			"type":"Évocation",
+			"range":"contact",
+			"duration":"1h",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous êtes niv. 11+, vous pouvez désigner jusqu’à 6 créatures qui sont les seules à percevoir la lumière, outre celles douées de vision lucide.",
+			"classes":"Barde, Clerc, Mage, Ensorceleur",
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Résistance",
+			"contents":[
+				"",
+				"Vous touchez une créature consentante. Une fois avant la fin du sort, la cible peut <b>ajouter 1d4 à un JS de son choix</b>. Elle peut lancer le dé avant ou après avoir effectué le jet."
+			],
+			"level":"0",
+			"type":"Abjuration",
+			"range":"contact",
+			"duration":"concentration, 1 min",
+			"verbal":true,
+			"somatic":true,
+			"classes":"Clerc, Druide",
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Arme mordante",
+			"contents":[
+				"description | L’arme que vous tenez est soudain bien plus affûtée. ",
+				"Jusqu’à la fin du sort, quand vous <b>déterminez les dégâts d’une attaque</b> réussie avec cette arme et que vous obtenez un <b>résultat inférieur à la moyenne sur un dé</b>, on considère en fait que <b>vous avez obtenu un résultat moyen</b>, selon le tableau suivant :",
+				"space | 3",
+				"table_header | Dé et résultat initial | Résultat retenu",
+				"table_line | d4 (1-2) | 3",
+				"table_line | d6 (1-3) | 4",
+				"table_line | d8 (1-4) | 5",
+				"table_line | d10 (1-5) | 6",
+				"table_line | d12 (1-6) | 7",
+				"space | 2",
+				"En outre, tant que le sort persiste, <b>la résistance aux dégâts physiques non magiques ne s’applique pas</b> contre votre arme."
+			],
+			"type":"Transmutation",
+			"range":"personnelle",
+			"casting_time":"1 action bonus",
+			"duration":"1 min",
+			"verbal":true,
+			"somatic":true,
+			"classes":"Clerc, Paladin, Rôdeur",
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Bénédiction",
+			"contents":[
+				"Vous bénissez jusqu’à <b>trois créatures</b> de votre choix situées à portée. Chaque fois qu’une cible effectue un <b>JA ou un JS</b> avant la fin du sort, elle <b>peut ajouter 1d4</b> au jet."
+			],
+			"type":"Enchantement",
+			"range":"9 m",
+			"duration":"concentration, 1 min",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Vous pouvez cibler une créature supplémentaire par niveau d’emplacement au-dessus du 1er.",
+			"classes":"Clerc, Paladin",
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Blessure",
+			"contents":[
+				"Effectuez une <b>attaque de sort au corps à corps</b> contre une créature à portée d’allonge. ",
+				"success | <b>3d10 nécrotiques</b>."
+			],
+			"type":"Nécromancie",
+			"range":"contact",
+			"duration":"instantanée",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Les dégâts augmentent de 1d10 par niveau d’emplacement au-dessus du 1er.",
+			"classes":"Clerc",
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Bouclier de la foi",
+			"contents":[
+				"Un champ scintillant apparaît autour d’une créature de votre choix, ce qui lui confère un bonus de <b>+2 CA</b> pour toute la durée du sort."
+			],
+			"type":"Abjuration",
+			"casting_time":"1 action bonus",
+			"duration":"concentration, 10 min",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Vous pouvez cibler une créature supplémentaire par niveau d’emplacement au-dessus du 1er.",
+			"classes":"Clerc, Paladin",
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Convergence",
+			"contents":[
+				"Vous savez aussitôt dans quelle <b>direction</b> se trouve la créature <b>la plus proche</b> remplissant ces conditions :",
+				"space | 1",
+				"bullet | Int > 5",
+				"bullet | Entre 18 m et 1,5 km de vous",
+				"bullet | Intérêts, idéaux communs, attirance pour vous, bienveillance pour ce que vous représentez ou autre raison de vous apprécier. ",
+				"bullet | Vous ne devez pas soupçonner cette affinité ou sa présence dans les parages.",
+				"space | 2",
+				"Le sort ne vous donne que la direction. Si une autre créature remplissant les conditions se trouve plus près de vous, vous êtes aussitôt guidé vers elle. Le sort prend fin dès qu'une créature correspondante se trouve à 18 m."
+			],
+			"type":"Divination",
+			"ritual":true,
+			"range":"personnelle",
+			"duration":"concentration, 1h",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Chaque niveau d'emplacement au-dessus du 1er augmente la durée de 1h et le rayon de 1,5 km.",
+			"classes":"Barde, Clerc, Paladin",
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Création ou destruction d'eau",
+			"contents":[
+				"property | Création d’eau | ",
+				"Vous créez jusqu’à <b>40 L d’eau potable</b> à portée, dans un récipient ouvert. ",
+				"Ou alors, elle tombe sous la forme d’une <b>averse dans un cube de 9 m</b> d’arête à portée et éteint les flammes exposées dans la zone.",
+				"space | 2",
+				"property | Destruction d’eau | ",
+				"Vous détruisez jusqu’à <b>40 L d’eau potable</b> dans un récipient ouvert à portée. ",
+				"Ou alors, vous détruisez un cube de 9 m d’arête de brouillard à portée."
+			],
+			"type":"Transmutation",
+			"range":"9 m",
+			"duration":"instantanée",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Vous créez ou détruisez 40 L d’eau de plus (ou l’arête du cube augmente de 1,5 m) par niveau d’emplacement au-dessus du 1er.",
+			"classes":"Clerc Barbare",
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Détection de la magie",
+			"contents":[
+				"Vous décelez la présence de magie à 9 m de vous. ",
+				"Si vous en détectez :",
+				"property | \\Action | Vous percevez une légère aura autour de tout objet ou créature visibles et porteurs de magie dans la zone (vous en découvrez l’école de magie, le cas échéant).",
+				"Le sort est limité par les obstacles."
+			],
+			"type":"Divination",
+			"ritual":true,
+			"range":"personnelle",
+			"duration":"concentration, 10 min",
+			"verbal":true,
+			"somatic":true,
+			"cardType": "SpellCard"
+		},
+		{
+			"count":1,
+			"title":"Détection du Mal et du Bien",
+			"contents":[
+				"Si une aberration, un céleste, un élémentaire, une fée, un fiélon, un mort-vivant ou un ravageur du Chancre se trouve <b>à 9 m de vous</b>, vous en décelez la présence et la <b>position</b>. ",
+				"Vous savez également si <b>un endroit ou un objet</b> situé à 9 m de vous a été <b>magiquement consacré ou profané</b>.",
+				"Le sort est limité par les obstacles."
+			],
+			"type":"Divination",
+			"range":"personnelle",
+			"duration":"concentration, 10 min",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Le rayon d’action augmente de 9 m par niveau d’emplacement au-dessus du 1er.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Détection du poison et des maladies",
+			"contents":[
+				"Vous décelez la présence et la <b>position</b> de <b>\\poisons, \\créatures venimeuses et maladies à 9 m</b> de vous. Vous identifiez aussi le <b>type</b> de \\poison, de \\créature venimeuse ou de maladie dans chaque cas.",
+				"Le sort est limité par les obstacles.",
+				"fill",
+				"icon | dragons-gritty | 14 | left | section | Identifier le poison",
+				"Vous devez effectuer un test de Médecine par substance (\\poison ou maladie) afin de l’identifier. Le plus souvent le DD est de 15, mais il peut être plus bas pour une substance bien connue, ou au contraire plus élevé si la menace est rare. En cas d’échec, vous savez seulement si tel objet ou personne est \\empoisonné ou contagieux."
+			],
+			"type":"Divination",
+			"ritual":true,
+			"range":"personnelle",
+			"duration":"concentration, 10 min",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Le rayon d’action augmente de 9 m par niveau d’emplacement au-dessus du 1er.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Éclair traçant",
+			"contents":[
+				"Effectuez une <b>attaque de sort à distance</b> contre la cible. En cas de réussite, elle subit <b>4d6 radiants</b>, dégage une faible lumière jusqu'à votre tour suivant et le <b>prochain JA bénéficie d’un av.</b>"
+			],
+			"type":"Évocation",
+			"range":"36 m",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 2+, les dégâts augmentent de 1d6 par niveau d’emplacement au-dessus du 1er.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Égide fugace",
+			"contents":[
+				"Vous savez intervenir très vite quand un lanceur de sort s’apprête à utiliser sa magie. Vous savez aussitôt si le sort que s’apprête à lancer la créature est du 3e niveau ou inférieur, entraîne des jets de sauve-garde ou un jet d’attaque de sort dès la fin de l’incantation et si celle-ci ne dure pas plus de 1 action. Si toutes ces conditions ne sont pas réunies, vous pouvez renoncer à lancer égide fugace (vous gardez alors l’emplacement de sort correspondant, mais vous avez effective-ment joué votre réaction). Si toutes les conditions sont réunies, vous pouvez désigner autant de créatures que vous le souhaitez dans un rayon de 18 m. Celles-ci bénéficient d’un avantage aux jets de sauve-garde contre le sort en question et les jets d’attaque de ce même sort subissent un désavantage contre elles. Cet effet prend fin dès la résolution de ces jets à la fin de l’incantation de la créature."
+			],
+			"type":"Abjuration",
+			"casting_time":"1 réaction, que vous jouez quand vous voyez une créature jeter un sort dans un rayon de 18 m de vous",
+			"duration":"instantanée",
+			"somatic":true,
+			"higherLevels":"Quand vous jetez ce sort en utilisant un emplacement du 3e ou 4e niveau, égide fugace peut s’appliquer contre des sorts du 5e niveau ou inférieur ; avec un emplacement du 5e ou 6e niveau, égide fugace s’applique contre des sorts du 7e niveau ou inférieur ; avec un emplacement du 7e niveau ou supérieur, égide fugace s’applique contre les sorts de tout niveau.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Imprécation",
+			"contents":[
+				"Jusqu’à trois créatures de votre choix que vous voyez à portée doivent effectuer un JS Charisme. Chaque fois qu’une cible qui a raté ce jet de sauvegarde effectue un jet d’attaque ou de sauvegarde avant que le sort prenne fin, elle doit lancer un d4 et soustraire le résultat du jet de sauvegarde ou d’attaque en question."
+			],
+			"type":"Enchantement",
+			"range":"9 m",
+			"duration":"concentration, 1 min",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 2+, vous pouvez cibler une créature supplémentaire par niveau d’emplacement au-dessus du 1er.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Injonction",
+			"contents":[
+				"Vous donnez un ordre d’un mot ou d’une expression comptant trois syllabes ou moins, à une créature que vous voyez à portée. La cible doit réussir un JS Sagesse sous peine d’obéir à l’ordre à son tour de jeu suivant. Le sort n’a aucun effet sur les morts-vivants, de même que sur les cibles qui ne comprennent pas votre langue ou pour les-quelles l’ordre est ostensiblement nuisible.",
+				"Voici la description des ordres les plus courants. ",
+				"• À terre. La cible tombe à terre et met fin à son tour de jeu.",
+				"• Approche. La cible s’avance vers vous en prenant le chemin le plus court et son tour de jeu prend fin si elle se retrouve dans un rayon de 1,50 m de vous.",
+				"• Fuis. La cible consacre son tour à s’éloigner de vous le plus rapidement possible.",
+				"• Halte. La cible ne se déplace pas et n’entreprend pas d’action. Une créature volante reste en l’air, pourvu qu’elle en soit capable. Si elle doit se déplacer pour cela, elle parcourt la dis-tance minimale pour rester en l’air.",
+				"• Lâche. La cible lâche ce qu’elle tient et son tour de jeu prend fin.Rien ne vous empêche d’en donner d’autres. Dans ce cas, le meneur déterminera le comportement de la cible. Si cette dernière est incapable d’obéir à votre ordre, le sort prend fin."
+			],
+			"type":"Enchantement",
+			"verbal":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 2+, vous pouvez affecter une créature supplémentaire par niveau d’emplacement au-dessus du 1er. Les créatures doivent se situer dans un rayon de 9 m les unes des autres quand vous les ciblez.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Mot de guérison",
+			"contents":[
+				"Une créature de votre choix que vous voyez à portée récupère un nombre de points de vie égal à 1d4 + votre modificateur de caractéristique magique. Ce sort n’a aucun effet sur les créatures artificielles et les morts-vivants."
+			],
+			"type":"Évocation",
+			"casting_time":"1 action bonus",
+			"duration":"instantanée",
+			"verbal":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 2+, les soins augmentent de 1d4 par niveau d’emplacement au-dessus du 1er.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Potion de secours",
+			"contents":[
+				"Vous tenez un récipient que vous remplissez d’eau et dans lequel vous versez une goutte de miel. Au terme de votre incantation, ce liquide acquiert les mêmes propriétés qu’une potion magique que vous portez. L’emplacement de sort que vous utilisez détermine la puissance de la potion que vous pouvez copier. Vous ne pouvez dupliquer qu’une véritable potion magique à proprement parler (cf. Arcanes), pas une potion de secours ou autre décoction.Au terme de la durée du sort, si la potion de secours n’a pas été bue ou utilisée, elle s’évapore.",
+				"",
+				"table_header | Rareté de la potion | Emplacement de sort requis",
+				"table_line | Courante | 1",
+				"table_line | Assez rare | 3",
+				"table_line | Rare | 5",
+				"table_line | Rarissime | 7",
+				"table_line | Légendaire | 9"
+			],
+			"type":"Transmutation",
+			"range":"contact",
+			"casting_time":"1 min",
+			"duration":"1 h",
+			"verbal":true,
+			"somatic":true,
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Protection contre le Mal et le Bien",
+			"contents":[
+				"Tant que persiste le sort, une créature consentante que vous touchez est protégée contre certains types de créatures : aberrations, célestes, élémentaires, fées, fiélons, morts-vivants ou ravageurs du Chancre.La protection offre plusieurs avantages. Les créatures de ces types subissent un désavantage aux jets d’attaque contre la cible. Par ailleurs, la cible ne peut pas être charmée, effrayée ou possédée par ces créatures. Si la cible est déjà charmée, effrayée ou possédée par une telle créature, elle bénéficie d’un avantage à tout nouveau jet de sauvegarde contre l’effet concerné."
+			],
+			"type":"Abjuration",
+			"range":"contact",
+			"duration":"concentration, 10 min",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 2+, vous pouvez cibler une créature supplémentaire par niveau d’emplacement au-dessus du 1er.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Purification de nourriture et d'eau",
+			"contents":[
+				"Vous purifiez et rendez comestibles et potables la nourriture et les boissons non magiques situées dans une sphère de 1,50 m de rayon centrée sur un point de votre choix à portée."
+			],
+			"type":"Transmutation",
+			"ritual":true,
+			"range":"38 m",
+			"duration":"instantanée",
+			"verbal":true,
+			"somatic":true,
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Sanctuaire",
+			"contents":[
+				"Vous protégez une créature située à portée contre les attaques. Tant que le sort persiste, toute créature qui cible la créature protégée avec une attaque ou un sort délétère doit d’abord effectuer un JS Sagesse. En cas d’échec, elle doit choisir une autre cible sous peine de perdre l’attaque ou le sort en question. Ce sort ne protège toute-fois pas la cible des effets de zone, comme l’explosion d’une boule de feu.Si la cible effectue une attaque ou jette un sort qui affecte une créature ennemie, ce sort prend fin."
+			],
+			"type":"Abjuration",
+			"range":"9 m",
+			"casting_time":"1 action bonus",
+			"duration":"1 min",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 2+, vous pouvez cibler une créature supplémentaire par niveau d’emplacement au-dessus du 2e.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Soins",
+			"contents":[
+				"Une créature que vous touchez récupère un nombre de points de vie égal à 1d8 + votre modificateur de caractéristique magique. Ce sort n’a aucun effet sur les morts-vivants et les créatures artificielles."
+			],
+			"level":"1",
+			"type":"Évocation",
+			"range":"contact",
+			"duration":"instantanée",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 2+, les soins augmentent de 1d8 par niveau de sort au-dessus du 1er.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Aide",
+			"contents":[
+				"Votre sort galvanise vos alliés en leur conférant une robustesse et une détermination accrues. Choisissez jusqu’à trois créatures situées à portée. Leurs points de vie maximums et leurs points de vie actuels augmentent de 5 pour toute la durée du sort."
+			],
+			"level":"2",
+			"type":"Abjuration",
+			"range":"9 m",
+			"duration":"8 h",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 3+, les cibles gagnent 5 points de vie supplémentaires par niveau d’emplacement au-dessus du 2e.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Amélioration de caractéristique",
+			"contents":[
+				"Vous touchez une créature et lui conférez une amélioration magique. Choisissez un des effets suivants ; la cible en bénéficie jusqu’à la fin du sort.",
+				"• Endurance de l’ours. La cible bénéficie d’un avantage aux tests de Constitution. Elle gagne aussi 2d6 points de vie temporaires, qui sont perdus quand le sort prend fin.",
+				"• Force de taureau. La cible bénéficie d’un avantage aux tests de Force et sa charge maximale est doublée.",
+				"• Grâce féline. La cible bénéficie d’un avantage aux tests de Dextérité. En outre, elle ne subit pas de dégâts quand elle tombe d’une hauteur de 6 m ou moins si elle n’est pas neutralisée.",
+				"• Splendeur de l’aigle. La cible bénéficie d’un avantage aux tests de Charisme.",
+				"• Ruse de renard. La cible bénéficie d’un avantage aux tests d’Intelligence.",
+				"• Sagesse du hibou. La cible bénéficie d’un avantage aux tests de Sagesse."
+			],
+			"level":"2",
+			"type":"Transmutation",
+			"range":"contact",
+			"duration":"concentration, 1 h",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 3+, vous pouvez cibler une créature supplémentaire par niveau d’emplacement au-dessus du 2e.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Apaisement des émotions",
+			"contents":[
+				"Vous tentez de réprimer les émotions fortes d’un groupe de gens. Chaque humanoïde situé dans une sphère de 6 m de rayon centrée sur un point que vous choisissez à portée doit effectuer un JS Charisme. Chacun peut décider de le rater s’il le souhaite. En cas d’échec, choisissez un des deux effets suivants.",
+				"• Vous pouvez réprimer tout effet infligeant à une cible l’état préjudiciable charmé ou effrayé. Quand ce sort prend fin, tout effet réprimé reprend, sous réserve que sa durée n’ait pas expiré entre-temps.",
+				"• Au lieu de cela, vous pouvez rendre une cible indifférente envers des créatures de votre choix si elle leur est hostile. Cette indifférence prend fin si la cible est attaquée ou blessée par un sort, ou voit un de ses amis se faire blesser. Quand le sort prend fin, la créature redevient hostile, à moins que le meneur n’en décide autrement.",
+				"fill",
+				"icon | dragons-intrigue | 14 | left | section | Paix et amour",
+				"Si vous utilisez cette option, en cas d’échec de 5 ou plus au JS, les individus ciblés par le deuxième effet du sort se sentent particulièrement bien et même joyeuses. Leur comportement dépend de leur personnalité, et leur humeur peut parfois influencer leur prise de décision vers le pacifisme et la recherche de conciliation. "
+			],
+			"level":"2",
+			"type":"Enchantement",
+			"duration":"concentration, 1 min",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 3+, le rayon de la sphère augmente de 3 m supplémentaires par niveau d’emplacement au-dessus du 2e.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Arme spirituelle",
+			"contents":[
+				"Une arme spectrale flottante apparaît à portée et persiste pour toute la durée du sort ou jusqu’à ce que vous relanciez ce sort. Au moment de l’incantation, vous pouvez effectuer une attaque de sort de corps à corps contre une créature située dans un rayon de 1,50 m de l’arme. En cas de réussite, la cible subit des dégâts de force égaux à 1d8 + votre modificateur de caractéristique magique.Au prix d’une action bonus à votre tour de jeu, vous pouvez dé-placer l’arme jusqu’à 6 m et répéter l’attaque contre une créature située dans un rayon de 1,50 m de celle-ci.L’arme prend la forme de votre choix."
+			],
+			"level":"2",
+			"type":"Évocation",
+			"casting_time":"1 action bonus",
+			"duration":"1 min",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 3+, les dégâts augmentent de 1d8 tous les deux niveaux d’emplacement au-dessus du 2e.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Arme vengeresse",
+			"contents":[
+				"Votre arme de corps à corps profère l’ire de votre divinité. Chaque fois que vous touchez une cible avec cette arme avant la fin du sort, vous lui infligez des dégâts psychiques supplémentaires égaux à votre modificateur de caractéristique magique, et l’obligez à réussir un JS Sagesse sous peine de se retrouver effrayée par vous tant que le sort persiste. Au prix d’une action, la créature peut effectuer un test de Sagesse contre le DD de votre sort pour raffermir sa détermination et ne plus être effrayée par vous."
+			],
+			"level":"2",
+			"type":"Évocation",
+			"range":"personnelle",
+			"casting_time":"1 action bonus",
+			"duration":"concentration, 1 min",
+			"verbal":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 4+, les dégâts supplémentaires sont égaux au double de votre modificateur de caractéristique magique.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Augure",
+			"contents":[
+				"En lançant des baguettes serties de gemmes ou des osselets de dragon, en étalant des cartes enluminées ou en usant de quelque autre colifichet divinatoire, vous recevez un présage de la part d’une entité surnaturelle qui vous révèle si l’ensemble des actions que vous comptez entreprendre dans les 30 prochaines minutes seront positives ou non. Le meneur choisit parmi les présages possibles suivants :",
+				"• Fortune, pour des résultats bénéfiques.",
+				"• Misère, pour des résultats défavorables.",
+				"• Fortune et misère, pour des résultats à la fois bénéfiques et défavorables.",
+				"• Rien, pour des résultats qui ne sont ni bénéfiques ni défavorables.",
+				"Le sort ne tient pas compte des circonstances éventuelles qui pour-raient modifier l’issue de l’augure, comme l’incantation d’autres sorts, la venue d’un nouveau compagnon ou le départ d’un allié. Si vous lancez plusieurs fois le sort avant d’avoir terminé un repos long, il y a 25 % de chance cumulatifs pour chaque incantation au-delà de la première d’obtenir un résultat aléatoire. Le meneur effectue bien évidemment ce jet en secret."
+			],
+			"level":"2",
+			"type":"Divination",
+			"ritual":true,
+			"range":"personelle",
+			"casting_time":"1 min",
+			"duration":"instantanée",
+			"verbal":true,
+			"somatic":true,
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Cécité/surdité",
+			"contents":[
+				"Vous pouvez aveugler ou assourdir un adversaire. Choisissez une créature que vous voyez à portée, qui doit effectuer un JS Constitution. En cas d’échec, elle est assourdie ou aveuglée (à votre convenance). À la fin de chacun de ses tours de jeu, la cible peut effectuer un JS Constitution. En cas de réussite, le sort prend fin."
+			],
+			"level":"2",
+			"type":"Nécromancie",
+			"range":"9 m",
+			"duration":"1 min",
+			"verbal":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 3+, vous pouvez cibler une créature supplémentaire par niveau d’emplacement au-dessus du 2e.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Détection des pièges",
+			"contents":[
+				"Vous détectez la présence des pièges situés à portée et susceptibles d’être vus de votre position. Vous ne pouvez ainsi voir au-travers des murs ou de portes fermées. Au regard de ce sort, un piège inclut tout ce qui peut déclencher un effet soudain ou inattendu que vous considérez comme néfaste ou indésirable, et expressément conçu comme tel par son créateur. Cette divination permettra donc de détecter une zone affectée par une alarme, un glyphe de garde ou un piège mécanique, mais ne révélera pas un sol fragile, un plafond instable ou des sables mouvants.Ce sort signale simplement la présence d’un piège. Vous ne dé-couvrez pas la position de chaque piège, mais êtes conscient de la nature du danger que le piège détecté représente.Les frontières éthérées (cf. chapitre « Utiliser la magie ») peuvent mettre le sort en échec.",
+				"icon | dragons-gritty | 14 | left | section | MJ Option, :Deviner l’emplacement et la nature du piège",
+				"Si vous utilisez cette règle optionnelle, quand vous jetez ce sort en utilisant un emplacement de sort du 3e niveau ou supérieur, le meneur vous livre un indice ou une devinette par niveau d’emplacement au-dessus du 2e. Vous trouverez ci-dessous deux propositions pour jouer ces informations. ",
+				"Devinette ",
+				"Un meneur inspiré peut créer à la volée des devinettes. Voici pour exemple ce qui pourrait être dit pour décrire un piège consistant en une fine pointe enduite de poison et se trouvant dans le mécanisme d’ouverture d’une porte menant à un trésor :",
+				"• « Le cupide regrettera son empressement » pourrait dé-signer un objet de valeur ou la porte d’un trésor. ",
+				"• « Qui s’y frotte s’y pique » ferait référence à un piquant ou à un piège impliquant de toucher. ",
+				"• « Invisible et insidieux » pourra désigner du poison, sous la forme d’un gaz mortel ou d’un venin. ",
+				"Chaud ou froid",
+				"Dans cette devinette plus facile à improviser, le meneur demande au lanceur de sorts de désigner un lieu ou objet visible qu’il pense être piégé (porte rouge, statue de guerrier et ainsi de suite). Le meneur répond ainsi :",
+				"• Froid si l’objet n’est pas piégé et éloigné du danger",
+				"• Tiède pour un objet assez proche du piège",
+				"• Chaud pour un objet directement à proximité du piège.",
+				"• Brûlant si le joueur a précisément deviné l’objet (serrure de la porte rouge, dalle sous la statue, etc.)."
+			],
+			"level":"2",
+			"type":"Divination",
+			"range":"36 m",
+			"duration":"instantanée",
+			"verbal":true,
+			"somatic":true,
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Flamme éternelle",
+			"contents":[
+				"Une flamme apparaît brusquement sur un objet que vous touchez. Elle produit autant de lumière qu’une torche. Si elle ressemble à une flamme normale, elle ne dégage pas de chaleur et ne consomme pas d’oxygène. Une flamme éternelle peut être couverte ou cachée, mais pas étouffée ni éteinte."
+			],
+			"level":"2",
+			"type":"Évocation",
+			"range":"contact",
+			"duration":"jusqu'à dissipation",
+			"verbal":true,
+			"somatic":true,
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Immobilisation de personne",
+			"contents":[
+				"Choisissez un humanoïde que vous voyez à portée. La cible doit réussir un JS Sagesse sous peine d’être paralysée pour toute la durée du sort. À la fin de chacun de ses tours de jeu, la cible a droit à un nouveau JS Sagesse. En cas de réussite, le sort prend fin la concernant."
+			],
+			"level":"2",
+			"type":"Enchantement",
+			"duration":"concentration, 1 min",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 3+, vous pouvez cibler un humanoïde supplémentaire par niveau d’emplacement au-dessus du 2e. Les humanoïdes doivent se situer dans un rayon de 9 m les uns des autres quand vous les ciblez.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Localisation d'objet",
+			"contents":[
+				"Décrivez ou nommez un objet qui vous est familier. Vous découvrez la direction dans laquelle se trouve la cible, tant qu’elle se situe dans un rayon de 300 m de vous. Si elle se déplace, vous savez dans quelle direction elle progresse.Ce sort permet de localiser un objet précis que vous connaissez, sous réserve que vous l’ayez déjà vu de près (dans un rayon de 9 m) au moins une fois. Ce sort permet aussi de localiser l’objet le plus proche d’un genre spécifique, comme un type d’habit, de bijou, de meuble, d’outil ou d’arme.Ce sort ne permet pas de localiser un objet si une épaisseur de plomb, aussi fine soit-elle, coupe le chemin le plus direct qui vous en sépare."
+			],
+			"level":"2",
+			"type":"Divination",
+			"range":"personnelle",
+			"duration":"concentration, 10 min",
+			"verbal":true,
+			"somatic":true,
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Préservation des morts",
+			"contents":[
+				"Vous touchez un cadavre ou une dépouille. Pour toute la durée du sort, la cible est protégée de la décomposition et ne peut pas devenir un mort-vivant. Ce sort rallonge également le délai permettant de ramener la cible à la vie, car les jours passés sous cet effet ne sont pas pris en compte dans la limite impartie par les sorts comme rappel à la vie."
+			],
+			"level":"2",
+			"type":"Nécromancie",
+			"range":"contact",
+			"duration":"10 jours",
+			"verbal":true,
+			"somatic":true,
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Prière de guérison",
+			"contents":[
+				"Jusqu’à six créatures de votre choix que vous voyez à portée récupèrent un nombre de points de vie égal à 2d8 + votre modificateur de caractéristique magique. Ce sort n’a aucun effet sur les morts-vivants et les créatures artificielles."
+			],
+			"level":"2",
+			"type":"Évocation",
+			"range":"9 m",
+			"casting_time":"10 min",
+			"duration":"instantanée",
+			"verbal":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 3+, les soins augmentent de 1d8 par niveau d’emplacement au-dessus du 2e.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Protection contre le poison",
+			"contents":[
+				"Vous touchez une créature. Si elle est empoisonnée, vous neutralisez le poison. Si plusieurs poisons l’affectent, vous en neutralisez un que vous savez présent, ou un au hasard.Pour toute la durée du sort, la cible bénéficie d’un avantage aux jets de sauvegarde contre l’état préjudiciable empoisonné et d’une résistance aux dégâts de poison."
+			],
+			"level":"2",
+			"type":"Abjuration",
+			"range":"contact",
+			"duration":"1 h",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 3+, vous pouvez cibler une créature supplémentaire par niveau d’emplacement au-dessus du 2e.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Protection d'autrui",
+			"contents":[
+				"Ce sort protège une créature consentante que vous touchez et noue un lien mystique entre vous et elle tant que le sort persiste. Aussi longtemps que la cible se situe dans un rayon de 18 m de vous, elle bénéficie d’un bonus de +1 à la CA et aux jets de sauvegarde, ainsi que d’une résistance à tous les dégâts. En outre, chaque fois qu’elle subit des dégâts, vous en subissez autant.Le sort prend fin si vous tombez à 0 point de vie, si plus de 18 m vous séparent de la cible ou si le sort est relancé sur une des deux créatures. Enfin, vous pouvez le révoquer au prix d’une action."
+			],
+			"level":"2",
+			"type":"Abjuration",
+			"range":"contact",
+			"duration":"1 h",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 3+, vous pouvez augmenter la durée du sort de 1 heure par niveau d’emplacement au-dessus du 2e.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Restauration partielle",
+			"contents":[
+				"Vous touchez une créature et mettez fin à une maladie ou un état préjudiciable l’affectant. L’état préjudiciable en question peut être assourdi, aveuglé, empoisonné ou paralysé.",
+				"fill",
+				"icon | dragons-gritty | 14 | left | section | L’enracinement du mal",
+				"Si vous utilisez la règle optionnelle de l’enracinement du mal, le sort restauration partielle n’aura un effet immédiat de guérison que sur les empoisonnements ou les contagions qui ont eu lieu il y a moins de 5 rounds ou 30 secondes. Si l’empoisonnement ou la maladie est plus ancien, la situation est plus compliquée et le sort fonctionne différemment.",
+				"• Vous lancez le sort sur la cible, la durée étant alors de concentration, jusqu’à 1 heure. ",
+				"• Vous pouvez vous éloigner de la cible pendant cette durée, mais si plus de 60 m vous séparent d’elle, l’effet prend fin.",
+				"• Tant que persiste l’effet, la maladie ou l’état préjudiciable est inhibé ; le personnage ne le subit pas.",
+				"• Au bout d’une heure, si le sort fait toujours effet, vous devez réussir un test de Sagesse (Médecine) dont le DD dépend de la rareté du poison ou de la maladie (15 à 25). S’il s’agit d’un état préjudiciable non provoqué par un poison ou une maladie, le DD est de 15. En cas de réussite, vous débarrassez définitive-ment la cible de l’état ou de la maladie en question.",
+				"• Si l’état préjudiciable ou la maladie n’a pas été éliminé pendant les effets du sort et qu’il était censé se prolonger au-delà, il s’applique de nouveau. Sa durée est décomptée normalement depuis le début.",
+				"• Le sort n’a aucun effet sur la fatigue causée par la maladie, ni sur d’éventuels nouveaux états préjudiciables ou maladies affectant la cible pendant sa durée."
+			],
+			"level":"2",
+			"type":"Abjuration",
+			"range":"contact",
+			"duration":"instantanée (ou concentration 1 h, cf. option)",
+			"verbal":true,
+			"somatic":true,
+			"higherLevels":"Si vous utilisez un emplacement de sort du niv. 3+, la durée augmente de 1 heure par niveau d’emplacement au-dessus du 2e et vous pouvez réitérer le test de Sagesse (Médecine) à la fin de chaque heure.",
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Silence",
+			"contents":[
+				"Pour toute la durée du sort, aucun son ne peut être produit au sein d’une sphère de 6 m de rayon centrée sur un point que vous choisissez à portée, ni traverser les limites de cette zone. Tout objet ou créature entièrement situé à l’intérieur de la sphère est immunisé contre les dégâts de tonnerre. En outre, toute créature située dans la sphère est assourdie. Il est par conséquent impossible d’y jeter un sort accompagné d’une composante verbale."
+			],
+			"level":"2",
+			"type":"Illusion",
+			"ritual":true,
+			"range":"36 m",
+			"duration":"concentration, 10 min",
+			"verbal":true,
+			"somatic":true,
+			"cardType": "SpellCard"
+		},
+		{
+			"title":"Zone de vérité",
+			"contents":[
+				"Vous créez une zone magique qui protège de la duplicité. Cette zone prend la forme d’une sphère de 4,50 m de rayon centrée sur un point de vote choix à portée. Tant que le sort persiste, toute créature qui entre dans la zone pour la première fois d’un tour de jeu ou y commence son tour de jeu doit effectuer un JS Charisme. En cas d’échec, elle ne peut mentir intentionnellement dans la sphère. Vous savez pour chaque créature si elle réussit ou rate son jet de sauvegarde.Une créature affectée est consciente du sort et peut donc se sous-traire aux questions auxquelles elle répondrait par des mensonges. Il lui suffit pour cela de rester suffisamment évasive tout en disant la vérité.",
+				"icon | dragons-gritty | 14 | left | section | La différence entre conviction et vérité",
+				"La limite entre vérité et mensonge est parfois floue. Le sort zone de vérité ne vise que les situations où le locuteur est conscient de la vérité mais souhaite la dissimuler. Le sort zone de vérité donne accès à ce que croit une personne, pas à ce qui est vrai. Cela signifie qu’il y a de nombreux cas où il échouera alors qu’il aura paru parfaitement fonctionner :",
+				"• Fourvoiement. Quand un individu désire tant que ses inventions soient réelles qu’il finit par croire à ses mensonges, il paraît dire la vérité alors même que ce n’est pas le cas. Un violeur psychologiquement fragile pourra ainsi clamer que sa victime l’aimait et un meurtrier que sa victime l’avait provoqué. ",
+				"• Rationalisation. L’esprit n’aime pas l’ambiguïté, de sorte qu’il reconstitue des détails, parfois jusqu’à créer de faux souvenirs. Une personne participant à une fête où un crime a eu lieu pourra croire avoir vu l’assassin fuir dans la panique simplement par surinterprétation de vacillements d’ombres. Il peut ainsi arriver que l’usage du sort de zone de vérité aboutisse à obtenir des témoignages différents sur une même scène, chaque témoin ayant créé sa vérité. ",
+				"• Manipulation. Il existe des techniques de manipulation plus ou moins complexes ou longues, qui permettent d’implanter un souvenir dans l’esprit d’une personne. Il n’est nullement nécessaire de faire appel à la magie, seule la connaissance de l’es-prit et de ses faiblesses suffit : un souvenir est inséré dans une zone de flou de la mémoire. Il ne faut pas beaucoup de temps pour convaincre d’un détail crédible (présence d’un objet, couleur d’un drapeau, l’ouverture d’une fenêtre, etc.). En disposant de temps et d’une bonne méthode, il est même possible de convaincre une personne qu’elle a commis un délit, plusieurs années auparavant. La victime de telles manipulations croit sincèrement ce qu’elle dit. "
+			],
+			"level":"2",
+			"type":"Enchantement",
+			"duration":"10 min",
+			"verbal":true,
+			"somatic":true,
+			"cardType": "SpellCard"
+		}
+	]
+}

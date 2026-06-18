@@ -320,6 +320,7 @@ export const I18N = {
 		COMPACT: 'Compacte',
 		OK: 'Ok',
 		CANCEL: 'Annuler',
+		CARD_REFERENCE: 'Ref.',
 	
 		PROJECT_TITLE: 'RPG Deck',
 		PROJECT_DESCRIPTION: [
